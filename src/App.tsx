@@ -5,7 +5,7 @@ import { resolveMediaSrc } from "./features/quest/media";
 import { useQuest } from "./features/quest/useQuest";
 
 type Screen = "intro" | "quest" | "done";
-type ToastTone = "neutral" | "success";
+type ToastTone = "neutral" | "success" | "error";
 
 type ToastState = {
   id: number;
@@ -258,7 +258,7 @@ export default function App() {
           )}
 
           {screen === "quest" && step && !state.done && (
-            <div className="screenEnter">
+            <div key={step.id} className="screenEnter">
               <StepView
                 step={step}
                 stepNumber={state.index + 1}

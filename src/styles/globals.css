@@ -2,24 +2,23 @@
   color-scheme: dark;
   font-family: "Space Grotesk", "Segoe UI Variable", "Segoe UI", sans-serif;
   --bg-0: #050816;
-  --bg-1: #071122;
-  --bg-2: #0d1630;
+  --bg-1: #0b0f26;
+  --bg-2: #120f2d;
   --panel: rgba(10, 17, 35, 0.68);
   --line: rgba(170, 202, 255, 0.14);
-  --line-strong: rgba(135, 195, 255, 0.32);
   --text: rgba(243, 247, 255, 0.96);
   --muted: rgba(190, 204, 229, 0.72);
   --subtle: rgba(157, 173, 203, 0.52);
   --cyan: #7de2ff;
   --blue: #6d8cff;
+  --violet: #9b7cff;
+  --magenta: #d175ff;
   --teal: #77f0d2;
   --danger: #ff8ea1;
   --success: #7dffc5;
   --shadow-xl: 0 28px 80px rgba(0, 0, 0, 0.5);
   --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.34);
   --radius-xl: 28px;
-  --radius-lg: 22px;
-  --radius-md: 16px;
 }
 
 * {
@@ -43,8 +42,10 @@ body {
   font-family: inherit;
   color: var(--text);
   background:
-    radial-gradient(circle at top left, rgba(80, 112, 255, 0.18), transparent 30%),
-    radial-gradient(circle at 80% 20%, rgba(28, 219, 255, 0.12), transparent 32%),
+    radial-gradient(circle at top left, rgba(120, 92, 255, 0.24), transparent 28%),
+    radial-gradient(circle at 80% 20%, rgba(209, 117, 255, 0.12), transparent 30%),
+    radial-gradient(circle at 55% 60%, rgba(67, 98, 255, 0.12), transparent 34%),
+    radial-gradient(circle at 35% 26%, rgba(28, 219, 255, 0.1), transparent 28%),
     linear-gradient(180deg, var(--bg-0), var(--bg-1) 42%, var(--bg-2));
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -94,25 +95,28 @@ a {
 .mouseGlow {
   position: fixed;
   z-index: 0;
-  width: 24rem;
-  height: 24rem;
+  width: 36rem;
+  height: 36rem;
   border-radius: 999px;
-  background: radial-gradient(circle, rgba(115, 178, 255, 0.13), rgba(115, 178, 255, 0.05) 34%, transparent 70%);
-  filter: blur(34px);
+  background:
+    radial-gradient(circle, rgba(155, 124, 255, 0.24), rgba(155, 124, 255, 0.12) 28%, transparent 62%),
+    radial-gradient(circle at 62% 38%, rgba(125, 226, 255, 0.16), transparent 44%);
+  filter: blur(52px);
   transform: translate(-50%, -50%);
+  mix-blend-mode: screen;
   opacity: 0;
-  transition: opacity 220ms ease;
+  transition: opacity 220ms ease, transform 260ms ease;
 }
 
 .mouseGlow.is-active {
-  opacity: 1;
+  opacity: 0.95;
 }
 
 .aurora {
   position: absolute;
   border-radius: 999px;
   filter: blur(56px);
-  opacity: 0.85;
+  opacity: 0.88;
   animation: drift 16s ease-in-out infinite alternate;
   pointer-events: none;
 }
@@ -121,14 +125,14 @@ a {
   inset: -8% auto auto -16%;
   width: 38rem;
   height: 30rem;
-  background: radial-gradient(circle, rgba(89, 123, 255, 0.3), transparent 72%);
+  background: radial-gradient(circle, rgba(120, 92, 255, 0.34), transparent 72%);
 }
 
 .auroraSecondary {
   inset: auto -10% 10% auto;
   width: 32rem;
   height: 28rem;
-  background: radial-gradient(circle, rgba(77, 234, 255, 0.14), transparent 72%);
+  background: radial-gradient(circle, rgba(209, 117, 255, 0.2), transparent 72%);
   animation-duration: 19s;
 }
 
@@ -136,7 +140,7 @@ a {
   inset: 38% auto auto 34%;
   width: 22rem;
   height: 20rem;
-  background: radial-gradient(circle, rgba(125, 255, 197, 0.1), transparent 70%);
+  background: radial-gradient(circle, rgba(125, 226, 255, 0.16), transparent 70%);
   animation-duration: 13s;
 }
 
@@ -168,7 +172,7 @@ a {
 }
 
 .screenEnter {
-  animation: screenEnter 0.58s cubic-bezier(0.2, 1, 0.2, 1);
+  animation: screenEnter 0.72s cubic-bezier(0.2, 1, 0.2, 1);
 }
 
 .glowPanel,
@@ -196,7 +200,7 @@ a {
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  background: radial-gradient(circle at top, rgba(125, 226, 255, 0.12), transparent 60%);
+  background: radial-gradient(circle at top, rgba(155, 124, 255, 0.16), transparent 60%);
   opacity: 0.92;
   pointer-events: none;
 }
@@ -209,7 +213,7 @@ a {
 .floatingPlayer {
   border: 1px solid var(--line);
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.018)),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.018)),
     var(--panel);
   backdrop-filter: blur(20px);
   box-shadow: var(--shadow-xl);
@@ -332,13 +336,17 @@ a {
 .input,
 .rewardCard,
 .mediaCard,
-.floatingPlayer {
+.floatingPlayer,
+.toast,
+.questMain,
+.questSidebar {
   transition:
-    transform 180ms ease,
-    border-color 180ms ease,
-    box-shadow 180ms ease,
-    background 180ms ease,
-    opacity 180ms ease;
+    transform 240ms ease,
+    border-color 240ms ease,
+    box-shadow 240ms ease,
+    background 240ms ease,
+    opacity 240ms ease,
+    filter 240ms ease;
 }
 
 .btn {
@@ -356,10 +364,10 @@ a {
 .mediaCard:hover,
 .floatingPlayer:hover {
   transform: translateY(-1px);
-  border-color: rgba(135, 195, 255, 0.38);
+  border-color: rgba(155, 124, 255, 0.42);
   box-shadow:
-    0 0 0 1px rgba(135, 195, 255, 0.15),
-    0 14px 34px rgba(40, 94, 190, 0.16);
+    0 0 0 1px rgba(155, 124, 255, 0.16),
+    0 16px 38px rgba(98, 64, 202, 0.2);
 }
 
 .btn:focus-visible,
@@ -368,8 +376,8 @@ a {
 .slider:focus-visible {
   outline: none;
   box-shadow:
-    0 0 0 1px rgba(125, 226, 255, 0.28),
-    0 0 0 4px rgba(125, 226, 255, 0.1);
+    0 0 0 1px rgba(155, 124, 255, 0.32),
+    0 0 0 4px rgba(155, 124, 255, 0.12);
 }
 
 .btn:active,
@@ -385,11 +393,11 @@ a {
 
 .btn-primary {
   background:
-    linear-gradient(135deg, rgba(97, 129, 255, 0.95), rgba(102, 229, 255, 0.92)),
+    linear-gradient(135deg, rgba(123, 92, 255, 0.95), rgba(209, 117, 255, 0.9) 48%, rgba(102, 229, 255, 0.88)),
     rgba(255, 255, 255, 0.08);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.22),
-    0 14px 34px rgba(82, 111, 255, 0.24);
+    0 16px 36px rgba(123, 92, 255, 0.28);
 }
 
 .btn-secondary,
@@ -407,7 +415,7 @@ a {
   position: absolute;
   inset: 14% 14% auto;
   height: 34%;
-  background: radial-gradient(circle, rgba(107, 146, 255, 0.3), transparent 75%);
+  background: radial-gradient(circle, rgba(155, 124, 255, 0.34), transparent 75%);
   filter: blur(44px);
   pointer-events: none;
 }
@@ -447,8 +455,8 @@ a {
   gap: 12px;
   padding: 14px 16px;
   border-radius: 18px;
-  border: 1px solid rgba(165, 194, 255, 0.15);
-  background: linear-gradient(180deg, rgba(8, 13, 26, 0.16), rgba(8, 13, 26, 0.72));
+  border: 1px solid rgba(180, 150, 255, 0.18);
+  background: linear-gradient(180deg, rgba(30, 14, 55, 0.18), rgba(10, 10, 28, 0.76));
   backdrop-filter: blur(10px);
 }
 
@@ -491,8 +499,8 @@ a {
   position: absolute;
   inset: 0 auto 0 0;
   border-radius: inherit;
-  background: linear-gradient(90deg, var(--blue), var(--cyan), var(--teal));
-  box-shadow: 0 0 28px rgba(105, 177, 255, 0.3);
+  background: linear-gradient(90deg, var(--violet), var(--magenta), var(--cyan), var(--teal));
+  box-shadow: 0 0 30px rgba(155, 124, 255, 0.32);
   animation: shimmer 3.4s linear infinite;
 }
 
@@ -539,8 +547,8 @@ a {
 }
 
 .playerDot.is-active {
-  background: linear-gradient(180deg, var(--cyan), var(--teal));
-  box-shadow: 0 0 18px rgba(125, 226, 255, 0.62);
+  background: linear-gradient(180deg, var(--violet), var(--magenta));
+  box-shadow: 0 0 18px rgba(209, 117, 255, 0.62);
 }
 
 .slider {
@@ -558,7 +566,7 @@ a {
 .slider-premium::-webkit-slider-runnable-track {
   height: 4px;
   border-radius: 999px;
-  background: linear-gradient(90deg, rgba(109, 140, 255, 0.92), rgba(125, 226, 255, 0.8));
+  background: linear-gradient(90deg, rgba(123, 92, 255, 0.95), rgba(209, 117, 255, 0.86), rgba(125, 226, 255, 0.78));
 }
 
 .slider-premium::-webkit-slider-thumb {
@@ -569,13 +577,13 @@ a {
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.28);
   background: #f4f8ff;
-  box-shadow: 0 0 18px rgba(125, 226, 255, 0.4);
+  box-shadow: 0 0 18px rgba(209, 117, 255, 0.44);
 }
 
 .slider-premium::-moz-range-track {
   height: 4px;
   border-radius: 999px;
-  background: linear-gradient(90deg, rgba(109, 140, 255, 0.92), rgba(125, 226, 255, 0.8));
+  background: linear-gradient(90deg, rgba(123, 92, 255, 0.95), rgba(209, 117, 255, 0.86), rgba(125, 226, 255, 0.78));
 }
 
 .slider-premium::-moz-range-thumb {
@@ -584,7 +592,7 @@ a {
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.28);
   background: #f4f8ff;
-  box-shadow: 0 0 18px rgba(125, 226, 255, 0.4);
+  box-shadow: 0 0 18px rgba(209, 117, 255, 0.44);
 }
 
 .toast {
@@ -600,7 +608,7 @@ a {
   border-radius: 18px;
   border: 1px solid rgba(165, 194, 255, 0.18);
   background:
-    linear-gradient(180deg, rgba(16, 25, 49, 0.92), rgba(9, 14, 26, 0.92)),
+    linear-gradient(180deg, rgba(26, 20, 52, 0.94), rgba(11, 12, 32, 0.94)),
     rgba(255, 255, 255, 0.03);
   box-shadow: var(--shadow-lg);
   transform: translateX(-50%);
@@ -611,18 +619,30 @@ a {
   border-color: rgba(125, 255, 197, 0.28);
 }
 
+.toast-error {
+  border-color: rgba(255, 142, 161, 0.4);
+  box-shadow:
+    0 0 0 1px rgba(255, 142, 161, 0.12),
+    0 18px 40px rgba(123, 33, 71, 0.24);
+}
+
 .toastPulse {
   width: 9px;
   height: 9px;
   border-radius: 999px;
-  background: linear-gradient(180deg, var(--cyan), var(--teal));
-  box-shadow: 0 0 20px rgba(125, 226, 255, 0.76);
+  background: linear-gradient(180deg, var(--violet), var(--magenta));
+  box-shadow: 0 0 20px rgba(209, 117, 255, 0.76);
   flex: none;
 }
 
 .toast-success .toastPulse {
   background: linear-gradient(180deg, #9ef5d2, var(--success));
   box-shadow: 0 0 20px rgba(125, 255, 197, 0.76);
+}
+
+.toast-error .toastPulse {
+  background: linear-gradient(180deg, #ffc0cb, var(--danger));
+  box-shadow: 0 0 22px rgba(255, 142, 161, 0.82);
 }
 
 .toastTitle {
@@ -755,7 +775,7 @@ a {
 }
 
 .decisionCard.is-decision .mediaVideo {
-  box-shadow: 0 0 0 1px rgba(125, 226, 255, 0.12), 0 16px 40px rgba(48, 99, 197, 0.18);
+  box-shadow: 0 0 0 1px rgba(155, 124, 255, 0.14), 0 18px 42px rgba(84, 59, 182, 0.22);
 }
 
 .decisionOverlay {
@@ -769,8 +789,8 @@ a {
   gap: 12px;
   padding: 12px 14px;
   border-radius: 16px;
-  border: 1px solid rgba(165, 194, 255, 0.16);
-  background: linear-gradient(180deg, rgba(8, 13, 26, 0.2), rgba(8, 13, 26, 0.76));
+  border: 1px solid rgba(180, 150, 255, 0.18);
+  background: linear-gradient(180deg, rgba(32, 16, 52, 0.18), rgba(8, 10, 26, 0.8));
   backdrop-filter: blur(10px);
 }
 
@@ -808,8 +828,8 @@ a {
 }
 
 .choiceCard.is-selected {
-  border-color: rgba(125, 226, 255, 0.42);
-  box-shadow: 0 0 0 1px rgba(125, 226, 255, 0.16), 0 14px 34px rgba(40, 94, 190, 0.16);
+  border-color: rgba(155, 124, 255, 0.44);
+  box-shadow: 0 0 0 1px rgba(155, 124, 255, 0.18), 0 16px 36px rgba(98, 64, 202, 0.18);
 }
 
 .choiceCard.is-success {
@@ -889,8 +909,8 @@ a {
   position: absolute;
   inset: auto 0 0;
   border-radius: inherit;
-  background: linear-gradient(180deg, var(--cyan), var(--blue));
-  box-shadow: 0 0 24px rgba(125, 226, 255, 0.34);
+  background: linear-gradient(180deg, var(--cyan), var(--magenta), var(--violet));
+  box-shadow: 0 0 26px rgba(155, 124, 255, 0.36);
   animation: shimmer 2.6s linear infinite;
 }
 
@@ -958,24 +978,28 @@ a {
 @keyframes screenEnter {
   from {
     opacity: 0;
-    transform: translateY(12px) scale(0.988);
+    transform: translateY(16px) scale(0.982);
+    filter: blur(10px);
   }
 
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
+    filter: blur(0);
   }
 }
 
 @keyframes toastIn {
   from {
     opacity: 0;
-    transform: translate(-50%, -8px) scale(0.985);
+    transform: translate(-50%, -12px) scale(0.975);
+    filter: blur(8px);
   }
 
   to {
     opacity: 1;
     transform: translate(-50%, 0) scale(1);
+    filter: blur(0);
   }
 }
 

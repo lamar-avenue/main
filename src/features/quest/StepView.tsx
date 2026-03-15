@@ -4,7 +4,7 @@ import { isCorrect } from "./answer";
 import { resolveMediaSrc } from "./media";
 
 type FeedbackTone = "idle" | "success" | "error";
-type ToastTone = "neutral" | "success";
+type ToastTone = "neutral" | "success" | "error";
 
 export default function StepView({
   step,
@@ -47,7 +47,7 @@ export default function StepView({
 
   function showError(message: string) {
     setFeedbackTone("error");
-    onToast("neutral", "Access denied", message);
+    onToast("error", "Wrong answer", message);
   }
 
   function submitValue(nextValue: string) {
