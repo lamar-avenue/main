@@ -2,7 +2,7 @@ export type MediaBlock =
   | { type: "text"; value: string }
   | { type: "image"; src: string; alt?: string }
   | { type: "audio"; src: string; title?: string }
-  | { type: "video"; src: string; title?: string; poster?: string }
+  | { type: "video"; src: string; title?: string; poster?: string; pauseAt?: number }
   | { type: "youtube"; id: string; title?: string };
 
 export type QuestStep = {
@@ -48,7 +48,7 @@ export const quest: QuestStep[] = [
   {
     id: "4",
     title: "Шаг 4 - Видео",
-    blocks: [{ type: "video", src: "/media/step4.mp4", title: "Сцена" }],
+    blocks: [{ type: "video", src: "/media/step4.mp4", title: "Сцена", pauseAt: 2.8 }],
     prompt: "Что будет на видео дальше? (коротко)",
     answerMode: "keywords",
     answer: ["он повернет", "он повернёт", "поворот"],

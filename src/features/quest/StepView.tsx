@@ -1,9 +1,10 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { MediaBlock, QuestStep } from "../../data/quest";
 import { isCorrect } from "./answer";
 import { resolveMediaSrc } from "./media";
 
 type FeedbackTone = "idle" | "success" | "error";
+type ToastTone = "neutral" | "success";
 
 export default function StepView({
   step,
@@ -11,19 +12,18 @@ export default function StepView({
   total,
   onSubmit,
   onReset,
+  onToast,
 }: {
   step: QuestStep;
   stepNumber: number;
   total: number;
   onSubmit: (value: string) => { ok: boolean; finished?: boolean };
   onReset: () => void;
+  onToast: (tone: ToastTone, title: string, message: string) => void;
 }) {
   const [value, setValue] = useState("");
   const [selectedChoice, setSelectedChoice] = useState<string | null>(null);
   const [feedbackTone, setFeedbackTone] = useState<FeedbackTone>("idle");
-  const [notice, setNotice] = useState<{ tone: Exclude<FeedbackTone, "idle">; title: string; message: string } | null>(
-    null,
-  );
   const [showHint, setShowHint] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -31,17 +31,9 @@ export default function StepView({
     setValue("");
     setSelectedChoice(null);
     setFeedbackTone("idle");
-    setNotice(null);
     setShowHint(false);
     setIsSubmitting(false);
   }, [step.id]);
-
-  useEffect(() => {
-    if (!notice || notice.tone === "success") return;
-
-    const timeoutId = window.setTimeout(() => setNotice(null), 2200);
-    return () => window.clearTimeout(timeoutId);
-  }, [notice]);
 
   const answerModeLabel = step.answerMode ?? "exact";
   const progressPercent = Math.round((stepNumber / total) * 100);
@@ -55,11 +47,7 @@ export default function StepView({
 
   function showError(message: string) {
     setFeedbackTone("error");
-    setNotice({
-      tone: "error",
-      title: "Access denied",
-      message,
-    });
+    onToast("neutral", "Access denied", message);
   }
 
   function submitValue(nextValue: string) {
@@ -82,11 +70,7 @@ export default function StepView({
 
     setIsSubmitting(true);
     setFeedbackTone("success");
-    setNotice({
-      tone: "success",
-      title: "Access granted",
-      message: "Совпадение подтверждено. Открываем следующий шаг.",
-    });
+    onToast("success", "Access granted", "Совпадение подтверждено. Открываем следующий шаг.");
 
     window.setTimeout(() => {
       onSubmit(nextValue);
@@ -126,19 +110,9 @@ export default function StepView({
           </div>
         )}
 
-        {notice && (
-          <div className={`toastCard tone-${notice.tone}`}>
-            <div className="toastPulse" />
-            <div>
-              <div className="toastTitle">{notice.title}</div>
-              <div className="toastText">{notice.message}</div>
-            </div>
-          </div>
-        )}
-
         {step.choices && step.choices.length > 0 && (
           <div className="choiceGrid">
-            {step.choices.map((choice) => {
+            {step.choices.map((choice, index) => {
               const isSelected = selectedChoice === choice;
               const choiceState =
                 isSelected && feedbackTone !== "idle" ? `is-${feedbackTone}` : isSelected ? "is-selected" : "";
@@ -151,7 +125,7 @@ export default function StepView({
                   disabled={isSubmitting}
                   onClick={() => submitValue(choice)}
                 >
-                  <span className="choiceIndex">{String(step.choices!.indexOf(choice) + 1).padStart(2, "0")}</span>
+                  <span className="choiceIndex">{String(index + 1).padStart(2, "0")}</span>
                   <span className="choiceText">{choice}</span>
                 </button>
               );
@@ -169,7 +143,6 @@ export default function StepView({
                 setValue(event.target.value);
                 setSelectedChoice(null);
                 setFeedbackTone("idle");
-                setNotice(null);
               }}
               onKeyDown={(event) => {
                 if (event.key === "Enter") {
@@ -260,26 +233,7 @@ function Media({ block, cinematic }: { block: MediaBlock; cinematic: boolean }) 
       );
 
     case "video":
-      return (
-        <div className={`mediaCard glowInset ${cinematic ? "decisionCard" : ""}`}>
-          {block.title && <div className="mediaTitle">{block.title}</div>}
-          <div className="decisionOverlay">
-            {cinematic && (
-              <>
-                <span className="overlayChip">Decision moment</span>
-                <span className="overlayText">Frame paused for prediction.</span>
-              </>
-            )}
-          </div>
-          <video
-            className="mediaVideo"
-            controls
-            preload="metadata"
-            src={resolveMediaSrc(block.src)}
-            poster={block.poster ? resolveMediaSrc(block.poster) : undefined}
-          />
-        </div>
-      );
+      return <VideoMedia block={block} cinematic={cinematic} />;
 
     case "youtube":
       return (
@@ -296,4 +250,67 @@ function Media({ block, cinematic }: { block: MediaBlock; cinematic: boolean }) 
         </div>
       );
   }
+}
+
+function VideoMedia({
+  block,
+  cinematic,
+}: {
+  block: Extract<MediaBlock, { type: "video" }>;
+  cinematic: boolean;
+}) {
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const [isPausedAtDecision, setIsPausedAtDecision] = useState(false);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || block.pauseAt == null) return;
+
+    setIsPausedAtDecision(false);
+    video.currentTime = 0;
+
+    const tryPlay = async () => {
+      try {
+        await video.play();
+      } catch {
+        setIsPausedAtDecision(true);
+      }
+    };
+
+    const handleTimeUpdate = () => {
+      if (video.currentTime >= block.pauseAt!) {
+        video.pause();
+        setIsPausedAtDecision(true);
+      }
+    };
+
+    video.addEventListener("timeupdate", handleTimeUpdate);
+    void tryPlay();
+
+    return () => {
+      video.removeEventListener("timeupdate", handleTimeUpdate);
+    };
+  }, [block.pauseAt, block.src]);
+
+  return (
+    <div className={`mediaCard glowInset ${cinematic ? "decisionCard" : ""} ${isPausedAtDecision ? "is-decision" : ""}`}>
+      {block.title && <div className="mediaTitle">{block.title}</div>}
+      <div className="videoStage">
+        <video
+          ref={videoRef}
+          className="mediaVideo"
+          controls
+          preload="metadata"
+          src={resolveMediaSrc(block.src)}
+          poster={block.poster ? resolveMediaSrc(block.poster) : undefined}
+        />
+        {cinematic && isPausedAtDecision && (
+          <div className="decisionOverlay">
+            <span className="overlayChip">Decision moment</span>
+            <span className="overlayText">Playback paused at the key frame. Choose what happens next.</span>
+          </div>
+        )}
+      </div>
+    </div>
+  );
 }

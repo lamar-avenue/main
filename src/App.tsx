@@ -21,10 +21,11 @@ const backgroundAudioBlock = quest
 export default function App() {
   const [screen, setScreen] = useState<Screen>("intro");
   const [toast, setToast] = useState<ToastState>(null);
-  const [isAudioEnabled, setIsAudioEnabled] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [volume, setVolume] = useState(0.42);
+  const [volume, setVolume] = useState(0.36);
+  const [cursorGlow, setCursorGlow] = useState({ x: 0, y: 0, active: false });
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const autoplayRetryBound = useRef(false);
 
   const { step, submit, reset, state, total } = useQuest();
   const progressPercent = total > 0 ? Math.round(((state.done ? total : state.index + 1) / total) * 100) : 0;
@@ -38,7 +39,7 @@ export default function App() {
 
     const timeoutId = window.setTimeout(() => {
       setToast((current) => (current?.id === toast.id ? null : current));
-    }, 2600);
+    }, 2200);
 
     return () => window.clearTimeout(timeoutId);
   }, [toast]);
@@ -55,29 +56,63 @@ export default function App() {
     setScreen("done");
   }, [state.done]);
 
-  async function toggleAudio() {
+  useEffect(() => {
+    const handleMove = (event: MouseEvent) => {
+      setCursorGlow({ x: event.clientX, y: event.clientY, active: true });
+    };
+
+    const handleLeave = () => {
+      setCursorGlow((current) => ({ ...current, active: false }));
+    };
+
+    window.addEventListener("mousemove", handleMove);
+    window.addEventListener("mouseleave", handleLeave);
+
+    return () => {
+      window.removeEventListener("mousemove", handleMove);
+      window.removeEventListener("mouseleave", handleLeave);
+    };
+  }, []);
+
+  useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
 
-    if (isPlaying) {
-      audio.pause();
-      setIsPlaying(false);
-      return;
-    }
+    let cancelled = false;
 
-    try {
-      await audio.play();
-      setIsAudioEnabled(true);
-      setIsPlaying(true);
-    } catch {
-      setToast({
-        id: Date.now(),
-        tone: "neutral",
-        title: "Audio blocked",
-        message: "Tap the control again after interacting with the page.",
-      });
-    }
-  }
+    const startPlayback = async () => {
+      try {
+        await audio.play();
+        if (!cancelled) {
+          setIsPlaying(true);
+        }
+      } catch {
+        if (autoplayRetryBound.current) return;
+
+        autoplayRetryBound.current = true;
+        const retry = async () => {
+          try {
+            await audio.play();
+            setIsPlaying(true);
+          } catch {
+            return;
+          } finally {
+            window.removeEventListener("pointerdown", retry);
+            window.removeEventListener("keydown", retry);
+          }
+        };
+
+        window.addEventListener("pointerdown", retry, { once: true });
+        window.addEventListener("keydown", retry, { once: true });
+      }
+    };
+
+    void startPlayback();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   function notify(tone: ToastTone, title: string, message: string) {
     setToast({ id: Date.now(), tone, title, message });
@@ -96,6 +131,7 @@ export default function App() {
         <div className="aurora auroraPrimary" />
         <div className="aurora auroraSecondary" />
         <div className="aurora auroraAccent" />
+        <div className={`mouseGlow ${cursorGlow.active ? "is-active" : ""}`} style={{ left: cursorGlow.x, top: cursorGlow.y }} />
         <div className="grid" />
         <div className="vignette" />
 
@@ -104,35 +140,25 @@ export default function App() {
             ref={audioRef}
             src={backgroundAudioSrc}
             loop
-            preload="metadata"
+            preload="auto"
+            autoPlay
             onPlay={() => setIsPlaying(true)}
             onPause={() => setIsPlaying(false)}
           />
         )}
 
         <div className="floatingPlayer glowPanel">
-          <div className="playerMeta">
-            <div className="playerEyebrow">Global audio</div>
-            <div className="playerTitle">
-              {backgroundAudioBlock?.title ?? "Background atmosphere"}
-            </div>
-          </div>
-          <button className={`iconBtn ${isPlaying ? "is-active" : ""}`} type="button" onClick={toggleAudio}>
-            {isPlaying ? "Pause" : "Play"}
-          </button>
-          <div className="playerSliderWrap">
-            <span className="playerLabel">{isAudioEnabled || isPlaying ? "Volume" : "Ready"}</span>
-            <input
-              className="slider"
-              type="range"
-              min="0"
-              max="1"
-              step="0.01"
-              value={volume}
-              onChange={(event) => setVolume(Number(event.target.value))}
-              aria-label="Background audio volume"
-            />
-          </div>
+          <div className={`playerDot ${isPlaying ? "is-active" : ""}`} aria-hidden="true" />
+          <input
+            className="slider slider-premium"
+            type="range"
+            min="0"
+            max="1"
+            step="0.01"
+            value={volume}
+            onChange={(event) => setVolume(Number(event.target.value))}
+            aria-label="Background audio volume"
+          />
         </div>
 
         {toast && (
@@ -152,8 +178,8 @@ export default function App() {
                 <div className="sectionBadge">Quest protocol</div>
                 <h1 className="heroTitle">Cinematic sci-fi quest with premium control surfaces.</h1>
                 <p className="heroSubtitle">
-                  Запусти пошаговый опыт с медиа, выбором вариантов ответа и атмосферой дорогого интерактивного
-                  продукта. Прогресс сохраняется автоматически, а фон остаётся живым и мягко подсвеченным.
+                  Запусти пошаговый опыт с медиа, вариантами ответа и мягкой атмосферой дорогого продукта. Прогресс
+                  сохраняется автоматически, а фон остаётся живым и аккуратно подсвеченным.
                 </p>
 
                 <div className="heroStats">
@@ -167,7 +193,7 @@ export default function App() {
                   </div>
                   <div className="statCard glowInset">
                     <span className="statLabel">Playback</span>
-                    <strong>{isPlaying ? "Live ambience" : "Silent standby"}</strong>
+                    <strong>{isPlaying ? "Live ambience" : "Autoplay standby"}</strong>
                   </div>
                 </div>
 
@@ -237,6 +263,7 @@ export default function App() {
                 step={step}
                 stepNumber={state.index + 1}
                 total={total}
+                onToast={notify}
                 onSubmit={(value) => {
                   const result = submit(value);
                   if (result.ok && result.finished) {
