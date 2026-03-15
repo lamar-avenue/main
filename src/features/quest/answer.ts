@@ -1,3 +1,5 @@
+import type { QuestStep } from "../../data/quest";
+
 export function normalize(s: string) {
   return s
     .trim()
@@ -6,8 +8,28 @@ export function normalize(s: string) {
     .replace(/\s+/g, " ");
 }
 
-export function isCorrect(input: string, answer: string | string[]) {
-  const a = Array.isArray(answer) ? answer : [answer];
+function toArray(x: string | string[]) {
+  return Array.isArray(x) ? x : [x];
+}
+
+export function isCorrect(input: string, step: QuestStep) {
+  const mode = step.answerMode ?? "exact";
   const n = normalize(input);
-  return a.some((x) => normalize(x) === n);
+
+  // пустой ввод — сразу мимо
+  if (!n) return false;
+
+  if (mode === "exact") {
+    return toArray(step.answer).some((a) => normalize(a) === n);
+  }
+
+  if (mode === "contains") {
+    return toArray(step.answer).some((a) => n.includes(normalize(a)));
+  }
+
+  // keywords: все ключевые слова должны встретиться (как подстроки)
+  const kws = (step.keywords ?? []).map(normalize).filter(Boolean);
+  if (kws.length === 0) return false;
+
+  return kws.every((kw) => n.includes(kw));
 }

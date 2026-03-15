@@ -38,7 +38,7 @@ export function useQuest() {
   function submit(answerInput: string) {
     if (!step) return { ok: false };
 
-    const ok = isCorrect(answerInput, step.answer);
+    const ok = isCorrect(answerInput, step);
     if (!ok) return { ok: false };
 
     const nextIndex = state.index + 1;
