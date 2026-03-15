@@ -4,6 +4,19 @@ export type MediaBlock =
   | { type: "audio"; src: string; title?: string }
   | { type: "video"; src: string; title?: string; poster?: string }
   | { type: "youtube"; id: string; title?: string };
+  
+  export type QuestStep = {
+  id: string;
+  title: string;
+  blocks?: MediaBlock[];
+  prompt: string;
+
+  answerMode?: "exact" | "contains" | "keywords"; // NEW
+  answer: string | string[];                      // как и было
+  keywords?: string[];                            // NEW (для keywords)
+
+  hint?: string;
+};
 
 export type QuestStep = {
   id: string;
