@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { quest } from "./data/quest";
+import HeroScreen from "./features/home/HeroScreen";
 import StepView from "./features/quest/StepView";
 import { resolveMediaSrc } from "./features/quest/media";
 import { useQuest } from "./features/quest/useQuest";
@@ -28,9 +29,6 @@ export default function App() {
   const autoplayRetryBound = useRef(false);
 
   const { step, submit, reset, state, total } = useQuest();
-  const progressPercent = total > 0 ? Math.round(((state.done ? total : state.index + 1) / total) * 100) : 0;
-
-  const heroVideo = useMemo(() => resolveMediaSrc("/media/step4.mp4"), []);
   const heroImage = useMemo(() => resolveMediaSrc("/media/step2.jpg"), []);
   const backgroundAudioSrc = backgroundAudioBlock ? resolveMediaSrc(backgroundAudioBlock.src) : null;
 
@@ -147,19 +145,21 @@ export default function App() {
           />
         )}
 
-        <div className="floatingPlayer glowPanel">
-          <div className={`playerDot ${isPlaying ? "is-active" : ""}`} aria-hidden="true" />
-          <input
-            className="slider slider-premium"
-            type="range"
-            min="0"
-            max="1"
-            step="0.01"
-            value={volume}
-            onChange={(event) => setVolume(Number(event.target.value))}
-            aria-label="Background audio volume"
-          />
-        </div>
+        {screen !== "intro" && (
+          <div className="floatingPlayer glowPanel">
+            <div className={`playerDot ${isPlaying ? "is-active" : ""}`} aria-hidden="true" />
+            <input
+              className="slider slider-premium"
+              type="range"
+              min="0"
+              max="1"
+              step="0.01"
+              value={volume}
+              onChange={(event) => setVolume(Number(event.target.value))}
+              aria-label="Background audio volume"
+            />
+          </div>
+        )}
 
         {toast && (
           <div className={`toast toast-${toast.tone}`}>
@@ -173,88 +173,13 @@ export default function App() {
 
         <div className="container">
           {screen === "intro" && (
-            <section className="heroLayout">
-              <div className="heroCopy glowPanel screenEnter">
-                <div className="sectionBadge">Quest protocol</div>
-                <h1 className="heroTitle">Cinematic sci-fi quest with premium control surfaces.</h1>
-                <p className="heroSubtitle">
-                  Запусти пошаговый опыт с медиа, вариантами ответа и мягкой атмосферой дорогого продукта. Прогресс
-                  сохраняется автоматически, а фон остаётся живым и аккуратно подсвеченным.
-                </p>
-
-                <div className="heroStats">
-                  <div className="statCard glowInset">
-                    <span className="statLabel">Sequence</span>
-                    <strong>{total} steps</strong>
-                  </div>
-                  <div className="statCard glowInset">
-                    <span className="statLabel">Current state</span>
-                    <strong>{state.done ? "Complete" : `Step ${state.index + 1}/${total}`}</strong>
-                  </div>
-                  <div className="statCard glowInset">
-                    <span className="statLabel">Playback</span>
-                    <strong>{isPlaying ? "Live ambience" : "Autoplay standby"}</strong>
-                  </div>
-                </div>
-
-                <div className="heroActions">
-                  <button className="btn btn-primary" type="button" onClick={() => setScreen("quest")}>
-                    Start quest
-                  </button>
-                  <button className="btn btn-secondary" type="button" onClick={handleReset}>
-                    Reset progress
-                  </button>
-                </div>
-              </div>
-
-              <div className="heroVisual screenEnter">
-                <div className="heroHalo" />
-                <div className="heroMediaCard glowPanel">
-                  <div className="mediaFrame mediaFrame-video">
-                    <video
-                      className="heroVideo"
-                      src={heroVideo}
-                      autoPlay
-                      muted
-                      loop
-                      playsInline
-                      preload="metadata"
-                    />
-                    <div className="heroOverlay">
-                      <span className="overlayChip">Decision moment</span>
-                      <strong>Paused energy, cinematic tension, high-contrast UI framing.</strong>
-                    </div>
-                  </div>
-                  <div className="heroSupplemental">
-                    <div className="suppCard glowInset">
-                      <img className="suppImage" src={heroImage} alt="Quest preview" />
-                    </div>
-                    <div className="suppCard glowInset">
-                      <div className="systemCard">
-                        <div className="sectionBadge">Cipher / progress</div>
-                        <div className="progressMeter">
-                          <div className="progressFill" style={{ width: `${progressPercent}%` }} />
-                        </div>
-                        <div className="systemRows">
-                          <div className="systemRow">
-                            <span>Status</span>
-                            <strong>{state.done ? "Resolved" : "Awaiting input"}</strong>
-                          </div>
-                          <div className="systemRow">
-                            <span>Signal</span>
-                            <strong>Stable</strong>
-                          </div>
-                          <div className="systemRow">
-                            <span>Render</span>
-                            <strong>Pages-ready</strong>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </section>
+            <HeroScreen
+              heroImage={heroImage}
+              isPlaying={isPlaying}
+              volume={volume}
+              onVolumeChange={setVolume}
+              onStart={() => setScreen("quest")}
+            />
           )}
 
           {screen === "quest" && step && !state.done && (
@@ -281,8 +206,8 @@ export default function App() {
               <div className="sectionBadge">Sequence complete</div>
               <h1 className="heroTitle">You cleared the quest and unlocked the final reward layer.</h1>
               <p className="heroSubtitle">
-                Финальный экран теперь оформлен как завершённый premium-state: мягкие ореолы, спокойная системная
-                панель и чистая композиция без визуального шума.
+                Финальный экран оформлен как завершённый premium-state: мягкие ореолы, спокойная системная панель и
+                чистая композиция без визуального шума.
               </p>
 
               <div className="doneCardGrid">
