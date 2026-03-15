@@ -1,35 +1,33 @@
 import type { QuestStep } from "../../data/quest";
 
-export function normalize(s: string) {
-  return s
+export function normalize(value: string) {
+  return value
     .trim()
     .toLowerCase()
-    .replaceAll("ё", "е")
+    .replace(/\u0451/g, "\u0435")
     .replace(/\s+/g, " ");
 }
 
-function toArray(x: string | string[]) {
-  return Array.isArray(x) ? x : [x];
+function toArray(value: string | string[]) {
+  return Array.isArray(value) ? value : [value];
 }
 
 export function isCorrect(input: string, step: QuestStep) {
+  const normalizedInput = normalize(input);
   const mode = step.answerMode ?? "exact";
-  const n = normalize(input);
 
-  // пустой ввод — сразу мимо
-  if (!n) return false;
+  if (!normalizedInput) return false;
 
   if (mode === "exact") {
-    return toArray(step.answer).some((a) => normalize(a) === n);
+    return toArray(step.answer).some((answer) => normalize(answer) === normalizedInput);
   }
 
   if (mode === "contains") {
-    return toArray(step.answer).some((a) => n.includes(normalize(a)));
+    return toArray(step.answer).some((answer) => normalizedInput.includes(normalize(answer)));
   }
 
-  // keywords: все ключевые слова должны встретиться (как подстроки)
-  const kws = (step.keywords ?? []).map(normalize).filter(Boolean);
-  if (kws.length === 0) return false;
+  const keywords = (step.keywords ?? []).map(normalize).filter(Boolean);
+  if (keywords.length === 0) return false;
 
-  return kws.every((kw) => n.includes(kw));
+  return keywords.every((keyword) => normalizedInput.includes(keyword));
 }
