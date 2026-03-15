@@ -13,6 +13,7 @@ export type QuestStep = {
   answer: string | string[];
   answerMode?: "exact" | "contains" | "keywords";
   keywords?: string[];
+  choices?: string[];
   hint?: string;
 };
 
@@ -23,6 +24,7 @@ export const quest: QuestStep[] = [
     blocks: [{ type: "text", value: "Добро пожаловать. Это тестовый шаг." }],
     prompt: "Введи кодовое слово:",
     answer: ["mark", "марко", "марк"],
+    choices: ["mark", "john", "hello"],
     hint: "Подсказка: имя.",
   },
   {
@@ -32,6 +34,7 @@ export const quest: QuestStep[] = [
     prompt: "Что изображено на картинке? (одно слово)",
     answerMode: "exact",
     answer: ["машина", "car"],
+    choices: ["машина", "велосипед", "дом"],
   },
   {
     id: "3",
@@ -40,6 +43,7 @@ export const quest: QuestStep[] = [
     prompt: "Какое настроение у трека? (одно слово)",
     answerMode: "contains",
     answer: ["грусть", "радость", "тревога"],
+    choices: ["грустное настроение", "веселый вайб", "тревожная атмосфера"],
   },
   {
     id: "4",
@@ -49,6 +53,7 @@ export const quest: QuestStep[] = [
     answerMode: "keywords",
     answer: ["он повернет", "он повернёт", "поворот"],
     keywords: ["он", "повернет"],
+    choices: ["он повернет направо", "он остановится", "будет поворот"],
     hint: "Смотри на движение камеры.",
   },
 ];

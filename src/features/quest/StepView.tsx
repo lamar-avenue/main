@@ -1,6 +1,15 @@
-import { useState } from "react";
-import type { QuestStep } from "../../data/quest";
-import type { MediaBlock } from "../../data/quest";
+import { useEffect, useState } from "react";
+import type { MediaBlock, QuestStep } from "../../data/quest";
+
+function resolveMediaSrc(src: string) {
+  if (/^(https?:)?\/\//.test(src) || src.startsWith("data:")) return src;
+
+  const base = import.meta.env.BASE_URL ?? "/";
+  const normalizedBase = base.endsWith("/") ? base : `${base}/`;
+  const normalizedSrc = src.startsWith("/") ? src.slice(1) : src;
+
+  return `${normalizedBase}${normalizedSrc}`;
+}
 
 export default function StepView({
   step,
@@ -19,56 +28,77 @@ export default function StepView({
   const [error, setError] = useState<string | null>(null);
   const [showHint, setShowHint] = useState(false);
 
+  useEffect(() => {
+    setValue("");
+    setError(null);
+    setShowHint(false);
+  }, [step.id]);
+
+  function submitValue(nextValue: string) {
+    setValue(nextValue);
+
+    const result = onSubmit(nextValue);
+    if (!result.ok) {
+      setError("Не то. Попробуй ещё раз.");
+      return;
+    }
+
+    setValue("");
+    setError(null);
+  }
+
   return (
     <>
       <div className="kicker">
         STEP {stepNumber} / {total}
       </div>
       <h1 className="title">{step.title}</h1>
-	  {step.blocks && step.blocks.length > 0 && (
-  <div className="media">
-    {step.blocks.map((b, i) => (
-      <Media key={i} block={b} />
-    ))}
-  </div>
-)}
+
+      {step.blocks && step.blocks.length > 0 && (
+        <div className="media">
+          {step.blocks.map((block, index) => (
+            <Media key={index} block={block} />
+          ))}
+        </div>
+      )}
+
       <p className="subtitle">{step.prompt}</p>
+
+      {step.choices && step.choices.length > 0 && (
+        <div className="row" style={{ flexWrap: "wrap", gap: 10, marginBottom: 14 }}>
+          {step.choices.map((choice) => (
+            <button
+              key={choice}
+              className="btn ghost"
+              type="button"
+              onClick={() => submitValue(choice)}
+            >
+              {choice}
+            </button>
+          ))}
+        </div>
+      )}
 
       <div className="field">
         <input
-		onKeyDown={(e) => {
-  if (e.key === "Enter") {
-    const res = onSubmit(value);
-    if (!res.ok) setError("Не то. Попробуй ещё раз.");
-    else {
-      setValue("");
-      setError(null);
-    }
-  }
-}}
           className="input"
           value={value}
-          onChange={(e) => {
-            setValue(e.target.value);
+          onChange={(event) => {
+            setValue(event.target.value);
             setError(null);
           }}
-          placeholder="Ввод…"
-          autoFocus
-        />
-        <button
-          className="btn"
-          onClick={() => {
-            const res = onSubmit(value);
-            if (!res.ok) setError("Не то. Попробуй ещё раз.");
-            else {
-              setValue("");
-              setError(null);
+          onKeyDown={(event) => {
+            if (event.key === "Enter") {
+              submitValue(value);
             }
           }}
-        >
+          placeholder="Ввод..."
+          autoFocus
+        />
+        <button className="btn" type="button" onClick={() => submitValue(value)}>
           Проверить
         </button>
-        <button className="btn ghost" onClick={() => setShowHint((v) => !v)}>
+        <button className="btn ghost" type="button" onClick={() => setShowHint((current) => !current)}>
           Подсказка
         </button>
       </div>
@@ -78,28 +108,30 @@ export default function StepView({
       {showHint && step.hint && <div className="hint">{step.hint}</div>}
 
       <div className="row" style={{ marginTop: 14 }}>
-        <button className="btn ghost" onClick={onReset}>
+        <button className="btn ghost" type="button" onClick={onReset}>
           Сбросить прогресс
         </button>
       </div>
     </>
   );
 }
+
 function Media({ block }: { block: MediaBlock }) {
   switch (block.type) {
     case "text":
       return <div className="mediaText">{block.value}</div>;
 
     case "image":
-      return (
-        <img className="mediaImg" src={block.src} alt={block.alt ?? ""} />
-      );
+      return <img className="mediaImg" src={resolveMediaSrc(block.src)} alt={block.alt ?? ""} />;
 
     case "audio":
       return (
         <div className="mediaBox">
           {block.title && <div className="mediaTitle">{block.title}</div>}
-          <audio controls preload="none" src={block.src} />
+          <audio controls preload="metadata">
+            <source src={resolveMediaSrc(block.src)} />
+            Ваш браузер не поддерживает воспроизведение аудио.
+          </audio>
         </div>
       );
 
@@ -111,8 +143,8 @@ function Media({ block }: { block: MediaBlock }) {
             className="mediaVideo"
             controls
             preload="metadata"
-            src={block.src}
-            poster={block.poster}
+            src={resolveMediaSrc(block.src)}
+            poster={block.poster ? resolveMediaSrc(block.poster) : undefined}
           />
         </div>
       );
