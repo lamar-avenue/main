@@ -130,6 +130,7 @@ a {
   opacity: var(--petal-opacity);
   filter: blur(var(--petal-blur));
   transform-origin: 50% 70%;
+  will-change: transform, opacity;
   animation: sakuraFall var(--petal-duration) linear infinite;
   animation-delay: var(--petal-delay);
 }
@@ -139,6 +140,8 @@ a {
   width: 100%;
   height: 100%;
   overflow: visible;
+  transform-origin: 50% 62%;
+  animation: sakuraFlutter calc(var(--petal-duration) * 0.38) ease-in-out infinite alternate;
 }
 
 .sakuraPetalFill {
@@ -153,11 +156,14 @@ a {
 }
 
 .sakuraPetalFill {
-  filter: drop-shadow(0 0 14px rgba(242, 170, 228, 0.2));
+  filter:
+    drop-shadow(0 0 14px rgba(242, 170, 228, 0.22))
+    drop-shadow(0 8px 12px rgba(115, 64, 165, 0.14));
 }
 
 .sakuraPetal-front {
   z-index: 2;
+  opacity: calc(var(--petal-opacity) + 0.06);
 }
 
 .sakuraPetal-mid {
@@ -166,6 +172,7 @@ a {
 
 .sakuraPetal-back {
   z-index: 0;
+  opacity: calc(var(--petal-opacity) - 0.04);
 }
 
 .aurora {
@@ -1242,25 +1249,51 @@ a {
 
 @keyframes sakuraFall {
   0% {
-    transform: translate3d(0, -8vh, 0) rotate(-12deg) scale(0.92);
+    transform: translate3d(0, -10vh, 0) rotate(-14deg) scale(0.88);
     opacity: 0;
   }
 
-  10% {
+  8% {
     opacity: var(--petal-opacity);
   }
 
-  35% {
-    transform: translate3d(calc(var(--petal-drift) * 0.45), 34vh, 0) rotate(64deg) scale(1);
+  18% {
+    transform: translate3d(calc(var(--petal-drift) * 0.16), 18vh, 0) rotate(18deg) scale(0.96);
   }
 
-  68% {
-    transform: translate3d(calc(var(--petal-drift) * -0.3), 68vh, 0) rotate(146deg) scale(0.98);
+  36% {
+    transform: translate3d(calc(var(--petal-drift) * 0.52), 38vh, 0) rotate(82deg) scale(1);
+  }
+
+  57% {
+    transform: translate3d(calc(var(--petal-drift) * -0.18), 58vh, 0) rotate(136deg) scale(0.97);
+  }
+
+  78% {
+    transform: translate3d(calc(var(--petal-drift) * 0.74), 82vh, 0) rotate(214deg) scale(0.95);
   }
 
   100% {
-    transform: translate3d(var(--petal-drift), 118vh, 0) rotate(228deg) scale(0.9);
+    transform: translate3d(calc(var(--petal-drift) * 0.18), 118vh, 0) rotate(296deg) scale(0.9);
     opacity: 0;
+  }
+}
+
+@keyframes sakuraFlutter {
+  0% {
+    transform: rotate(calc(var(--petal-sway) * -0.55)) skewX(-4deg) skewY(1.5deg) scaleX(0.985);
+  }
+
+  32% {
+    transform: rotate(calc(var(--petal-sway) * 0.5)) skewX(2.2deg) skewY(-1deg) scaleX(1);
+  }
+
+  68% {
+    transform: rotate(calc(var(--petal-sway) * -0.24)) skewX(-1.5deg) skewY(1.2deg) scaleX(0.992);
+  }
+
+  100% {
+    transform: rotate(var(--petal-sway)) skewX(4deg) skewY(-1.4deg) scaleX(1.015);
   }
 }
 
