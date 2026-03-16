@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { quest } from "./data/quest";
 import HeroScreen from "./features/home/HeroScreen";
+import SakuraPetalsBackground from "./features/home/SakuraPetalsBackground";
 import StepView from "./features/quest/StepView";
 import { resolveMediaSrc } from "./features/quest/media";
 import { useQuest } from "./features/quest/useQuest";
@@ -147,6 +148,7 @@ export default function App() {
         <div className="aurora auroraPrimary" />
         <div className="aurora auroraSecondary" />
         <div className="aurora auroraAccent" />
+        <SakuraPetalsBackground />
         <div className={`mouseGlow ${cursorGlow.active ? "is-active" : ""}`} style={{ left: cursorGlow.x, top: cursorGlow.y }} />
         <div className="grid" />
         <div className="vignette" />
