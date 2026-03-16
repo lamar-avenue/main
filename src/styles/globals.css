@@ -85,6 +85,7 @@ a {
 .bgNoise {
   position: absolute;
   inset: 0;
+  z-index: 0;
   opacity: 0.16;
   background-image:
     linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
@@ -95,7 +96,7 @@ a {
 
 .mouseGlow {
   position: fixed;
-  z-index: 0;
+  z-index: 1;
   width: 36rem;
   height: 36rem;
   border-radius: 999px;
@@ -116,7 +117,7 @@ a {
 .sakuraLayer {
   position: absolute;
   inset: -10% 0 0;
-  z-index: 0;
+  z-index: 2;
   overflow: hidden;
 }
 
@@ -131,13 +132,13 @@ a {
   border-radius: 56% 44% 68% 32% / 28% 28% 72% 72%;
   clip-path: path("M 50 0 C 74 8 98 34 88 62 C 79 86 60 100 50 100 C 40 100 20 86 12 62 C 2 35 27 8 50 0 Z");
   background:
-    radial-gradient(circle at 40% 24%, rgba(255, 255, 255, 0.88), transparent 24%),
-    radial-gradient(circle at 52% 72%, rgba(255, 245, 250, 0.18), transparent 22%),
-    linear-gradient(155deg, rgba(255, 225, 239, 0.96), rgba(243, 176, 219, 0.92) 58%, rgba(194, 142, 237, 0.78));
+    radial-gradient(circle at 40% 24%, rgba(255, 255, 255, 0.92), transparent 24%),
+    radial-gradient(circle at 52% 72%, rgba(255, 245, 250, 0.24), transparent 22%),
+    linear-gradient(155deg, rgba(255, 231, 243, 1), rgba(247, 184, 224, 0.96) 58%, rgba(206, 155, 243, 0.84));
   box-shadow:
-    inset -1px -2px 0 rgba(255, 255, 255, 0.18),
-    inset 1px 2px 0 rgba(255, 255, 255, 0.18),
-    0 0 22px rgba(233, 164, 224, 0.18);
+    inset -1px -2px 0 rgba(255, 255, 255, 0.24),
+    inset 1px 2px 0 rgba(255, 255, 255, 0.2),
+    0 0 24px rgba(241, 172, 230, 0.24);
   transform-origin: 50% 70%;
   animation: sakuraFall var(--petal-duration) linear infinite;
   animation-delay: var(--petal-delay);
@@ -145,6 +146,7 @@ a {
 
 .aurora {
   position: absolute;
+  z-index: 0;
   border-radius: 999px;
   filter: blur(56px);
   opacity: 0.88;
@@ -178,6 +180,7 @@ a {
 .grid {
   position: absolute;
   inset: 0;
+  z-index: 1;
   background:
     linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
@@ -189,6 +192,7 @@ a {
 .vignette {
   position: absolute;
   inset: 0;
+  z-index: 1;
   background:
     radial-gradient(circle at center, transparent 32%, rgba(0, 0, 0, 0.48) 100%),
     linear-gradient(180deg, rgba(3, 7, 18, 0.1), rgba(3, 7, 18, 0.42));
@@ -196,7 +200,7 @@ a {
 
 .container {
   position: relative;
-  z-index: 1;
+  z-index: 3;
   width: min(1320px, 100%);
   margin: 0 auto;
   padding: 88px 24px 44px;
