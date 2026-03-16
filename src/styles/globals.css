@@ -171,6 +171,11 @@ a {
   padding: 88px 24px 44px;
 }
 
+.container-intro {
+  padding-top: 18px;
+  padding-bottom: 18px;
+}
+
 .screenEnter {
   animation: screenEnter 0.72s cubic-bezier(0.2, 1, 0.2, 1);
 }
@@ -188,7 +193,7 @@ a {
   align-items: center;
   justify-content: space-between;
   gap: 24px;
-  padding-top: 4px;
+  padding-top: 0;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
@@ -215,9 +220,10 @@ a {
   display: flex;
   align-items: center;
   gap: 10px;
-  width: 150px;
-  padding: 10px 12px;
+  width: 184px;
+  padding: 8px 10px;
   border-radius: 999px;
+  transition: transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
 }
 
 .heroScreenCenter {
@@ -228,6 +234,22 @@ a {
   gap: 26px;
   text-align: center;
   flex: 1;
+}
+
+.heroScreenCenter > * {
+  animation: heroSoftIn 0.9s cubic-bezier(0.2, 1, 0.2, 1) both;
+}
+
+.heroFrameWrap {
+  animation-delay: 0.04s;
+}
+
+.heroTextBlock {
+  animation-delay: 0.12s;
+}
+
+.heroLaunchButton {
+  animation-delay: 0.2s;
 }
 
 .heroFrameWrap {
@@ -292,7 +314,7 @@ a {
     inset 0 1px 0 rgba(255, 255, 255, 0.86),
     0 16px 36px rgba(169, 183, 255, 0.16);
   cursor: pointer;
-  transition: transform 200ms ease, box-shadow 200ms ease, filter 200ms ease;
+  transition: transform 260ms ease, box-shadow 260ms ease, filter 260ms ease, background 260ms ease;
 }
 
 .heroLaunchButton:hover {
@@ -676,8 +698,38 @@ a {
   align-items: center;
   gap: 10px;
   width: 168px;
-  padding: 10px 12px;
+  padding: 8px 10px;
   border-radius: 999px;
+}
+
+.audioToggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(243, 247, 255, 0.88);
+  font-size: 0.72rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: transform 220ms ease, background 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
+}
+
+.audioToggle:hover {
+  transform: translateY(-1px);
+  border-color: rgba(155, 124, 255, 0.36);
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 10px 22px rgba(69, 45, 155, 0.16);
+}
+
+.audioToggle:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 1px rgba(155, 124, 255, 0.3),
+    0 0 0 4px rgba(155, 124, 255, 0.12);
 }
 
 .playerDot {
@@ -702,41 +754,9 @@ a {
   accent-color: var(--cyan);
 }
 
-.slider-premium {
-  appearance: none;
-  height: 4px;
-}
-
-.slider-premium::-webkit-slider-runnable-track {
-  height: 4px;
-  border-radius: 999px;
-  background: linear-gradient(90deg, rgba(123, 92, 255, 0.95), rgba(209, 117, 255, 0.86), rgba(125, 226, 255, 0.78));
-}
-
-.slider-premium::-webkit-slider-thumb {
-  appearance: none;
-  width: 12px;
-  height: 12px;
-  margin-top: -4px;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.28);
-  background: #f4f8ff;
-  box-shadow: 0 0 18px rgba(209, 117, 255, 0.44);
-}
-
-.slider-premium::-moz-range-track {
-  height: 4px;
-  border-radius: 999px;
-  background: linear-gradient(90deg, rgba(123, 92, 255, 0.95), rgba(209, 117, 255, 0.86), rgba(125, 226, 255, 0.78));
-}
-
-.slider-premium::-moz-range-thumb {
-  width: 12px;
-  height: 12px;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.28);
-  background: #f4f8ff;
-  box-shadow: 0 0 18px rgba(209, 117, 255, 0.44);
+.volumeSlider {
+  height: 14px;
+  accent-color: #b9c8ff;
 }
 
 .toast {
@@ -1147,6 +1167,20 @@ a {
   }
 }
 
+@keyframes heroSoftIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+    filter: blur(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
 @media (max-width: 1100px) {
   .heroFooterMeta {
     gap: 16px;
@@ -1175,6 +1209,11 @@ a {
     padding: 86px 14px 28px;
   }
 
+  .container-intro {
+    padding-top: 10px;
+    padding-bottom: 16px;
+  }
+
   .heroScreen {
     min-height: calc(100vh - 114px);
     gap: 26px;
@@ -1186,8 +1225,8 @@ a {
   }
 
   .heroAudioControl {
-    width: 132px;
-    padding: 9px 10px;
+    width: 152px;
+    padding: 8px 9px;
   }
 
   .heroFrameWrap {
@@ -1219,8 +1258,8 @@ a {
   .floatingPlayer {
     top: 12px;
     right: 12px;
-    width: 148px;
-    padding: 9px 10px;
+    width: 158px;
+    padding: 8px 9px;
   }
 
   .toast {

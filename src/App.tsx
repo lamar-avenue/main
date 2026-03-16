@@ -23,7 +23,7 @@ export default function App() {
   const [screen, setScreen] = useState<Screen>("intro");
   const [toast, setToast] = useState<ToastState>(null);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [volume, setVolume] = useState(0.36);
+  const [volume, setVolume] = useState(0.3);
   const [cursorGlow, setCursorGlow] = useState({ x: 0, y: 0, active: false });
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const autoplayRetryBound = useRef(false);
@@ -116,6 +116,24 @@ export default function App() {
     setToast({ id: Date.now(), tone, title, message });
   }
 
+  async function toggleAudio() {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    if (audio.paused) {
+      try {
+        await audio.play();
+        setIsPlaying(true);
+      } catch {
+        notify("neutral", "Audio standby", "Нажмите ещё раз после взаимодействия со страницей.");
+      }
+      return;
+    }
+
+    audio.pause();
+    setIsPlaying(false);
+  }
+
   function handleReset() {
     reset();
     setScreen("intro");
@@ -147,9 +165,11 @@ export default function App() {
 
         {screen !== "intro" && (
           <div className="floatingPlayer glowPanel">
-            <div className={`playerDot ${isPlaying ? "is-active" : ""}`} aria-hidden="true" />
+            <button className="audioToggle" type="button" onClick={toggleAudio} aria-label={isPlaying ? "Pause audio" : "Play audio"}>
+              {isPlaying ? "II" : ">"}
+            </button>
             <input
-              className="slider slider-premium"
+              className="slider volumeSlider"
               type="range"
               min="0"
               max="1"
@@ -171,13 +191,14 @@ export default function App() {
           </div>
         )}
 
-        <div className="container">
+        <div className={`container ${screen === "intro" ? "container-intro" : ""}`}>
           {screen === "intro" && (
             <HeroScreen
               heroImage={heroImage}
               isPlaying={isPlaying}
               volume={volume}
               onVolumeChange={setVolume}
+              onToggleAudio={toggleAudio}
               onStart={() => setScreen("quest")}
             />
           )}

@@ -3,6 +3,7 @@ type HeroScreenProps = {
   isPlaying: boolean;
   volume: number;
   onVolumeChange: (value: number) => void;
+  onToggleAudio: () => void;
   onStart: () => void;
 };
 
@@ -11,6 +12,7 @@ export default function HeroScreen({
   isPlaying,
   volume,
   onVolumeChange,
+  onToggleAudio,
   onStart,
 }: HeroScreenProps) {
   return (
@@ -22,9 +24,11 @@ export default function HeroScreen({
         </div>
 
         <div className="heroAudioControl glowPanel">
-          <div className={`playerDot ${isPlaying ? "is-active" : ""}`} aria-hidden="true" />
+          <button className="audioToggle" type="button" onClick={onToggleAudio} aria-label={isPlaying ? "Pause audio" : "Play audio"}>
+            {isPlaying ? "II" : ">"}
+          </button>
           <input
-            className="slider slider-premium"
+            className="slider volumeSlider"
             type="range"
             min="0"
             max="1"
