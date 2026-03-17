@@ -260,7 +260,7 @@ export default function App() {
           )}
 
           {screen === "quest" && step && !state.done && (
-            <div key={step.id} className="screenEnter">
+            <div key={step.id} className="stepEnter">
               <StepView
                 step={step}
                 stepNumber={state.index + 1}
