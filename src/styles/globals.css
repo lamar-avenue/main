@@ -1731,7 +1731,6 @@ a {
 
 .honorableSkipOverlay.is-visible {
   opacity: 1;
-  pointer-events: auto;
 }
 
 .honorableSkipButton {
@@ -1750,6 +1749,7 @@ a {
     inset 0 1px 0 rgba(255, 238, 244, 0.32),
     0 18px 48px rgba(110, 20, 54, 0.26);
   cursor: pointer;
+  pointer-events: auto;
   transform: translateY(16px) scale(0.98);
   transition:
     transform 240ms ease,

@@ -30,10 +30,13 @@ export default function App() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const autoplayRetryBound = useRef(false);
   const previousVolumeRef = useRef(0.3);
+  const resumeBackgroundAfterSuppressionRef = useRef(false);
   const mouseGlowRef = useRef<HTMLDivElement | null>(null);
   const glowFrameRef = useRef<number | null>(null);
 
   const { step, submit, reset, state, total } = useQuest();
+  const isVideoStep = screen === "quest" && !!step?.blocks?.some((block) => block.type === "video");
+  const isBackgroundSuppressed = screen === "honorable" || isVideoStep;
   const heroImage = useMemo(() => resolveMediaSrc("/media/hero-start.jpg"), []);
   const backgroundAudioSrc = backgroundAudioBlock ? resolveMediaSrc(backgroundAudioBlock.src) : null;
 
@@ -54,6 +57,34 @@ export default function App() {
     audio.volume = volume;
     audio.muted = volume === 0;
   }, [volume]);
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    if (isBackgroundSuppressed) {
+      if (!audio.paused) {
+        resumeBackgroundAfterSuppressionRef.current = true;
+        audio.pause();
+        setIsPlaying(false);
+      }
+      return;
+    }
+
+    if (!resumeBackgroundAfterSuppressionRef.current || volume <= 0) {
+      return;
+    }
+
+    resumeBackgroundAfterSuppressionRef.current = false;
+    void audio
+      .play()
+      .then(() => {
+        setIsPlaying(true);
+      })
+      .catch(() => {
+        return;
+      });
+  }, [isBackgroundSuppressed, isPlaying, volume]);
 
   useEffect(() => {
     if (!state.done) return;
@@ -142,6 +173,12 @@ export default function App() {
     const audio = audioRef.current;
     if (!audio) return;
 
+    if (isBackgroundSuppressed) {
+      resumeBackgroundAfterSuppressionRef.current = false;
+      notify("neutral", "Фоновая музыка на паузе", "Во время видео и honorable mention работает только звук текущей сцены.");
+      return;
+    }
+
     if (audio.paused) {
       try {
         await audio.play();
@@ -160,6 +197,8 @@ export default function App() {
     setVolume(nextVolume);
     if (nextVolume > 0) {
       previousVolumeRef.current = nextVolume;
+    } else {
+      resumeBackgroundAfterSuppressionRef.current = false;
     }
   }
 
@@ -171,6 +210,7 @@ export default function App() {
     }
 
     previousVolumeRef.current = volume;
+    resumeBackgroundAfterSuppressionRef.current = false;
     setVolume(0);
   }
 
@@ -281,12 +321,7 @@ export default function App() {
           )}
 
           {screen === "honorable" && (
-            <HonorableMentionScene
-              audioVolume={volume}
-              onSkip={() => setScreen("done")}
-              onToggleMute={toggleMute}
-              onVolumeChange={handleVolumeChange}
-            />
+            <HonorableMentionScene onSkip={() => setScreen("done")} />
           )}
 
           {screen === "done" && (
