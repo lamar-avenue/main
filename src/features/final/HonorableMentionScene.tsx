@@ -7,13 +7,18 @@ import { useTypewriterText } from "./useTypewriterText";
 const HONORABLE_MENTION_TEXT =
   "И вот он, почётный honorable mention этого квеста: герой, который смотрит в камеру снизу вверх так уверенно, словно сейчас официально предъявит всей вселенной за недостаточно серьёзное отношение к величию абсурда. Комичный фильтр раздул лицо до почти мифологического масштаба, и от этого взгляд становится ещё сильнее: он одновременно грозный, смешной и абсолютно незабываемый. А по краям кадра, как верные спутники этого эпического безумия, выстроились бургеры — не просто еда, а полноценные свидетели момента, будто это не фото, а постер к блокбастеру, где судьба мира зависит от харизмы, мемности и идеального перекуса. В этом кадре всё работает вместе: искажение, абсурд, спокойная самоуверенность и тот редкий вайб, который невозможно пересказать без улыбки. Это не просто финальная картинка. Это торжественное появление персонажа, которого уже невозможно забыть.";
 
-export default function HonorableMentionScene({ onSkip }: { onSkip: () => void }) {
+type HonorableMentionSceneProps = {
+  audioVolume: number;
+  onSkip: () => void;
+};
+
+export default function HonorableMentionScene({ audioVolume, onSkip }: HonorableMentionSceneProps) {
   const [photoSrc, setPhotoSrc] = useState(() => resolveMediaSrc("/media/honorable-mention-photo.jpg"));
   const typedText = useTypewriterText(HONORABLE_MENTION_TEXT);
   const showSkip = useDelayedReveal(5000);
   const imageFallbackSrc = useMemo(() => resolveMediaSrc("/media/honorable-mention-photo.png"), []);
 
-  useSpeechVoiceover(HONORABLE_MENTION_TEXT);
+  useSpeechVoiceover(HONORABLE_MENTION_TEXT, audioVolume);
 
   return (
     <section className="honorableScene screenEnter">
@@ -46,9 +51,11 @@ export default function HonorableMentionScene({ onSkip }: { onSkip: () => void }
         </div>
       </div>
 
-      <button className={`honorableSkipButton ${showSkip ? "is-visible" : ""}`} type="button" onClick={onSkip}>
-        Пропустить
-      </button>
+      <div className={`honorableSkipOverlay ${showSkip ? "is-visible" : ""}`}>
+        <button className="honorableSkipButton" type="button" onClick={onSkip}>
+          Пропустить
+        </button>
+      </div>
     </section>
   );
 }

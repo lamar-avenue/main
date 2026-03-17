@@ -1575,8 +1575,8 @@ a {
   position: relative;
   z-index: 1;
   display: grid;
-  grid-template-columns: minmax(0, 1.02fr) minmax(360px, 0.98fr);
-  gap: 26px;
+  grid-template-columns: minmax(320px, 0.82fr) minmax(0, 1.18fr);
+  gap: 30px;
   align-items: center;
 }
 
@@ -1587,8 +1587,10 @@ a {
 
 .honorableImagePanel {
   overflow: hidden;
-  padding: 20px;
-  min-height: 520px;
+  justify-self: center;
+  width: min(100%, 520px);
+  padding: 18px;
+  min-height: 0;
   animation: honorablePhotoIn 780ms cubic-bezier(0.2, 1, 0.2, 1) 0.08s both;
 }
 
@@ -1609,7 +1611,8 @@ a {
   z-index: 1;
   display: block;
   width: 100%;
-  min-height: 480px;
+  min-height: 380px;
+  max-height: 430px;
   object-fit: cover;
   border-radius: 24px;
   border: 1px solid rgba(206, 220, 255, 0.22);
@@ -1657,8 +1660,23 @@ a {
   animation: none;
 }
 
+.honorableSkipOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 220ms ease;
+}
+
+.honorableSkipOverlay.is-visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
 .honorableSkipButton {
-  align-self: center;
   min-width: 220px;
   min-height: 56px;
   padding: 0 28px;
@@ -1674,20 +1692,15 @@ a {
     inset 0 1px 0 rgba(255, 238, 244, 0.32),
     0 18px 48px rgba(110, 20, 54, 0.26);
   cursor: pointer;
-  opacity: 0;
   transform: translateY(16px) scale(0.98);
-  pointer-events: none;
   transition:
-    opacity 220ms ease,
     transform 240ms ease,
     box-shadow 220ms ease,
     filter 220ms ease;
 }
 
-.honorableSkipButton.is-visible {
-  opacity: 1;
+.honorableSkipOverlay.is-visible .honorableSkipButton {
   transform: translateY(0) scale(1);
-  pointer-events: auto;
 }
 
 .honorableSkipButton:hover {
@@ -2045,7 +2058,8 @@ a {
   }
 
   .honorableImage {
-    min-height: 340px;
+    min-height: 300px;
+    max-height: none;
   }
 
   .honorableCopy {

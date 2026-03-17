@@ -280,7 +280,7 @@ export default function App() {
             </div>
           )}
 
-          {screen === "honorable" && <HonorableMentionScene onSkip={() => setScreen("done")} />}
+          {screen === "honorable" && <HonorableMentionScene audioVolume={volume} onSkip={() => setScreen("done")} />}
 
           {screen === "done" && (
             <section className="doneLayout glowPanel screenEnter">
