@@ -447,6 +447,7 @@ a {
 .heroFrameWrap {
   position: relative;
   width: min(548px, 78vw);
+  margin-top: 24px;
   isolation: isolate;
   animation:
     heroLayerIn 0.92s cubic-bezier(0.2, 1, 0.2, 1) 0.14s both,
@@ -1743,6 +1744,7 @@ a {
 
   .heroFrameWrap {
     width: min(100%, 390px);
+    margin-top: 14px;
   }
 
   .heroMainTitle {
