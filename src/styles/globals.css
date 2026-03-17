@@ -45,13 +45,14 @@ body {
   font-family: inherit;
   color: var(--text);
   background:
-    radial-gradient(circle at 50% 14%, rgba(124, 101, 255, 0.2), transparent 20%),
-    radial-gradient(circle at top left, rgba(120, 92, 255, 0.24), transparent 28%),
-    radial-gradient(circle at 80% 20%, rgba(209, 117, 255, 0.14), transparent 30%),
-    radial-gradient(circle at 55% 60%, rgba(67, 98, 255, 0.12), transparent 34%),
-    radial-gradient(circle at 35% 26%, rgba(28, 219, 255, 0.12), transparent 28%),
-    linear-gradient(180deg, rgba(44, 24, 88, 0.18), transparent 28%),
-    linear-gradient(180deg, var(--bg-0), var(--bg-1) 42%, var(--bg-2));
+    radial-gradient(circle at 50% 10%, rgba(130, 112, 255, 0.28), transparent 16%),
+    radial-gradient(circle at 50% 26%, rgba(100, 154, 255, 0.16), transparent 22%),
+    radial-gradient(circle at top left, rgba(120, 92, 255, 0.28), transparent 28%),
+    radial-gradient(circle at 80% 20%, rgba(209, 117, 255, 0.16), transparent 30%),
+    radial-gradient(circle at 55% 60%, rgba(67, 98, 255, 0.14), transparent 34%),
+    radial-gradient(circle at 35% 26%, rgba(28, 219, 255, 0.14), transparent 28%),
+    linear-gradient(180deg, rgba(57, 32, 112, 0.22), transparent 26%),
+    linear-gradient(180deg, #040712 0%, #090d22 38%, #110d2b 100%);
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -77,6 +78,39 @@ a {
   min-height: 100vh;
   overflow: hidden;
   isolation: isolate;
+}
+
+.bg::before,
+.bg::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.bg::before {
+  left: 50%;
+  top: -12%;
+  width: min(52vw, 720px);
+  height: 78vh;
+  transform: translateX(-50%);
+  background:
+    linear-gradient(180deg, rgba(122, 111, 255, 0.24), rgba(122, 111, 255, 0.08) 32%, transparent 78%);
+  filter: blur(34px);
+  opacity: 0.92;
+}
+
+.bg::after {
+  left: 50%;
+  top: 10%;
+  width: min(66vw, 940px);
+  height: 48vh;
+  transform: translateX(-50%);
+  background:
+    radial-gradient(ellipse at center, rgba(104, 163, 255, 0.14), rgba(104, 163, 255, 0.04) 42%, transparent 74%),
+    radial-gradient(ellipse at center, rgba(192, 119, 255, 0.12), transparent 68%);
+  filter: blur(48px);
+  opacity: 0.9;
 }
 
 .bgNoise,
@@ -277,40 +311,41 @@ a {
 .heroSceneBeam {
   position: absolute;
   border-radius: 999px;
-  filter: blur(54px);
-  opacity: 0.72;
+  filter: blur(62px);
+  opacity: 0.9;
   animation: heroBeamDrift 16s ease-in-out infinite alternate;
 }
 
 .heroSceneBeam-primary {
   left: 50%;
-  top: 6%;
-  width: min(48vw, 680px);
-  height: 72%;
+  top: 2%;
+  width: min(56vw, 780px);
+  height: 78%;
   transform: translateX(-50%);
   background:
-    radial-gradient(ellipse at center, rgba(138, 110, 255, 0.26), rgba(138, 110, 255, 0.1) 42%, transparent 72%);
+    radial-gradient(ellipse at center, rgba(138, 110, 255, 0.34), rgba(138, 110, 255, 0.16) 38%, transparent 72%),
+    linear-gradient(180deg, rgba(119, 101, 255, 0.16), rgba(119, 101, 255, 0.04) 46%, transparent 82%);
 }
 
 .heroSceneBeam-secondary {
   left: 50%;
-  top: 18%;
-  width: min(32vw, 420px);
-  height: 48%;
+  top: 14%;
+  width: min(38vw, 520px);
+  height: 54%;
   transform: translateX(-50%);
   background:
-    radial-gradient(ellipse at center, rgba(121, 229, 255, 0.16), transparent 68%);
+    radial-gradient(ellipse at center, rgba(121, 229, 255, 0.2), rgba(121, 229, 255, 0.06) 38%, transparent 70%);
   animation-duration: 18s;
 }
 
 .heroSceneBeam-orbit {
   left: 50%;
-  top: 24%;
-  width: min(58vw, 760px);
-  height: 24%;
+  top: 20%;
+  width: min(64vw, 860px);
+  height: 28%;
   transform: translateX(-50%);
   background:
-    radial-gradient(ellipse at center, rgba(209, 117, 255, 0.14), transparent 70%);
+    radial-gradient(ellipse at center, rgba(209, 117, 255, 0.18), rgba(209, 117, 255, 0.04) 42%, transparent 74%);
   animation-duration: 22s;
 }
 
@@ -411,33 +446,65 @@ a {
 
 .heroFrameWrap {
   position: relative;
-  width: min(520px, 76vw);
+  width: min(548px, 78vw);
   isolation: isolate;
   animation:
     heroLayerIn 0.92s cubic-bezier(0.2, 1, 0.2, 1) 0.14s both,
     heroFrameFloat 15s ease-in-out 1.2s infinite alternate;
 }
 
+.heroFrameWrap::before,
+.heroFrameWrap::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+}
+
+.heroFrameWrap::before {
+  inset: -16px;
+  z-index: -1;
+  border-radius: 46px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.18), rgba(170, 196, 255, 0.08) 38%, rgba(208, 131, 255, 0.12) 72%, rgba(255, 255, 255, 0.04));
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.05),
+    0 28px 70px rgba(8, 10, 26, 0.26);
+}
+
+.heroFrameWrap::after {
+  inset: -34px;
+  z-index: -2;
+  border-radius: 58px;
+  background:
+    radial-gradient(circle at 50% 34%, rgba(135, 115, 255, 0.42), rgba(135, 115, 255, 0.18) 38%, transparent 62%),
+    radial-gradient(circle at 50% 72%, rgba(110, 225, 255, 0.18), transparent 54%);
+  filter: blur(24px);
+  opacity: 0.96;
+}
+
 .heroFrameGlow {
   position: absolute;
-  inset: -12% -12%;
+  inset: -16% -16%;
   border-radius: 44px;
   background:
-    radial-gradient(circle at 50% 38%, rgba(151, 111, 255, 0.6), transparent 42%),
-    radial-gradient(circle at 50% 60%, rgba(88, 150, 255, 0.3), transparent 52%);
-  filter: blur(52px);
+    radial-gradient(circle at 50% 34%, rgba(151, 111, 255, 0.72), rgba(151, 111, 255, 0.26) 34%, transparent 56%),
+    radial-gradient(circle at 50% 68%, rgba(88, 150, 255, 0.34), transparent 54%);
+  filter: blur(68px);
   animation: heroGlowPulse 12s ease-in-out infinite alternate;
 }
 
 .heroFrameAura {
   position: absolute;
-  inset: -4%;
+  inset: -5%;
   border-radius: 40px;
-  border: 1px solid rgba(152, 180, 255, 0.12);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.01));
+  border: 1px solid rgba(171, 197, 255, 0.18);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02)),
+    linear-gradient(135deg, rgba(158, 138, 255, 0.08), rgba(110, 225, 255, 0.03));
   box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
     0 0 0 1px rgba(255, 255, 255, 0.03),
-    0 28px 80px rgba(13, 16, 36, 0.4);
+    0 34px 86px rgba(13, 16, 36, 0.44);
 }
 
 .heroFrameImage {
@@ -447,11 +514,13 @@ a {
   aspect-ratio: 1 / 1;
   object-fit: cover;
   border-radius: 34px;
-  border: 1px solid rgba(197, 216, 255, 0.14);
+  border: 1px solid rgba(214, 226, 255, 0.22);
   box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.04),
-    0 24px 60px rgba(7, 8, 20, 0.46);
-  transform: scale(1.018);
+    0 0 0 1px rgba(255, 255, 255, 0.08),
+    0 18px 40px rgba(9, 12, 28, 0.24),
+    0 38px 96px rgba(7, 8, 20, 0.52);
+  transform: scale(1.026);
+  filter: saturate(1.04) contrast(1.03) brightness(1.03);
   animation: heroImageBreath 16s ease-in-out infinite alternate;
 }
 
@@ -460,10 +529,11 @@ a {
   inset: 0;
   border-radius: 34px;
   background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.14), transparent 22%, transparent 72%, rgba(121, 229, 255, 0.06)),
-    radial-gradient(circle at 22% 12%, rgba(255, 255, 255, 0.16), transparent 28%);
+    linear-gradient(135deg, rgba(255, 255, 255, 0.22), transparent 20%, transparent 68%, rgba(121, 229, 255, 0.1)),
+    radial-gradient(circle at 22% 12%, rgba(255, 255, 255, 0.22), transparent 30%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent 28%);
   mix-blend-mode: screen;
-  opacity: 0.56;
+  opacity: 0.72;
   pointer-events: none;
 }
 
@@ -497,32 +567,76 @@ a {
   align-items: center;
   justify-content: center;
   gap: 12px;
+  position: relative;
+  overflow: hidden;
   min-width: 208px;
   min-height: 56px;
   padding: 0 24px 0 26px;
-  border: 0;
+  border: 1px solid rgba(188, 214, 255, 0.28);
   border-radius: 999px;
   background:
-    linear-gradient(180deg, rgba(252, 253, 255, 1), rgba(230, 237, 255, 0.95)),
-    linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(149, 178, 255, 0.08));
-  color: #12182e;
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(219, 229, 255, 0.96) 48%, rgba(183, 203, 255, 0.92)),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.28), rgba(160, 137, 255, 0.16) 54%, rgba(121, 229, 255, 0.14));
+  color: #121a35;
   font-weight: 600;
   letter-spacing: -0.01em;
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.92),
-    0 18px 40px rgba(120, 138, 255, 0.18);
+    inset 0 1px 0 rgba(255, 255, 255, 0.96),
+    0 0 0 1px rgba(255, 255, 255, 0.08),
+    0 22px 54px rgba(107, 128, 255, 0.28),
+    0 0 34px rgba(121, 229, 255, 0.12);
   cursor: pointer;
   transition: transform 260ms ease, box-shadow 260ms ease, filter 260ms ease, background 260ms ease;
   animation: heroLayerIn 0.9s cubic-bezier(0.2, 1, 0.2, 1) 0.46s both;
 }
 
+.heroLaunchButton::before,
+.heroLaunchButton::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  transition: opacity 260ms ease, transform 260ms ease;
+}
+
+.heroLaunchButton::before {
+  inset: -16%;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(128, 141, 255, 0.34), rgba(128, 141, 255, 0.08) 42%, transparent 68%);
+  filter: blur(18px);
+  opacity: 0.84;
+}
+
+.heroLaunchButton::after {
+  inset: 1px;
+  border-radius: inherit;
+  background:
+    linear-gradient(120deg, rgba(255, 255, 255, 0.42), transparent 20%, transparent 68%, rgba(125, 226, 255, 0.16));
+  mix-blend-mode: screen;
+  opacity: 0.92;
+}
+
+.heroLaunchButton > span {
+  position: relative;
+  z-index: 1;
+}
+
 .heroLaunchButton:hover {
-  transform: translateY(-2px);
+  transform: translateY(-3px) scale(1.008);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.96),
     0 0 0 1px rgba(168, 196, 255, 0.16),
-    0 22px 46px rgba(118, 141, 255, 0.22);
-  filter: brightness(1.015);
+    0 26px 58px rgba(118, 141, 255, 0.34),
+    0 0 44px rgba(121, 229, 255, 0.16);
+  filter: brightness(1.02);
+}
+
+.heroLaunchButton:hover::before {
+  opacity: 1;
+  transform: scale(1.06);
+}
+
+.heroLaunchButton:hover::after {
+  opacity: 1;
 }
 
 .heroLaunchButton:active {
@@ -1474,21 +1588,21 @@ a {
 
 @keyframes heroFrameFloat {
   from {
-    transform: translate3d(0, -4px, 0);
+    transform: translate3d(0, -7px, 0);
   }
 
   to {
-    transform: translate3d(0, 7px, 0);
+    transform: translate3d(0, 10px, 0);
   }
 }
 
 @keyframes heroImageBreath {
   from {
-    transform: scale(1.018) translateY(0);
+    transform: scale(1.026) translateY(0);
   }
 
   to {
-    transform: scale(1.048) translateY(-4px);
+    transform: scale(1.062) translateY(-5px);
   }
 }
 
