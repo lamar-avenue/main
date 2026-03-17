@@ -1,12 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { quest } from "./data/quest";
+import HonorableMentionScene from "./features/final/HonorableMentionScene";
 import HeroScreen from "./features/home/HeroScreen";
 import SakuraPetalsBackground from "./features/home/SakuraPetalsBackground";
 import StepView from "./features/quest/StepView";
 import { resolveMediaSrc } from "./features/quest/media";
 import { useQuest } from "./features/quest/useQuest";
 
-type Screen = "intro" | "quest" | "done";
+type Screen = "intro" | "quest" | "honorable" | "done";
 type ToastTone = "neutral" | "success" | "error";
 
 type ToastState = {
@@ -56,7 +57,8 @@ export default function App() {
 
   useEffect(() => {
     if (!state.done) return;
-    setScreen("done");
+    setToast(null);
+    setScreen("honorable");
   }, [state.done]);
 
   useEffect(() => {
@@ -176,6 +178,7 @@ export default function App() {
     reset();
     setIsIntroTransitioning(false);
     setScreen("intro");
+    setToast(null);
     notify("neutral", "Прогресс сброшен", "Можно начать квест заново.");
   }
 
@@ -218,7 +221,12 @@ export default function App() {
             <button className="audioToggle" type="button" onClick={toggleAudio} aria-label={isPlaying ? "Пауза" : "Воспроизвести"}>
               <AudioPlayIcon playing={isPlaying} />
             </button>
-            <button className={`audioMuteButton ${volume === 0 ? "is-muted" : ""}`} type="button" onClick={toggleMute} aria-label={volume === 0 ? "Включить звук" : "Выключить звук"}>
+            <button
+              className={`audioMuteButton ${volume === 0 ? "is-muted" : ""}`}
+              type="button"
+              onClick={toggleMute}
+              aria-label={volume === 0 ? "Включить звук" : "Выключить звук"}
+            >
               <AudioVolumeIcon muted={volume === 0} />
             </button>
             <input
@@ -266,42 +274,39 @@ export default function App() {
                 stepNumber={state.index + 1}
                 total={total}
                 onToast={notify}
-                onSubmit={(value) => {
-                  const result = submit(value);
-                  if (result.ok && result.finished) {
-                    notify("success", "Квест завершён", "Финальный подарок открыт.");
-                  }
-                  return result;
-                }}
+                onSubmit={(value) => submit(value)}
                 onReset={handleReset}
               />
             </div>
           )}
 
+          {screen === "honorable" && <HonorableMentionScene onSkip={() => setScreen("done")} />}
+
           {screen === "done" && (
             <section className="doneLayout glowPanel screenEnter">
-              <div className="sectionBadge">Sequence complete</div>
-              <h1 className="heroTitle">You cleared the quest and unlocked the final reward layer.</h1>
+              <div className="sectionBadge">Финал</div>
+              <h1 className="heroTitle">Квест завершён. Финальный подарок разблокирован.</h1>
               <p className="heroSubtitle">
-                Финальный экран оформлен как завершённый premium-state: мягкие ореолы, спокойная системная панель и чистая композиция без визуального шума.
+                Сцена honorable mention уже показана. Этот экран остаётся чистым final complete state, куда можно вернуться
+                после паузы, улыбки и достойного уважения к легендарному кадру.
               </p>
 
               <div className="doneCardGrid">
                 <a className="rewardCard glowInset" href="https://example.com" target="_blank" rel="noreferrer">
-                  <span className="sectionBadge">Reward link</span>
-                  <strong>Open gift payload</strong>
-                  <p>Открывает финальный подарок в новой вкладке.</p>
+                  <span className="sectionBadge">Подарок</span>
+                  <strong>Открыть финальный сюрприз</strong>
+                  <p>Переход к основному подарку в новой вкладке.</p>
                 </a>
                 <div className="rewardCard glowInset">
-                  <span className="sectionBadge">Progress</span>
-                  <strong>100% synchronized</strong>
-                  <p>Все шаги завершены. Хранилище прогресса обновлено локально.</p>
+                  <span className="sectionBadge">Прогресс</span>
+                  <strong>100% синхронизировано</strong>
+                  <p>Все вопросы пройдены. Финальная сцена завершена.</p>
                 </div>
               </div>
 
               <div className="heroActions">
                 <button className="btn btn-primary" type="button" onClick={handleReset}>
-                  Restart experience
+                  Начать заново
                 </button>
               </div>
             </section>
