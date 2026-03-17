@@ -41,7 +41,7 @@ export default function App() {
 
     const timeoutId = window.setTimeout(() => {
       setToast((current) => (current?.id === toast.id ? null : current));
-    }, 2200);
+    }, 1700);
 
     return () => window.clearTimeout(timeoutId);
   }, [toast]);
@@ -145,7 +145,7 @@ export default function App() {
         await audio.play();
         setIsPlaying(true);
       } catch {
-        notify("neutral", "Audio standby", "Нажмите ещё раз после взаимодействия со страницей.");
+        notify("neutral", "Музыка ждёт", "Нажмите ещё раз после взаимодействия со страницей.");
       }
       return;
     }
@@ -176,7 +176,7 @@ export default function App() {
     reset();
     setIsIntroTransitioning(false);
     setScreen("intro");
-    notify("neutral", "Progress cleared", "Cipher state reset. You can start again at any time.");
+    notify("neutral", "Прогресс сброшен", "Можно начать квест заново.");
   }
 
   function handleStartQuest() {
@@ -215,10 +215,10 @@ export default function App() {
 
         {screen !== "intro" && (
           <div className="floatingPlayer glowPanel">
-            <button className="audioToggle" type="button" onClick={toggleAudio} aria-label={isPlaying ? "Pause audio" : "Play audio"}>
+            <button className="audioToggle" type="button" onClick={toggleAudio} aria-label={isPlaying ? "Пауза" : "Воспроизвести"}>
               <AudioPlayIcon playing={isPlaying} />
             </button>
-            <button className={`audioMuteButton ${volume === 0 ? "is-muted" : ""}`} type="button" onClick={toggleMute} aria-label={volume === 0 ? "Unmute audio" : "Mute audio"}>
+            <button className={`audioMuteButton ${volume === 0 ? "is-muted" : ""}`} type="button" onClick={toggleMute} aria-label={volume === 0 ? "Включить звук" : "Выключить звук"}>
               <AudioVolumeIcon muted={volume === 0} />
             </button>
             <input
@@ -229,7 +229,7 @@ export default function App() {
               step="0.01"
               value={volume}
               onChange={(event) => handleVolumeChange(Number(event.target.value))}
-              aria-label="Background audio volume"
+              aria-label="Громкость фоновой музыки"
             />
           </div>
         )}
@@ -237,7 +237,7 @@ export default function App() {
         {toast && (
           <div className={`toast toast-${toast.tone}`}>
             <div className="toastPulse" />
-            <div>
+            <div className="toastBody">
               <div className="toastTitle">{toast.title}</div>
               <div className="toastText">{toast.message}</div>
             </div>
@@ -269,7 +269,7 @@ export default function App() {
                 onSubmit={(value) => {
                   const result = submit(value);
                   if (result.ok && result.finished) {
-                    notify("success", "Quest complete", "Final sequence unlocked.");
+                    notify("success", "Квест завершён", "Финальный подарок открыт.");
                   }
                   return result;
                 }}
@@ -283,8 +283,7 @@ export default function App() {
               <div className="sectionBadge">Sequence complete</div>
               <h1 className="heroTitle">You cleared the quest and unlocked the final reward layer.</h1>
               <p className="heroSubtitle">
-                Финальный экран оформлен как завершённый premium-state: мягкие ореолы, спокойная системная панель и
-                чистая композиция без визуального шума.
+                Финальный экран оформлен как завершённый premium-state: мягкие ореолы, спокойная системная панель и чистая композиция без визуального шума.
               </p>
 
               <div className="doneCardGrid">

@@ -37,9 +37,10 @@ export default function StepView({
 
   const answerModeLabel = step.answerMode ?? "exact";
   const progressPercent = Math.round((stepNumber / total) * 100);
+  const feedbackLabel = feedbackTone === "idle" ? "Ждём ответ" : feedbackTone === "success" ? "Верно" : "Неверно";
   const stepAnswerPreview = useMemo(() => {
     if (answerModeLabel === "keywords") {
-      return step.keywords?.join(" + ") ?? "keyword set";
+      return step.keywords?.join(" + ") ?? "набор ключевых слов";
     }
 
     return Array.isArray(step.answer) ? step.answer.join(" / ") : step.answer;
@@ -47,7 +48,7 @@ export default function StepView({
 
   function showError(message: string) {
     setFeedbackTone("error");
-    onToast("error", "Wrong answer", message);
+    onToast("error", "Неверный ответ", message);
   }
 
   function submitValue(nextValue: string) {
@@ -64,17 +65,17 @@ export default function StepView({
 
     const ok = isCorrect(nextValue, step);
     if (!ok) {
-      showError("Ответ не совпал с текущим паттерном. Попробуй другой вариант.");
+      showError("Попробуй другой вариант.");
       return;
     }
 
     setIsSubmitting(true);
     setFeedbackTone("success");
-    onToast("success", "Access granted", "Совпадение подтверждено. Открываем следующий шаг.");
+    onToast("success", "Верно", "Переходим к следующему шагу.");
 
-    window.setTimeout(() => {
+    window.requestAnimationFrame(() => {
       onSubmit(nextValue);
-    }, 220);
+    });
   }
 
   return (
@@ -82,11 +83,11 @@ export default function StepView({
       <div className="questMain glowPanel">
         <div className="questionHeader">
           <div>
-            <div className="sectionBadge">Step {stepNumber}</div>
+            <div className="sectionBadge">Шаг {stepNumber}</div>
             <h1 className="questionTitle">{step.title}</h1>
           </div>
           <div className="questionMeta">
-            <span className={`statusPill is-${feedbackTone}`}>{feedbackTone === "idle" ? "Awaiting input" : feedbackTone}</span>
+            <span className={`statusPill is-${feedbackTone}`}>{feedbackLabel}</span>
             <span className="modePill">{answerModeLabel}</span>
           </div>
         </div>
@@ -95,7 +96,7 @@ export default function StepView({
           <div className="progressTrack">
             <div className="progressValue" style={{ width: `${progressPercent}%` }} />
           </div>
-          <span className="progressLabel">{progressPercent}% synchronized</span>
+          <span className="progressLabel">{progressPercent}% синхронизировано</span>
         </div>
 
         <div className="questionIntro glowInset">
@@ -134,7 +135,7 @@ export default function StepView({
         )}
 
         <div className="inputPanel glowInset">
-          <div className="fieldLabel">Manual input</div>
+          <div className="fieldLabel">Ручной ввод</div>
           <div className="field">
             <input
               className="input"
@@ -153,24 +154,24 @@ export default function StepView({
               autoFocus
             />
             <button className="btn btn-primary" type="button" disabled={isSubmitting} onClick={() => submitValue(value)}>
-              Verify response
+              Проверить
             </button>
             <button className="btn btn-secondary" type="button" onClick={() => setShowHint((current) => !current)}>
-              {showHint ? "Hide hint" : "Show hint"}
+              {showHint ? "Скрыть подсказку" : "Показать подсказку"}
             </button>
           </div>
         </div>
 
         {showHint && step.hint && (
           <div className="hintCard glowInset">
-            <div className="sectionBadge">Hint channel</div>
+            <div className="sectionBadge">Подсказка</div>
             <p>{step.hint}</p>
           </div>
         )}
       </div>
 
       <aside className="questSidebar glowPanel">
-        <div className="sectionBadge">Cipher / progress</div>
+        <div className="sectionBadge">Шифр / прогресс</div>
         <div className="sidebarValue">
           {String(stepNumber).padStart(2, "0")}
           <span>/ {String(total).padStart(2, "0")}</span>
@@ -180,16 +181,16 @@ export default function StepView({
         </div>
         <div className="sidebarMeta glowInset">
           <div className="systemRow">
-            <span>Validation</span>
+            <span>Проверка</span>
             <strong>{answerModeLabel}</strong>
           </div>
           <div className="systemRow">
-            <span>Reference</span>
+            <span>Эталон</span>
             <strong>{stepAnswerPreview}</strong>
           </div>
           <div className="systemRow">
-            <span>Hint</span>
-            <strong>{step.hint ? "Available" : "Hidden"}</strong>
+            <span>Подсказка</span>
+            <strong>{step.hint ? "Доступна" : "Скрыта"}</strong>
           </div>
         </div>
         <div className="cipherPanel glowInset">
@@ -198,7 +199,7 @@ export default function StepView({
           <div className="cipherLine" />
         </div>
         <button className="btn btn-secondary sidebarReset" type="button" onClick={onReset}>
-          Reset quest
+          Сбросить квест
         </button>
       </aside>
     </section>
@@ -227,7 +228,7 @@ function Media({ block, cinematic }: { block: MediaBlock; cinematic: boolean }) 
           {block.title && <div className="mediaTitle">{block.title}</div>}
           <audio className="mediaAudio" controls preload="metadata">
             <source src={resolveMediaSrc(block.src)} />
-            Your browser does not support audio playback.
+            Ваш браузер не поддерживает воспроизведение аудио.
           </audio>
         </div>
       );
@@ -264,7 +265,8 @@ function VideoMedia({
 
   useEffect(() => {
     const video = videoRef.current;
-    if (!video || block.pauseAt == null) return;
+    const pauseAt = block.pauseAt;
+    if (!video || pauseAt == null) return;
 
     setIsPausedAtDecision(false);
     video.currentTime = 0;
@@ -278,7 +280,7 @@ function VideoMedia({
     };
 
     const handleTimeUpdate = () => {
-      if (video.currentTime >= block.pauseAt!) {
+      if (video.currentTime >= pauseAt) {
         video.pause();
         setIsPausedAtDecision(true);
       }
@@ -306,8 +308,8 @@ function VideoMedia({
         />
         {cinematic && isPausedAtDecision && (
           <div className="decisionOverlay">
-            <span className="overlayChip">Decision moment</span>
-            <span className="overlayText">Playback paused at the key frame. Choose what happens next.</span>
+            <span className="overlayChip">Точка выбора</span>
+            <span className="overlayText">Видео остановлено на ключевом моменте. Выбери, что будет дальше.</span>
           </div>
         )}
       </div>
