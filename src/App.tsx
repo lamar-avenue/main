@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { quest } from "./data/quest";
+import CreditsScreen from "./features/final/CreditsScreen";
 import HonorableMentionScene from "./features/final/HonorableMentionScene";
 import HeroScreen from "./features/home/HeroScreen";
 import SakuraPetalsBackground from "./features/home/SakuraPetalsBackground";
@@ -7,7 +8,7 @@ import StepView from "./features/quest/StepView";
 import { resolveMediaSrc } from "./features/quest/media";
 import { useQuest } from "./features/quest/useQuest";
 
-type Screen = "intro" | "quest" | "honorable" | "done";
+type Screen = "intro" | "quest" | "honorable" | "credits" | "done";
 type ToastTone = "neutral" | "success" | "error";
 
 type ToastState = {
@@ -24,6 +25,7 @@ const backgroundAudioBlock = quest
 export default function App() {
   const [screen, setScreen] = useState<Screen>("intro");
   const [isIntroTransitioning, setIsIntroTransitioning] = useState(false);
+  const [isHonorableExiting, setIsHonorableExiting] = useState(false);
   const [toast, setToast] = useState<ToastState>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(0.3);
@@ -36,7 +38,7 @@ export default function App() {
 
   const { step, submit, reset, state, total } = useQuest();
   const isVideoStep = screen === "quest" && !!step?.blocks?.some((block) => block.type === "video");
-  const isBackgroundSuppressed = screen === "honorable" || isVideoStep;
+  const isBackgroundSuppressed = screen === "honorable" || screen === "credits" || isVideoStep;
   const heroImage = useMemo(() => resolveMediaSrc("/media/hero-start.jpg"), []);
   const backgroundAudioSrc = backgroundAudioBlock ? resolveMediaSrc(backgroundAudioBlock.src) : null;
 
@@ -89,6 +91,7 @@ export default function App() {
   useEffect(() => {
     if (!state.done) return;
     setToast(null);
+    setIsHonorableExiting(false);
     setScreen("honorable");
   }, [state.done]);
 
@@ -232,6 +235,16 @@ export default function App() {
     }, 360);
   }
 
+  function handleFinishHonorable() {
+    if (isHonorableExiting) return;
+
+    setIsHonorableExiting(true);
+    window.setTimeout(() => {
+      setScreen("credits");
+      setIsHonorableExiting(false);
+    }, 420);
+  }
+
   return (
     <div className="appShell">
       <div className="bg">
@@ -321,8 +334,10 @@ export default function App() {
           )}
 
           {screen === "honorable" && (
-            <HonorableMentionScene onSkip={() => setScreen("done")} />
+            <HonorableMentionScene isExiting={isHonorableExiting} onSkip={handleFinishHonorable} />
           )}
+
+          {screen === "credits" && <CreditsScreen onComplete={() => setScreen("done")} />}
 
           {screen === "done" && (
             <section className="doneLayout glowPanel screenEnter">

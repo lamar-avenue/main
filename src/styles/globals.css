@@ -1555,6 +1555,10 @@ a {
   padding: 24px 0;
 }
 
+.honorableScene.is-exiting {
+  animation: honorableSceneExit 420ms cubic-bezier(0.32, 0, 0.2, 1) forwards;
+}
+
 .honorableGlow {
   position: absolute;
   inset: 10% 14% auto;
@@ -1750,23 +1754,25 @@ a {
 }
 
 .honorableSkipButton {
-  min-width: 220px;
-  min-height: 56px;
-  padding: 0 28px;
+  min-width: 340px;
+  min-height: 92px;
+  padding: 0 42px;
   border-radius: 999px;
-  border: 1px solid rgba(255, 134, 159, 0.22);
+  border: 1px solid rgba(255, 118, 118, 0.3);
   background:
-    linear-gradient(180deg, rgba(255, 177, 196, 0.92), rgba(255, 124, 150, 0.88) 54%, rgba(196, 62, 97, 0.88)),
+    linear-gradient(180deg, rgba(255, 150, 150, 0.96), rgba(219, 63, 84, 0.94) 52%, rgba(125, 18, 36, 0.94)),
     rgba(255, 255, 255, 0.04);
-  color: #fff5f8;
-  font-weight: 600;
+  color: #fff9fb;
+  font-size: 1.28rem;
+  font-weight: 700;
   letter-spacing: 0.01em;
   box-shadow:
-    inset 0 1px 0 rgba(255, 238, 244, 0.32),
-    0 18px 48px rgba(110, 20, 54, 0.26);
+    inset 0 1px 0 rgba(255, 236, 240, 0.34),
+    0 24px 68px rgba(98, 16, 33, 0.32),
+    0 0 38px rgba(234, 62, 89, 0.18);
   cursor: pointer;
   pointer-events: auto;
-  transform: translateY(16px) scale(0.98);
+  transform: translateY(18px) scale(0.96);
   transition:
     transform 240ms ease,
     box-shadow 220ms ease,
@@ -1775,17 +1781,87 @@ a {
 
 .honorableSkipOverlay.is-visible .honorableSkipButton {
   transform: translateY(0) scale(1);
+  animation: honorableSkipBreath 2.4s ease-in-out infinite;
 }
 
 .honorableSkipButton:hover {
-  filter: brightness(1.03);
+  filter: brightness(1.05);
   box-shadow:
-    inset 0 1px 0 rgba(255, 238, 244, 0.32),
-    0 22px 56px rgba(120, 24, 60, 0.3);
+    inset 0 1px 0 rgba(255, 236, 240, 0.34),
+    0 28px 74px rgba(112, 18, 38, 0.36),
+    0 0 46px rgba(234, 62, 89, 0.24);
 }
 
 .honorableSkipButton:active {
   transform: translateY(1px) scale(0.992);
+}
+
+.creditsScreen {
+  position: relative;
+  min-height: calc(100vh - 132px);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 0;
+}
+
+.creditsGlow {
+  position: absolute;
+  inset: 12% 20% auto;
+  height: 54%;
+  border-radius: 999px;
+  background:
+    radial-gradient(circle at 50% 24%, rgba(150, 118, 255, 0.22), transparent 46%),
+    radial-gradient(circle at 50% 68%, rgba(121, 229, 255, 0.08), transparent 46%);
+  filter: blur(54px);
+  opacity: 0.92;
+  pointer-events: none;
+}
+
+.creditsViewport {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 760px);
+  height: calc(100vh - 190px);
+  overflow: hidden;
+  mask-image: linear-gradient(180deg, transparent 0%, black 14%, black 78%, transparent 100%);
+}
+
+.creditsRoll {
+  display: grid;
+  justify-items: center;
+  gap: 32px;
+  padding-top: 100%;
+  animation: creditsRoll 14s linear forwards;
+}
+
+.creditsIntro,
+.creditsOutro {
+  color: rgba(243, 247, 255, 0.92);
+  font-size: clamp(1.4rem, 3vw, 2.2rem);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.creditsBlock {
+  display: grid;
+  gap: 10px;
+  text-align: center;
+}
+
+.creditsLabel {
+  color: rgba(196, 208, 236, 0.58);
+  font-size: 0.76rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+
+.creditsValue {
+  max-width: 34rem;
+  color: rgba(244, 247, 255, 0.94);
+  font-size: clamp(1.2rem, 2.4vw, 1.7rem);
+  line-height: 1.5;
 }
 
 .rewardCard {
@@ -1967,6 +2043,20 @@ a {
   }
 }
 
+@keyframes honorableSceneExit {
+  from {
+    opacity: 1;
+    transform: scale(1);
+    filter: blur(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: scale(0.986);
+    filter: blur(14px);
+  }
+}
+
 @keyframes honorableCopyIn {
   from {
     opacity: 0;
@@ -1981,6 +2071,25 @@ a {
   }
 }
 
+@keyframes honorableSkipBreath {
+  0%,
+  100% {
+    transform: scale(1);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 236, 240, 0.34),
+      0 24px 68px rgba(98, 16, 33, 0.32),
+      0 0 38px rgba(234, 62, 89, 0.18);
+  }
+
+  50% {
+    transform: scale(1.035);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 236, 240, 0.34),
+      0 28px 78px rgba(112, 18, 38, 0.36),
+      0 0 54px rgba(234, 62, 89, 0.26);
+  }
+}
+
 @keyframes honorableCursorBlink {
   0%,
   45% {
@@ -1990,6 +2099,16 @@ a {
   46%,
   100% {
     opacity: 0;
+  }
+}
+
+@keyframes creditsRoll {
+  from {
+    transform: translateY(12%);
+  }
+
+  to {
+    transform: translateY(-92%);
   }
 }
 
@@ -2172,6 +2291,9 @@ a {
   .honorableSkipButton {
     width: 100%;
     max-width: 320px;
+    min-width: 0;
+    min-height: 82px;
+    font-size: 1.12rem;
   }
 
   .floatingPlayer {

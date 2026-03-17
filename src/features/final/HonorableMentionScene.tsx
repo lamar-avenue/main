@@ -3,16 +3,17 @@ import { resolveMediaSrc } from "../quest/media";
 import { useDelayedReveal } from "./useDelayedReveal";
 
 type HonorableMentionSceneProps = {
+  isExiting: boolean;
   onSkip: () => void;
 };
 
-export default function HonorableMentionScene({ onSkip }: HonorableMentionSceneProps) {
+export default function HonorableMentionScene({ isExiting, onSkip }: HonorableMentionSceneProps) {
   const [photoSrc, setPhotoSrc] = useState(() => resolveMediaSrc("/media/honorable-mention-photo.jpg"));
   const showSkip = useDelayedReveal(5000);
   const imageFallbackSrc = useMemo(() => resolveMediaSrc("/media/honorable-mention-photo.png"), []);
 
   return (
-    <section className="honorableScene screenEnter">
+    <section className={`honorableScene screenEnter ${isExiting ? "is-exiting" : ""}`}>
       <div className="honorableGlow" aria-hidden="true" />
 
       <div className="honorablePhotoStage glowPanel">
