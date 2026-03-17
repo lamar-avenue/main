@@ -136,17 +136,20 @@ a {
 .mouseGlow {
   position: fixed;
   z-index: 1;
-  width: 36rem;
-  height: 36rem;
+  left: 0;
+  top: 0;
+  width: 32rem;
+  height: 32rem;
   border-radius: 999px;
   background:
-    radial-gradient(circle, rgba(155, 124, 255, 0.24), rgba(155, 124, 255, 0.12) 28%, transparent 62%),
-    radial-gradient(circle at 62% 38%, rgba(125, 226, 255, 0.16), transparent 44%);
-  filter: blur(52px);
-  transform: translate(-50%, -50%);
+    radial-gradient(circle, rgba(155, 124, 255, 0.22), rgba(155, 124, 255, 0.1) 28%, transparent 62%),
+    radial-gradient(circle at 62% 38%, rgba(125, 226, 255, 0.14), transparent 44%);
+  filter: blur(42px);
+  transform: translate3d(-999px, -999px, 0);
   mix-blend-mode: screen;
   opacity: 0;
-  transition: opacity 220ms ease, transform 260ms ease;
+  will-change: transform, opacity;
+  transition: opacity 180ms ease;
 }
 
 .mouseGlow.is-active {
@@ -158,6 +161,7 @@ a {
   inset: -10% 0 0;
   z-index: 2;
   overflow: hidden;
+  contain: paint;
 }
 
 .sakuraPetal {
@@ -311,8 +315,9 @@ a {
 .heroSceneBeam {
   position: absolute;
   border-radius: 999px;
-  filter: blur(62px);
+  filter: blur(56px);
   opacity: 0.9;
+  will-change: transform, opacity;
   animation: heroBeamDrift 16s ease-in-out infinite alternate;
 }
 
@@ -490,7 +495,8 @@ a {
   background:
     radial-gradient(circle at 50% 34%, rgba(151, 111, 255, 0.72), rgba(151, 111, 255, 0.26) 34%, transparent 56%),
     radial-gradient(circle at 50% 68%, rgba(88, 150, 255, 0.34), transparent 54%);
-  filter: blur(68px);
+  filter: blur(60px);
+  will-change: transform, opacity;
   animation: heroGlowPulse 12s ease-in-out infinite alternate;
 }
 
@@ -1086,7 +1092,8 @@ a {
   fill: currentColor;
 }
 
-.audioIcon {
+.audioIcon,
+.audioMuteButton {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -1096,12 +1103,44 @@ a {
   flex: none;
 }
 
-.audioIcon svg {
+.audioIcon svg,
+.audioMuteButton svg {
   fill: none;
   stroke: currentColor;
   stroke-width: 1.8;
   stroke-linecap: round;
   stroke-linejoin: round;
+}
+
+.audioMuteButton {
+  width: 28px;
+  height: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.04);
+  cursor: pointer;
+  transition: transform 180ms ease, border-color 180ms ease, background 180ms ease, color 180ms ease, box-shadow 180ms ease;
+}
+
+.audioMuteButton:hover {
+  transform: translateY(-1px);
+  border-color: rgba(155, 124, 255, 0.28);
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(233, 240, 255, 0.92);
+  box-shadow: 0 8px 18px rgba(69, 45, 155, 0.14);
+}
+
+.audioMuteButton:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 1px rgba(155, 124, 255, 0.3),
+    0 0 0 4px rgba(155, 124, 255, 0.12);
+}
+
+.audioMuteButton.is-muted {
+  color: rgba(255, 169, 193, 0.92);
+  border-color: rgba(255, 142, 161, 0.28);
+  background: rgba(255, 142, 161, 0.08);
 }
 
 .audioToggle:hover {

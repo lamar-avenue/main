@@ -26,9 +26,11 @@ export default function App() {
   const [toast, setToast] = useState<ToastState>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(0.3);
-  const [cursorGlow, setCursorGlow] = useState({ x: 0, y: 0, active: false });
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const autoplayRetryBound = useRef(false);
+  const previousVolumeRef = useRef(0.3);
+  const mouseGlowRef = useRef<HTMLDivElement | null>(null);
+  const glowFrameRef = useRef<number | null>(null);
 
   const { step, submit, reset, state, total } = useQuest();
   const heroImage = useMemo(() => resolveMediaSrc("/media/hero-start.jpg"), []);
@@ -49,6 +51,7 @@ export default function App() {
     if (!audio) return;
 
     audio.volume = volume;
+    audio.muted = volume === 0;
   }, [volume]);
 
   useEffect(() => {
@@ -57,19 +60,34 @@ export default function App() {
   }, [state.done]);
 
   useEffect(() => {
-    const handleMove = (event: MouseEvent) => {
-      setCursorGlow({ x: event.clientX, y: event.clientY, active: true });
+    const glow = mouseGlowRef.current;
+    if (!glow) return;
+
+    const handleMove = (event: PointerEvent) => {
+      const { clientX, clientY } = event;
+      glow.classList.add("is-active");
+
+      if (glowFrameRef.current !== null) {
+        window.cancelAnimationFrame(glowFrameRef.current);
+      }
+
+      glowFrameRef.current = window.requestAnimationFrame(() => {
+        glow.style.transform = `translate3d(${clientX}px, ${clientY}px, 0) translate3d(-50%, -50%, 0)`;
+      });
     };
 
     const handleLeave = () => {
-      setCursorGlow((current) => ({ ...current, active: false }));
+      glow.classList.remove("is-active");
     };
 
-    window.addEventListener("mousemove", handleMove);
+    window.addEventListener("pointermove", handleMove, { passive: true });
     window.addEventListener("mouseleave", handleLeave);
 
     return () => {
-      window.removeEventListener("mousemove", handleMove);
+      if (glowFrameRef.current !== null) {
+        window.cancelAnimationFrame(glowFrameRef.current);
+      }
+      window.removeEventListener("pointermove", handleMove);
       window.removeEventListener("mouseleave", handleLeave);
     };
   }, []);
@@ -136,6 +154,24 @@ export default function App() {
     setIsPlaying(false);
   }
 
+  function handleVolumeChange(nextVolume: number) {
+    setVolume(nextVolume);
+    if (nextVolume > 0) {
+      previousVolumeRef.current = nextVolume;
+    }
+  }
+
+  function toggleMute() {
+    if (volume === 0) {
+      const restoredVolume = previousVolumeRef.current > 0 ? previousVolumeRef.current : 0.3;
+      setVolume(restoredVolume);
+      return;
+    }
+
+    previousVolumeRef.current = volume;
+    setVolume(0);
+  }
+
   function handleReset() {
     reset();
     setIsIntroTransitioning(false);
@@ -161,7 +197,7 @@ export default function App() {
         <div className="aurora auroraSecondary" />
         <div className="aurora auroraAccent" />
         <SakuraPetalsBackground />
-        <div className={`mouseGlow ${cursorGlow.active ? "is-active" : ""}`} style={{ left: cursorGlow.x, top: cursorGlow.y }} />
+        <div ref={mouseGlowRef} className="mouseGlow" />
         <div className="grid" />
         <div className="vignette" />
 
@@ -182,9 +218,9 @@ export default function App() {
             <button className="audioToggle" type="button" onClick={toggleAudio} aria-label={isPlaying ? "Pause audio" : "Play audio"}>
               <AudioPlayIcon playing={isPlaying} />
             </button>
-            <span className="audioIcon" aria-hidden="true">
-              <AudioVolumeIcon />
-            </span>
+            <button className={`audioMuteButton ${volume === 0 ? "is-muted" : ""}`} type="button" onClick={toggleMute} aria-label={volume === 0 ? "Unmute audio" : "Mute audio"}>
+              <AudioVolumeIcon muted={volume === 0} />
+            </button>
             <input
               className="slider volumeSlider"
               type="range"
@@ -192,7 +228,7 @@ export default function App() {
               max="1"
               step="0.01"
               value={volume}
-              onChange={(event) => setVolume(Number(event.target.value))}
+              onChange={(event) => handleVolumeChange(Number(event.target.value))}
               aria-label="Background audio volume"
             />
           </div>
@@ -213,9 +249,11 @@ export default function App() {
             <HeroScreen
               heroImage={heroImage}
               isPlaying={isPlaying}
+              isMuted={volume === 0}
               isTransitioning={isIntroTransitioning}
               volume={volume}
-              onVolumeChange={setVolume}
+              onToggleMute={toggleMute}
+              onVolumeChange={handleVolumeChange}
               onToggleAudio={toggleAudio}
               onStart={handleStartQuest}
             />
@@ -292,12 +330,18 @@ function AudioPlayIcon({ playing }: { playing: boolean }) {
   );
 }
 
-function AudioVolumeIcon() {
+function AudioVolumeIcon({ muted }: { muted: boolean }) {
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true">
       <path d="M5 10.5H8.4L12.6 6.8C13.12 6.34 13.94 6.71 13.94 7.4V16.6C13.94 17.29 13.12 17.66 12.6 17.2L8.4 13.5H5C4.45 13.5 4 13.05 4 12.5V11.5C4 10.95 4.45 10.5 5 10.5Z" />
-      <path d="M17.2 9.2C18.12 10.03 18.67 11.22 18.67 12.5C18.67 13.78 18.12 14.97 17.2 15.8" />
-      <path d="M18.9 6.8C20.43 8.17 21.33 10.27 21.33 12.5C21.33 14.73 20.43 16.83 18.9 18.2" />
+      {muted ? (
+        <path d="M17.2 8.8L21 16.2" />
+      ) : (
+        <>
+          <path d="M17.2 9.2C18.12 10.03 18.67 11.22 18.67 12.5C18.67 13.78 18.12 14.97 17.2 15.8" />
+          <path d="M18.9 6.8C20.43 8.17 21.33 10.27 21.33 12.5C21.33 14.73 20.43 16.83 18.9 18.2" />
+        </>
+      )}
     </svg>
   );
 }

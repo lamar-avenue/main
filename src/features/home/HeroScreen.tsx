@@ -1,8 +1,10 @@
 type HeroScreenProps = {
   heroImage: string;
   isPlaying: boolean;
+  isMuted: boolean;
   isTransitioning: boolean;
   volume: number;
+  onToggleMute: () => void;
   onVolumeChange: (value: number) => void;
   onToggleAudio: () => void;
   onStart: () => void;
@@ -11,8 +13,10 @@ type HeroScreenProps = {
 export default function HeroScreen({
   heroImage,
   isPlaying,
+  isMuted,
   isTransitioning,
   volume,
+  onToggleMute,
   onVolumeChange,
   onToggleAudio,
   onStart,
@@ -35,9 +39,9 @@ export default function HeroScreen({
           <button className="audioToggle" type="button" onClick={onToggleAudio} aria-label={isPlaying ? "Pause audio" : "Play audio"}>
             <AudioPlayIcon playing={isPlaying} />
           </button>
-          <span className="audioIcon" aria-hidden="true">
-            <AudioVolumeIcon />
-          </span>
+          <button className={`audioMuteButton ${isMuted ? "is-muted" : ""}`} type="button" onClick={onToggleMute} aria-label={isMuted ? "Unmute audio" : "Mute audio"}>
+            <AudioVolumeIcon muted={isMuted} />
+          </button>
           <input
             className="slider volumeSlider"
             type="range"
@@ -102,12 +106,18 @@ function AudioPlayIcon({ playing }: { playing: boolean }) {
   );
 }
 
-function AudioVolumeIcon() {
+function AudioVolumeIcon({ muted }: { muted: boolean }) {
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true">
       <path d="M5 10.5H8.4L12.6 6.8C13.12 6.34 13.94 6.71 13.94 7.4V16.6C13.94 17.29 13.12 17.66 12.6 17.2L8.4 13.5H5C4.45 13.5 4 13.05 4 12.5V11.5C4 10.95 4.45 10.5 5 10.5Z" />
-      <path d="M17.2 9.2C18.12 10.03 18.67 11.22 18.67 12.5C18.67 13.78 18.12 14.97 17.2 15.8" />
-      <path d="M18.9 6.8C20.43 8.17 21.33 10.27 21.33 12.5C21.33 14.73 20.43 16.83 18.9 18.2" />
+      {muted ? (
+        <path d="M17.2 8.8L21 16.2" />
+      ) : (
+        <>
+          <path d="M17.2 9.2C18.12 10.03 18.67 11.22 18.67 12.5C18.67 13.78 18.12 14.97 17.2 15.8" />
+          <path d="M18.9 6.8C20.43 8.17 21.33 10.27 21.33 12.5C21.33 14.73 20.43 16.83 18.9 18.2" />
+        </>
+      )}
     </svg>
   );
 }
