@@ -22,6 +22,7 @@ const backgroundAudioBlock = quest
 
 export default function App() {
   const [screen, setScreen] = useState<Screen>("intro");
+  const [isIntroTransitioning, setIsIntroTransitioning] = useState(false);
   const [toast, setToast] = useState<ToastState>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(0.3);
@@ -137,8 +138,19 @@ export default function App() {
 
   function handleReset() {
     reset();
+    setIsIntroTransitioning(false);
     setScreen("intro");
     notify("neutral", "Progress cleared", "Cipher state reset. You can start again at any time.");
+  }
+
+  function handleStartQuest() {
+    if (isIntroTransitioning) return;
+
+    setIsIntroTransitioning(true);
+    window.setTimeout(() => {
+      setScreen("quest");
+      setIsIntroTransitioning(false);
+    }, 360);
   }
 
   return (
@@ -201,10 +213,11 @@ export default function App() {
             <HeroScreen
               heroImage={heroImage}
               isPlaying={isPlaying}
+              isTransitioning={isIntroTransitioning}
               volume={volume}
               onVolumeChange={setVolume}
               onToggleAudio={toggleAudio}
-              onStart={() => setScreen("quest")}
+              onStart={handleStartQuest}
             />
           )}
 

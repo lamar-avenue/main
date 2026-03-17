@@ -1,6 +1,7 @@
 type HeroScreenProps = {
   heroImage: string;
   isPlaying: boolean;
+  isTransitioning: boolean;
   volume: number;
   onVolumeChange: (value: number) => void;
   onToggleAudio: () => void;
@@ -10,13 +11,20 @@ type HeroScreenProps = {
 export default function HeroScreen({
   heroImage,
   isPlaying,
+  isTransitioning,
   volume,
   onVolumeChange,
   onToggleAudio,
   onStart,
 }: HeroScreenProps) {
   return (
-    <section className="heroScreen screenEnter">
+    <section className={`heroScreen screenEnter ${isTransitioning ? "is-exiting" : ""}`}>
+      <div className="heroSceneGlow" aria-hidden="true">
+        <div className="heroSceneBeam heroSceneBeam-primary" />
+        <div className="heroSceneBeam heroSceneBeam-secondary" />
+        <div className="heroSceneBeam heroSceneBeam-orbit" />
+      </div>
+
       <header className="heroHeader">
         <div className="heroBrand">
           <div className="heroBrandTitle">MARK QUEST</div>
@@ -46,27 +54,32 @@ export default function HeroScreen({
       <div className="heroScreenCenter">
         <div className="heroFrameWrap">
           <div className="heroFrameGlow" />
+          <div className="heroFrameAura" />
           <img className="heroFrameImage" src={heroImage} alt="Марк" />
+          <div className="heroFrameShine" />
         </div>
 
         <div className="heroTextBlock">
           <h1 className="heroMainTitle">С Днем Рождения, Марк!</h1>
           <p className="heroDescription">
-            Это небольшой кинематографичный квест, собранный специально для тебя.
+            Небольшой cinematic-квест, собранный специально для тебя.
             <br />
-            Включай атмосферу, двигайся по шагам и открывай подарок в финале.
+            Включай музыку, иди по знакам и дойди до подарка, спрятанного в финале.
           </p>
         </div>
 
-        <button className="heroLaunchButton" type="button" onClick={onStart}>
-          Начать Квест
+        <button className="heroLaunchButton" type="button" onClick={onStart} disabled={isTransitioning}>
+          <span>Начать Квест</span>
+          <span className="heroLaunchArrow" aria-hidden="true">
+            →
+          </span>
         </button>
       </div>
 
       <div className="heroFooterMeta">
-        <span>signal live</span>
-        <span>private sequence</span>
-        <span>crafted for mark</span>
+        <span>petals in motion</span>
+        <span>private birthday signal</span>
+        <span>gift sequence armed</span>
       </div>
     </section>
   );

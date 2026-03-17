@@ -45,10 +45,12 @@ body {
   font-family: inherit;
   color: var(--text);
   background:
+    radial-gradient(circle at 50% 14%, rgba(124, 101, 255, 0.2), transparent 20%),
     radial-gradient(circle at top left, rgba(120, 92, 255, 0.24), transparent 28%),
-    radial-gradient(circle at 80% 20%, rgba(209, 117, 255, 0.12), transparent 30%),
+    radial-gradient(circle at 80% 20%, rgba(209, 117, 255, 0.14), transparent 30%),
     radial-gradient(circle at 55% 60%, rgba(67, 98, 255, 0.12), transparent 34%),
-    radial-gradient(circle at 35% 26%, rgba(28, 219, 255, 0.1), transparent 28%),
+    radial-gradient(circle at 35% 26%, rgba(28, 219, 255, 0.12), transparent 28%),
+    linear-gradient(180deg, rgba(44, 24, 88, 0.18), transparent 28%),
     linear-gradient(180deg, var(--bg-0), var(--bg-1) 42%, var(--bg-2));
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -169,6 +171,12 @@ a {
   opacity: calc(var(--petal-opacity) + 0.06);
 }
 
+.sakuraPetal-near {
+  z-index: 3;
+  opacity: calc(var(--petal-opacity) + 0.08);
+  filter: blur(calc(var(--petal-blur) * 0.8));
+}
+
 .sakuraPetal-mid {
   z-index: 1;
 }
@@ -259,6 +267,53 @@ a {
   padding-top: 76px;
 }
 
+.heroSceneGlow {
+  position: absolute;
+  inset: 3% 0 10%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.heroSceneBeam {
+  position: absolute;
+  border-radius: 999px;
+  filter: blur(54px);
+  opacity: 0.72;
+  animation: heroBeamDrift 16s ease-in-out infinite alternate;
+}
+
+.heroSceneBeam-primary {
+  left: 50%;
+  top: 6%;
+  width: min(48vw, 680px);
+  height: 72%;
+  transform: translateX(-50%);
+  background:
+    radial-gradient(ellipse at center, rgba(138, 110, 255, 0.26), rgba(138, 110, 255, 0.1) 42%, transparent 72%);
+}
+
+.heroSceneBeam-secondary {
+  left: 50%;
+  top: 18%;
+  width: min(32vw, 420px);
+  height: 48%;
+  transform: translateX(-50%);
+  background:
+    radial-gradient(ellipse at center, rgba(121, 229, 255, 0.16), transparent 68%);
+  animation-duration: 18s;
+}
+
+.heroSceneBeam-orbit {
+  left: 50%;
+  top: 24%;
+  width: min(58vw, 760px);
+  height: 24%;
+  transform: translateX(-50%);
+  background:
+    radial-gradient(ellipse at center, rgba(209, 117, 255, 0.14), transparent 70%);
+  animation-duration: 22s;
+}
+
 .heroHeader {
   position: absolute;
   inset: 0 0 auto 0;
@@ -267,13 +322,36 @@ a {
   justify-content: space-between;
   gap: 24px;
   min-height: 44px;
-  padding-top: 2px;
+  padding: 2px 0 12px;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
+  animation: heroLayerIn 0.72s cubic-bezier(0.2, 1, 0.2, 1) 0.04s both;
+}
+
+.heroHeader::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.04), rgba(126, 149, 255, 0.2) 30%, rgba(130, 239, 255, 0.16) 68%, rgba(255, 255, 255, 0.02));
+}
+
+.heroHeader::before {
+  content: "";
+  position: absolute;
+  inset: -10px 24% auto;
+  height: 26px;
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(126, 149, 255, 0.2), transparent 72%);
+  filter: blur(16px);
+  opacity: 0.7;
 }
 
 .heroBrand {
   display: grid;
   gap: 6px;
+  padding: 3px 0;
 }
 
 .heroBrandTitle {
@@ -281,10 +359,11 @@ a {
   font-size: 0.92rem;
   font-weight: 600;
   letter-spacing: 0.18em;
+  text-shadow: 0 0 18px rgba(121, 229, 255, 0.18);
 }
 
 .heroBrandSubtitle {
-  color: rgba(236, 240, 255, 0.5);
+  color: rgba(236, 240, 255, 0.58);
   font-size: 0.68rem;
   letter-spacing: 0.28em;
   text-transform: uppercase;
@@ -298,10 +377,29 @@ a {
   min-height: 42px;
   padding: 7px 10px;
   border-radius: 999px;
-  transition: transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
+  border-color: rgba(158, 194, 255, 0.14);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.025)),
+    rgba(9, 15, 30, 0.6);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 16px 40px rgba(11, 12, 28, 0.18);
+  transition: transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease, background 220ms ease;
+}
+
+.heroAudioControl:hover {
+  border-color: rgba(149, 178, 255, 0.26);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.03)),
+    rgba(10, 18, 34, 0.72);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 18px 42px rgba(19, 23, 52, 0.26);
 }
 
 .heroScreenCenter {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -311,35 +409,35 @@ a {
   flex: 1;
 }
 
-.heroScreenCenter > * {
-  animation: heroSoftIn 0.9s cubic-bezier(0.2, 1, 0.2, 1) both;
-}
-
-.heroFrameWrap {
-  animation-delay: 0.04s;
-}
-
-.heroTextBlock {
-  animation-delay: 0.12s;
-}
-
-.heroLaunchButton {
-  animation-delay: 0.2s;
-}
-
 .heroFrameWrap {
   position: relative;
   width: min(520px, 76vw);
+  isolation: isolate;
+  animation:
+    heroLayerIn 0.92s cubic-bezier(0.2, 1, 0.2, 1) 0.14s both,
+    heroFrameFloat 15s ease-in-out 1.2s infinite alternate;
 }
 
 .heroFrameGlow {
   position: absolute;
-  inset: -8% -10%;
-  border-radius: 40px;
+  inset: -12% -12%;
+  border-radius: 44px;
   background:
-    radial-gradient(circle at 50% 38%, rgba(151, 111, 255, 0.5), transparent 44%),
-    radial-gradient(circle at 50% 60%, rgba(88, 150, 255, 0.28), transparent 52%);
-  filter: blur(44px);
+    radial-gradient(circle at 50% 38%, rgba(151, 111, 255, 0.6), transparent 42%),
+    radial-gradient(circle at 50% 60%, rgba(88, 150, 255, 0.3), transparent 52%);
+  filter: blur(52px);
+  animation: heroGlowPulse 12s ease-in-out infinite alternate;
+}
+
+.heroFrameAura {
+  position: absolute;
+  inset: -4%;
+  border-radius: 40px;
+  border: 1px solid rgba(152, 180, 255, 0.12);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.01));
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.03),
+    0 28px 80px rgba(13, 16, 36, 0.4);
 }
 
 .heroFrameImage {
@@ -353,11 +451,26 @@ a {
   box-shadow:
     0 0 0 1px rgba(255, 255, 255, 0.04),
     0 24px 60px rgba(7, 8, 20, 0.46);
+  transform: scale(1.018);
+  animation: heroImageBreath 16s ease-in-out infinite alternate;
+}
+
+.heroFrameShine {
+  position: absolute;
+  inset: 0;
+  border-radius: 34px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.14), transparent 22%, transparent 72%, rgba(121, 229, 255, 0.06)),
+    radial-gradient(circle at 22% 12%, rgba(255, 255, 255, 0.16), transparent 28%);
+  mix-blend-mode: screen;
+  opacity: 0.56;
+  pointer-events: none;
 }
 
 .heroTextBlock {
   display: grid;
-  gap: 14px;
+  gap: 16px;
+  justify-items: center;
 }
 
 .heroMainTitle {
@@ -366,42 +479,68 @@ a {
   line-height: 1.02;
   letter-spacing: -0.05em;
   color: rgba(248, 249, 255, 0.98);
+  animation: heroLayerIn 0.9s cubic-bezier(0.2, 1, 0.2, 1) 0.28s both;
 }
 
 .heroDescription {
   margin: 0;
-  color: rgba(220, 228, 244, 0.72);
-  font-size: 1rem;
-  line-height: 1.7;
+  max-width: 38rem;
+  color: rgba(228, 235, 249, 0.82);
+  font-size: 1.02rem;
+  line-height: 1.82;
+  text-wrap: balance;
+  animation: heroLayerIn 0.9s cubic-bezier(0.2, 1, 0.2, 1) 0.36s both;
 }
 
 .heroLaunchButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
   min-width: 208px;
   min-height: 56px;
-  padding: 0 24px;
+  padding: 0 24px 0 26px;
   border: 0;
   border-radius: 999px;
-  background: linear-gradient(180deg, rgba(251, 252, 255, 0.98), rgba(229, 235, 255, 0.92));
-  color: #10162b;
+  background:
+    linear-gradient(180deg, rgba(252, 253, 255, 1), rgba(230, 237, 255, 0.95)),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(149, 178, 255, 0.08));
+  color: #12182e;
   font-weight: 600;
   letter-spacing: -0.01em;
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.86),
-    0 16px 36px rgba(169, 183, 255, 0.16);
+    inset 0 1px 0 rgba(255, 255, 255, 0.92),
+    0 18px 40px rgba(120, 138, 255, 0.18);
   cursor: pointer;
   transition: transform 260ms ease, box-shadow 260ms ease, filter 260ms ease, background 260ms ease;
+  animation: heroLayerIn 0.9s cubic-bezier(0.2, 1, 0.2, 1) 0.46s both;
 }
 
 .heroLaunchButton:hover {
-  transform: translateY(-1px);
+  transform: translateY(-2px);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.92),
-    0 18px 40px rgba(169, 183, 255, 0.22);
-  filter: brightness(1.02);
+    inset 0 1px 0 rgba(255, 255, 255, 0.96),
+    0 0 0 1px rgba(168, 196, 255, 0.16),
+    0 22px 46px rgba(118, 141, 255, 0.22);
+  filter: brightness(1.015);
 }
 
 .heroLaunchButton:active {
   transform: scale(0.992);
+}
+
+.heroLaunchButton:disabled {
+  cursor: default;
+}
+
+.heroLaunchArrow {
+  display: inline-block;
+  font-size: 1rem;
+  transition: transform 240ms ease, opacity 240ms ease;
+}
+
+.heroLaunchButton:hover .heroLaunchArrow {
+  transform: translateX(3px);
 }
 
 .heroFooterMeta {
@@ -409,11 +548,30 @@ a {
   align-items: center;
   justify-content: center;
   gap: 28px;
-  color: rgba(230, 236, 249, 0.34);
-  font-size: 0.65rem;
-  letter-spacing: 0.22em;
+  color: rgba(230, 236, 249, 0.42);
+  font-size: 0.63rem;
+  letter-spacing: 0.24em;
   text-transform: uppercase;
   padding-bottom: 8px;
+  animation: heroLayerIn 0.9s cubic-bezier(0.2, 1, 0.2, 1) 0.54s both;
+}
+
+.heroFooterMeta span {
+  position: relative;
+}
+
+.heroFooterMeta span::after {
+  content: "";
+  position: absolute;
+  left: calc(100% + 12px);
+  top: 50%;
+  width: 6px;
+  height: 1px;
+  background: rgba(170, 193, 255, 0.28);
+}
+
+.heroFooterMeta span:last-child::after {
+  display: none;
 }
 
 .glowPanel,
@@ -1229,6 +1387,11 @@ a {
   margin-top: 7px;
 }
 
+.heroScreen.is-exiting {
+  pointer-events: none;
+  animation: heroExit 360ms cubic-bezier(0.32, 0, 0.2, 1) forwards;
+}
+
 @keyframes drift {
   from {
     transform: translate3d(-1.5%, -1%, 0) scale(1);
@@ -1292,6 +1455,76 @@ a {
     opacity: 1;
     transform: translateY(0);
     filter: blur(0);
+  }
+}
+
+@keyframes heroLayerIn {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.985);
+    filter: blur(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+@keyframes heroFrameFloat {
+  from {
+    transform: translate3d(0, -4px, 0);
+  }
+
+  to {
+    transform: translate3d(0, 7px, 0);
+  }
+}
+
+@keyframes heroImageBreath {
+  from {
+    transform: scale(1.018) translateY(0);
+  }
+
+  to {
+    transform: scale(1.048) translateY(-4px);
+  }
+}
+
+@keyframes heroGlowPulse {
+  from {
+    opacity: 0.84;
+    transform: scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes heroBeamDrift {
+  from {
+    transform: translateX(-50%) translateY(-1.5%) scale(0.98);
+  }
+
+  to {
+    transform: translateX(-50%) translateY(1.5%) scale(1.03);
+  }
+}
+
+@keyframes heroExit {
+  from {
+    opacity: 1;
+    transform: scale(1);
+    filter: blur(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: scale(0.982);
+    filter: blur(12px);
   }
 }
 
