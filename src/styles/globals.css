@@ -1631,12 +1631,70 @@ a {
   animation: honorableCopyIn 760ms cubic-bezier(0.2, 1, 0.2, 1) 0.18s both;
 }
 
+.honorableSceneMeta {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+}
+
 .honorableTitle {
-  margin: 0;
+  margin: 10px 0 0;
   font-size: clamp(2.2rem, 4vw, 3.45rem);
   line-height: 1.04;
   letter-spacing: -0.05em;
   color: rgba(248, 249, 255, 0.98);
+}
+
+.honorableAudioControl {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 210px;
+  padding: 10px 12px;
+  border-radius: 999px;
+  flex: none;
+}
+
+.honorableMuteButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(235, 242, 255, 0.9);
+  cursor: pointer;
+  transition: transform 180ms ease, border-color 180ms ease, background 180ms ease, color 180ms ease, box-shadow 180ms ease;
+}
+
+.honorableMuteButton svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.honorableMuteButton:hover {
+  transform: translateY(-1px);
+  border-color: rgba(155, 124, 255, 0.3);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 10px 22px rgba(69, 45, 155, 0.14);
+}
+
+.honorableMuteButton.is-muted {
+  color: rgba(255, 176, 194, 0.95);
+  border-color: rgba(255, 142, 161, 0.28);
+  background: rgba(255, 142, 161, 0.08);
+}
+
+.honorableVolumeSlider {
+  min-width: 136px;
 }
 
 .honorableText {
@@ -2068,6 +2126,16 @@ a {
 
   .honorableTitle {
     font-size: clamp(2rem, 9vw, 2.8rem);
+  }
+
+  .honorableSceneMeta {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .honorableAudioControl {
+    width: 100%;
+    min-width: 0;
   }
 
   .honorableText {
