@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { announceSceneAudioStart, subscribeToSceneAudioStart } from "../audio/sceneAudioBus";
 
 function splitIntoChunks(text: string) {
   return text
@@ -7,7 +8,7 @@ function splitIntoChunks(text: string) {
     .filter(Boolean);
 }
 
-export function useSpeechVoiceover(text: string, volume: number) {
+export function useSpeechVoiceover(text: string, volume: number, sourceId: string) {
   const volumeRef = useRef(volume);
   const chunkIndexRef = useRef(0);
   const chunksRef = useRef<string[]>([]);
@@ -38,6 +39,9 @@ export function useSpeechVoiceover(text: string, volume: number) {
     if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
 
     const synthesis = window.speechSynthesis;
+    const unsubscribe = subscribeToSceneAudioStart(sourceId, () => {
+      synthesis.cancel();
+    });
     const chunks = splitIntoChunks(text);
     let resumeTimeoutId: number | undefined;
     let startTimeoutId: number | undefined;
@@ -98,6 +102,7 @@ export function useSpeechVoiceover(text: string, volume: number) {
 
     const boot = () => {
       if (cancelled || !text.trim() || volumeRef.current <= 0) return;
+      announceSceneAudioStart(sourceId);
       synthesis.cancel();
       speakNextRef.current?.();
     };
@@ -114,8 +119,9 @@ export function useSpeechVoiceover(text: string, volume: number) {
       if (resumeTimeoutId) {
         window.clearTimeout(resumeTimeoutId);
       }
+      unsubscribe();
       synthesis.removeEventListener("voiceschanged", boot);
       synthesis.cancel();
     };
-  }, [text]);
+  }, [sourceId, text]);
 }

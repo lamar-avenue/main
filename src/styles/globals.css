@@ -291,6 +291,12 @@ a {
   padding-bottom: 18px;
 }
 
+.container-finale {
+  width: 100%;
+  max-width: none;
+  padding: 18px 20px 18px;
+}
+
 .screenEnter {
   animation: screenEnter 0.72s cubic-bezier(0.2, 1, 0.2, 1);
 }
@@ -1350,6 +1356,10 @@ a {
   width: 100%;
 }
 
+.mediaAudioElement {
+  display: none;
+}
+
 .mediaTitle {
   margin-bottom: 10px;
   color: rgba(225, 235, 255, 0.74);
@@ -1362,6 +1372,44 @@ a {
   font-size: 0.96rem;
   line-height: 1.65;
   color: var(--muted);
+}
+
+.sceneAudioControl {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 18px;
+  border: 1px solid rgba(160, 193, 255, 0.14);
+  background: rgba(7, 11, 24, 0.64);
+}
+
+.sceneVolumeSlider {
+  min-width: 140px;
+}
+
+.sceneAudioMeta,
+.honorableAudioMeta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.sceneAudioLabel,
+.sceneAudioStatus {
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.sceneAudioLabel {
+  color: rgba(205, 219, 247, 0.62);
+}
+
+.sceneAudioStatus {
+  color: rgba(137, 218, 255, 0.86);
 }
 
 .mediaImg,
@@ -1548,11 +1596,15 @@ a {
 
 .honorableScene {
   position: relative;
-  min-height: calc(100vh - 132px);
+  min-height: calc(100vh - 36px);
+  height: calc(100vh - 36px);
   display: flex;
-  flex-direction: column;
+  align-items: stretch;
   justify-content: center;
-  padding: 24px 0;
+  width: 100%;
+  padding: 0;
+  overflow: hidden;
+  overscroll-behavior: none;
 }
 
 .honorableScene.is-exiting {
@@ -1575,37 +1627,22 @@ a {
 }
 
 .honorableLayout {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  grid-template-columns: minmax(320px, 0.82fr) minmax(0, 1.18fr);
-  gap: 30px;
-  align-items: center;
+  display: contents;
 }
 
 .honorablePhotoStage {
   position: relative;
   z-index: 1;
   width: 100%;
-  min-height: calc(100vh - 180px);
-  padding: 18px;
-  border-radius: 34px;
+  min-height: 100%;
+  height: 100%;
+  padding: 0;
+  border-radius: 40px;
   overflow: hidden;
   animation: honorablePhotoIn 780ms cubic-bezier(0.2, 1, 0.2, 1) 0.08s both;
-}
-
-.honorableImagePanel,
-.honorableCopy {
-  border-radius: 30px;
-}
-
-.honorableImagePanel {
-  overflow: hidden;
-  justify-self: center;
-  width: min(100%, 520px);
-  padding: 18px;
-  min-height: 0;
-  animation: honorablePhotoIn 780ms cubic-bezier(0.2, 1, 0.2, 1) 0.08s both;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.08),
+    0 34px 110px rgba(7, 10, 25, 0.52);
 }
 
 .honorableImageAura {
@@ -1621,56 +1658,68 @@ a {
 }
 
 .honorableImage {
-  position: relative;
-  z-index: 1;
+  position: absolute;
+  inset: 0;
+  z-index: 0;
   display: block;
   width: 100%;
-  min-height: 380px;
-  max-height: 430px;
+  height: 100%;
   object-fit: cover;
-  border-radius: 24px;
-  border: 1px solid rgba(206, 220, 255, 0.22);
-  box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.06),
-    0 22px 64px rgba(7, 10, 25, 0.44);
+  object-position: center 24%;
+  border-radius: inherit;
+  border: 0;
+  box-shadow: none;
+  transform: scale(1.02);
 }
 
 .honorableImage-full {
-  min-height: calc(100vh - 216px);
+  min-height: 100%;
   max-height: none;
-  border-radius: 28px;
+  border-radius: inherit;
 }
 
 .honorableCopy {
-  padding: 28px 30px;
-  min-height: 420px;
+  position: absolute;
+  left: 26px;
+  right: auto;
+  bottom: 24px;
+  z-index: 2;
+  width: min(420px, calc(100% - 52px));
+  padding: 18px 20px;
+  min-height: 0;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  gap: 16px;
+  justify-content: flex-end;
+  gap: 12px;
   animation: honorableCopyIn 760ms cubic-bezier(0.2, 1, 0.2, 1) 0.18s both;
+  background:
+    linear-gradient(180deg, rgba(7, 11, 22, 0.18), rgba(7, 11, 22, 0.64) 30%, rgba(7, 11, 22, 0.86)),
+    rgba(9, 13, 26, 0.68);
+  backdrop-filter: blur(14px);
+  border-radius: 28px;
 }
 
 .honorableSceneMeta {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
-  gap: 18px;
+  gap: 16px;
 }
 
 .honorableTitle {
-  margin: 10px 0 0;
-  font-size: clamp(2.2rem, 4vw, 3.45rem);
-  line-height: 1.04;
-  letter-spacing: -0.05em;
+  margin: 6px 0 0;
+  font-size: clamp(2rem, 3.8vw, 3.2rem);
+  line-height: 1;
+  letter-spacing: -0.06em;
   color: rgba(248, 249, 255, 0.98);
+  text-shadow: 0 14px 34px rgba(5, 8, 18, 0.4);
 }
 
 .honorableAudioControl {
   display: flex;
   align-items: center;
   gap: 10px;
-  min-width: 210px;
+  min-width: 220px;
   padding: 10px 12px;
   border-radius: 999px;
   flex: none;
@@ -1680,19 +1729,23 @@ a {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 34px;
-  height: 34px;
+  width: 38px;
+  height: 38px;
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.05);
-  color: rgba(235, 242, 255, 0.9);
+  color: rgba(244, 247, 255, 0.96);
   cursor: pointer;
-  transition: transform 180ms ease, border-color 180ms ease, background 180ms ease, color 180ms ease, box-shadow 180ms ease;
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    background 180ms ease,
+    box-shadow 180ms ease;
 }
 
 .honorableMuteButton svg {
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   fill: none;
   stroke: currentColor;
   stroke-width: 1.8;
@@ -1702,9 +1755,9 @@ a {
 
 .honorableMuteButton:hover {
   transform: translateY(-1px);
-  border-color: rgba(155, 124, 255, 0.3);
-  background: rgba(255, 255, 255, 0.08);
-  box-shadow: 0 10px 22px rgba(69, 45, 155, 0.14);
+  border-color: rgba(173, 213, 255, 0.28);
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 16px 34px rgba(8, 12, 25, 0.28);
 }
 
 .honorableMuteButton.is-muted {
@@ -1714,16 +1767,18 @@ a {
 }
 
 .honorableVolumeSlider {
-  min-width: 136px;
+  min-width: 150px;
 }
 
 .honorableText {
   margin: 0;
-  min-height: 13.5rem;
-  color: rgba(229, 236, 249, 0.84);
-  font-size: 1rem;
-  line-height: 1.86;
+  min-height: 3.4rem;
+  max-width: 30rem;
+  color: rgba(239, 244, 255, 0.7);
+  font-size: 0.88rem;
+  line-height: 1.55;
   text-wrap: pretty;
+  text-shadow: 0 10px 26px rgba(5, 8, 18, 0.42);
 }
 
 .honorableCursor {
@@ -1754,42 +1809,43 @@ a {
 }
 
 .honorableSkipButton {
-  min-width: 340px;
-  min-height: 92px;
-  padding: 0 42px;
+  min-width: min(560px, calc(100vw - 36px));
+  min-height: 132px;
+  padding: 0 72px;
   border-radius: 999px;
   border: 1px solid rgba(255, 118, 118, 0.3);
   background:
     linear-gradient(180deg, rgba(255, 150, 150, 0.96), rgba(219, 63, 84, 0.94) 52%, rgba(125, 18, 36, 0.94)),
     rgba(255, 255, 255, 0.04);
   color: #fff9fb;
-  font-size: 1.28rem;
-  font-weight: 700;
-  letter-spacing: 0.01em;
+  font-size: clamp(1.45rem, 2vw, 2rem);
+  font-weight: 800;
+  letter-spacing: 0.03em;
   box-shadow:
     inset 0 1px 0 rgba(255, 236, 240, 0.34),
-    0 24px 68px rgba(98, 16, 33, 0.32),
-    0 0 38px rgba(234, 62, 89, 0.18);
+    0 34px 94px rgba(98, 16, 33, 0.4),
+    0 0 56px rgba(234, 62, 89, 0.24);
   cursor: pointer;
   pointer-events: auto;
   transform: translateY(18px) scale(0.96);
   transition:
-    transform 240ms ease,
+    transform 220ms ease,
     box-shadow 220ms ease,
-    filter 220ms ease;
+    filter 220ms ease,
+    opacity 180ms ease;
 }
 
 .honorableSkipOverlay.is-visible .honorableSkipButton {
   transform: translateY(0) scale(1);
-  animation: honorableSkipBreath 2.4s ease-in-out infinite;
+  animation: honorableSkipBreath 1.8s ease-in-out infinite;
 }
 
 .honorableSkipButton:hover {
-  filter: brightness(1.05);
+  filter: brightness(1.08);
   box-shadow:
     inset 0 1px 0 rgba(255, 236, 240, 0.34),
-    0 28px 74px rgba(112, 18, 38, 0.36),
-    0 0 46px rgba(234, 62, 89, 0.24);
+    0 40px 104px rgba(112, 18, 38, 0.42),
+    0 0 66px rgba(234, 62, 89, 0.28);
 }
 
 .honorableSkipButton:active {
@@ -1801,67 +1857,159 @@ a {
   min-height: calc(100vh - 132px);
   overflow: hidden;
   display: flex;
-  align-items: center;
+  align-items: stretch;
   justify-content: center;
-  padding: 24px 0;
+  padding: 20px 0 8px;
 }
 
 .creditsGlow {
   position: absolute;
-  inset: 12% 20% auto;
-  height: 54%;
+  inset: 10% 18% auto;
+  height: 58%;
   border-radius: 999px;
   background:
-    radial-gradient(circle at 50% 24%, rgba(150, 118, 255, 0.22), transparent 46%),
-    radial-gradient(circle at 50% 68%, rgba(121, 229, 255, 0.08), transparent 46%);
-  filter: blur(54px);
-  opacity: 0.92;
+    radial-gradient(circle at 50% 24%, rgba(150, 118, 255, 0.18), transparent 44%),
+    radial-gradient(circle at 50% 70%, rgba(121, 229, 255, 0.07), transparent 48%);
+  filter: blur(66px);
+  opacity: 0.84;
   pointer-events: none;
+}
+
+.creditsFrame {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 820px);
+  border: 1px solid rgba(202, 214, 239, 0.1);
+  border-radius: 34px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.012)),
+    linear-gradient(180deg, rgba(3, 6, 14, 0.92), rgba(4, 8, 18, 0.88));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 30px 90px rgba(0, 0, 0, 0.42);
+  overflow: hidden;
+  transform: translateZ(0);
+}
+
+.creditsFrame::before,
+.creditsFrame::after {
+  content: "";
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  z-index: 2;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(219, 228, 248, 0.24), transparent);
+  pointer-events: none;
+}
+
+.creditsFrame::before {
+  top: 76px;
+}
+
+.creditsFrame::after {
+  bottom: 28px;
+  opacity: 0.5;
+}
+
+.creditsHeader {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  gap: 10px;
+  justify-items: center;
+  padding: 26px 24px 24px;
+  text-align: center;
+}
+
+.creditsKicker {
+  color: rgba(194, 207, 231, 0.56);
+  font-size: 0.72rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+}
+
+.creditsLead {
+  margin: 0;
+  color: rgba(248, 250, 255, 0.96);
+  font-size: clamp(1.2rem, 2.4vw, 1.65rem);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
 }
 
 .creditsViewport {
   position: relative;
   z-index: 1;
-  width: min(100%, 760px);
+  width: 100%;
   height: calc(100vh - 190px);
   overflow: hidden;
-  mask-image: linear-gradient(180deg, transparent 0%, black 14%, black 78%, transparent 100%);
+  padding: 0 28px;
+  mask-image: linear-gradient(180deg, transparent 0%, black 10%, black 82%, transparent 100%);
+  transform: translateZ(0);
 }
 
 .creditsRoll {
   display: grid;
+  gap: 48px;
   justify-items: center;
-  gap: 32px;
-  padding-top: 100%;
-  animation: creditsRoll 14s linear forwards;
+  transform: translate3d(0, var(--credits-start-offset, 100%), 0);
+  will-change: transform;
+  backface-visibility: hidden;
+  contain: layout paint;
 }
 
-.creditsIntro,
-.creditsOutro {
-  color: rgba(243, 247, 255, 0.92);
-  font-size: clamp(1.4rem, 3vw, 2.2rem);
-  letter-spacing: 0.16em;
+.creditsRoll.is-running {
+  animation: creditsRoll var(--credits-duration, 18000ms) linear forwards;
+}
+
+.creditsSection {
+  display: grid;
+  gap: 22px;
+  width: min(100%, 34rem);
+}
+
+.creditsSectionTitle {
+  color: rgba(244, 247, 255, 0.95);
+  font-size: clamp(1.3rem, 2.6vw, 1.9rem);
+  letter-spacing: 0.18em;
+  text-align: center;
   text-transform: uppercase;
 }
 
 .creditsBlock {
   display: grid;
-  gap: 10px;
+  gap: 12px;
   text-align: center;
 }
 
 .creditsLabel {
-  color: rgba(196, 208, 236, 0.58);
-  font-size: 0.76rem;
-  letter-spacing: 0.24em;
+  color: rgba(196, 208, 236, 0.52);
+  font-size: 0.72rem;
+  letter-spacing: 0.28em;
   text-transform: uppercase;
 }
 
+.creditsValueGroup {
+  display: grid;
+  gap: 6px;
+}
+
 .creditsValue {
-  max-width: 34rem;
-  color: rgba(244, 247, 255, 0.94);
-  font-size: clamp(1.2rem, 2.4vw, 1.7rem);
-  line-height: 1.5;
+  color: rgba(244, 247, 255, 0.92);
+  font-size: clamp(1.16rem, 2.4vw, 1.56rem);
+  line-height: 1.62;
+  text-wrap: balance;
+}
+
+.creditsOutro {
+  display: grid;
+  gap: 10px;
+  justify-items: center;
+  padding-bottom: 28px;
+  color: rgba(243, 247, 255, 0.92);
+  font-size: clamp(1.15rem, 2.5vw, 1.7rem);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
 }
 
 .rewardCard {
@@ -2077,16 +2225,16 @@ a {
     transform: scale(1);
     box-shadow:
       inset 0 1px 0 rgba(255, 236, 240, 0.34),
-      0 24px 68px rgba(98, 16, 33, 0.32),
-      0 0 38px rgba(234, 62, 89, 0.18);
+      0 34px 94px rgba(98, 16, 33, 0.4),
+      0 0 56px rgba(234, 62, 89, 0.24);
   }
 
   50% {
-    transform: scale(1.035);
+    transform: scale(1.048);
     box-shadow:
       inset 0 1px 0 rgba(255, 236, 240, 0.34),
-      0 28px 78px rgba(112, 18, 38, 0.36),
-      0 0 54px rgba(234, 62, 89, 0.26);
+      0 42px 112px rgba(112, 18, 38, 0.46),
+      0 0 72px rgba(234, 62, 89, 0.3);
   }
 }
 
@@ -2104,11 +2252,11 @@ a {
 
 @keyframes creditsRoll {
   from {
-    transform: translateY(12%);
+    transform: translate3d(0, var(--credits-start-offset, 100%), 0);
   }
 
   to {
-    transform: translateY(-92%);
+    transform: translate3d(0, var(--credits-end-offset, -100%), 0);
   }
 }
 
@@ -2196,6 +2344,10 @@ a {
     padding-bottom: 16px;
   }
 
+  .container-finale {
+    padding: 10px 10px 10px;
+  }
+
   .heroScreen {
     min-height: calc(100vh - 114px);
     gap: 26px;
@@ -2242,34 +2394,78 @@ a {
   }
 
   .honorableScene {
+    min-height: calc(100vh - 20px);
+    height: calc(100vh - 20px);
+  }
+
+  .creditsScreen {
     min-height: calc(100vh - 114px);
-    padding: 18px 0;
+    padding: 14px 0 4px;
+  }
+
+  .creditsFrame {
+    border-radius: 26px;
+  }
+
+  .creditsHeader {
+    padding: 22px 18px 18px;
+  }
+
+  .creditsFrame::before {
+    top: 66px;
+    left: 18px;
+    right: 18px;
+  }
+
+  .creditsFrame::after {
+    left: 18px;
+    right: 18px;
+    bottom: 18px;
+  }
+
+  .creditsViewport {
+    height: calc(100vh - 176px);
+    padding: 0 18px;
+    mask-image: linear-gradient(180deg, transparent 0%, black 8%, black 84%, transparent 100%);
+  }
+
+  .creditsRoll {
+    gap: 40px;
+  }
+
+  .creditsSection {
+    width: min(100%, 28rem);
+    gap: 18px;
   }
 
   .honorablePhotoStage {
-    min-height: calc(100vh - 144px);
-    padding: 14px;
-  }
-
-  .honorableImagePanel {
-    min-height: 0;
+    min-height: 100%;
+    height: 100%;
+    border-radius: 28px;
   }
 
   .honorableImage {
-    min-height: 300px;
+    min-height: 0;
     max-height: none;
+    object-position: center 22%;
   }
 
   .honorableImage-full {
-    min-height: calc(100vh - 172px);
+    min-height: 100%;
   }
 
   .honorableCopy {
+    left: 12px;
+    width: calc(100% - 24px);
+    bottom: 12px;
+    max-width: none;
+    padding: 14px;
     min-height: 0;
+    border-radius: 22px;
   }
 
   .honorableTitle {
-    font-size: clamp(2rem, 9vw, 2.8rem);
+    font-size: clamp(1.86rem, 8vw, 2.6rem);
   }
 
   .honorableSceneMeta {
@@ -2283,17 +2479,18 @@ a {
   }
 
   .honorableText {
-    min-height: 12.5rem;
-    font-size: 0.95rem;
-    line-height: 1.74;
+    min-height: 2.8rem;
+    font-size: 0.8rem;
+    line-height: 1.48;
   }
 
   .honorableSkipButton {
     width: 100%;
-    max-width: 320px;
+    max-width: 420px;
     min-width: 0;
-    min-height: 82px;
-    font-size: 1.12rem;
+    min-height: 112px;
+    padding: 0 28px;
+    font-size: 1.34rem;
   }
 
   .floatingPlayer {

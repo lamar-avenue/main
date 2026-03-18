@@ -29,6 +29,7 @@ export default function App() {
   const [toast, setToast] = useState<ToastState>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(0.3);
+  const [activeSceneAudioSourceId, setActiveSceneAudioSourceId] = useState<string | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const autoplayRetryBound = useRef(false);
   const previousVolumeRef = useRef(0.3);
@@ -38,7 +39,7 @@ export default function App() {
 
   const { step, submit, reset, state, total } = useQuest();
   const isVideoStep = screen === "quest" && !!step?.blocks?.some((block) => block.type === "video");
-  const isBackgroundSuppressed = screen === "honorable" || screen === "credits" || isVideoStep;
+  const isBackgroundSuppressed = screen === "honorable" || screen === "credits" || isVideoStep || activeSceneAudioSourceId !== null;
   const heroImage = useMemo(() => resolveMediaSrc("/media/hero-start.jpg"), []);
   const backgroundAudioSrc = backgroundAudioBlock ? resolveMediaSrc(backgroundAudioBlock.src) : null;
 
@@ -92,8 +93,14 @@ export default function App() {
     if (!state.done) return;
     setToast(null);
     setIsHonorableExiting(false);
+    setActiveSceneAudioSourceId(null);
     setScreen("honorable");
   }, [state.done]);
+
+  useEffect(() => {
+    if (screen === "quest") return;
+    setActiveSceneAudioSourceId(null);
+  }, [screen]);
 
   useEffect(() => {
     const glow = mouseGlowRef.current;
@@ -269,7 +276,7 @@ export default function App() {
           />
         )}
 
-        {screen !== "intro" && (
+        {screen !== "intro" && screen !== "honorable" && (
           <div className="floatingPlayer glowPanel">
             <button className="audioToggle" type="button" onClick={toggleAudio} aria-label={isPlaying ? "Пауза" : "Воспроизвести"}>
               <AudioPlayIcon playing={isPlaying} />
@@ -305,7 +312,7 @@ export default function App() {
           </div>
         )}
 
-        <div className={`container ${screen === "intro" ? "container-intro" : ""}`}>
+        <div className={`container ${screen === "intro" ? "container-intro" : ""} ${screen === "honorable" || screen === "credits" ? "container-finale" : ""}`}>
           {screen === "intro" && (
             <HeroScreen
               heroImage={heroImage}
@@ -329,6 +336,7 @@ export default function App() {
                 onToast={notify}
                 onSubmit={(value) => submit(value)}
                 onReset={handleReset}
+                onSceneAudioStateChange={setActiveSceneAudioSourceId}
               />
             </div>
           )}
