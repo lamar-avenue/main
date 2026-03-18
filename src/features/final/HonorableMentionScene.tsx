@@ -2,7 +2,6 @@ import { useEffect, useId, useMemo, useState } from "react";
 import { resolveMediaSrc } from "../quest/media";
 import { useDelayedReveal } from "./useDelayedReveal";
 import { useSpeechVoiceover } from "./useSpeechVoiceover";
-import { useTypewriterText } from "./useTypewriterText";
 
 type HonorableMentionSceneProps = {
   isExiting: boolean;
@@ -19,7 +18,6 @@ export default function HonorableMentionScene({ isExiting, onSkip }: HonorableMe
   const [previousVoiceVolume, setPreviousVoiceVolume] = useState(0.88);
   const showSkip = useDelayedReveal(5000);
   const imageFallbackSrc = useMemo(() => resolveMediaSrc("/media/honorable-mention-photo.png"), []);
-  const { text, isComplete } = useTypewriterText(HONORABLE_COPY);
   const isSpeechSupported = typeof window !== "undefined" && "speechSynthesis" in window;
 
   useSpeechVoiceover(HONORABLE_COPY, isSpeechSupported ? voiceVolume : 0, sourceId);
@@ -71,43 +69,26 @@ export default function HonorableMentionScene({ isExiting, onSkip }: HonorableMe
           }}
         />
 
-        <div className="honorableCopy glowPanel">
-          <div className="sectionBadge">Honorable Mention</div>
-          <div className="honorableSceneMeta">
-            <h1 className="honorableTitle">Для Марка</h1>
-
-            <div className="honorableAudioControl glowInset">
-              <button
-                className={`honorableMuteButton ${voiceVolume === 0 ? "is-muted" : ""}`}
-                type="button"
-                onClick={toggleMute}
-                aria-label={voiceVolume === 0 ? "Включить озвучку honorable mention" : "Выключить озвучку honorable mention"}
-              >
-                <AudioVolumeIcon muted={voiceVolume === 0} />
-              </button>
-              <input
-                className="slider volumeSlider honorableVolumeSlider"
-                type="range"
-                min="0"
-                max="1"
-                step="0.01"
-                value={voiceVolume}
-                onChange={(event) => handleVolumeChange(Number(event.target.value))}
-                aria-label="Громкость honorable mention"
-              />
-            </div>
-          </div>
-
-          <p className="honorableText" aria-live="polite">
-            {text}
-            <span className={`honorableCursor ${isComplete ? "is-hidden" : ""}`} aria-hidden="true">
-              |
-            </span>
-          </p>
-
-          <div className="sceneAudioMeta honorableAudioMeta">
-            <span className="sceneAudioLabel">Honorable voiceover</span>
-            <span className="sceneAudioStatus">{!isSpeechSupported ? "Озвучка недоступна" : voiceVolume === 0 ? "Без звука" : "Идёт озвучка"}</span>
+        <div className="honorableControlDock">
+          <div className="honorableAudioControl glowInset">
+            <button
+              className={`honorableMuteButton ${voiceVolume === 0 ? "is-muted" : ""}`}
+              type="button"
+              onClick={toggleMute}
+              aria-label={voiceVolume === 0 ? "Включить озвучку honorable mention" : "Выключить озвучку honorable mention"}
+            >
+              <AudioVolumeIcon muted={voiceVolume === 0} />
+            </button>
+            <input
+              className="slider volumeSlider honorableVolumeSlider"
+              type="range"
+              min="0"
+              max="1"
+              step="0.01"
+              value={voiceVolume}
+              onChange={(event) => handleVolumeChange(Number(event.target.value))}
+              aria-label="Громкость honorable mention"
+            />
           </div>
         </div>
       </div>
