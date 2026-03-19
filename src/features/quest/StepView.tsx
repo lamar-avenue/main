@@ -44,10 +44,10 @@ export default function StepView({
 
   const answerModeLabel = step.answerMode ?? "exact";
   const progressPercent = Math.round((stepNumber / total) * 100);
-  const feedbackLabel = feedbackTone === "idle" ? "Р–РґС‘Рј РѕС‚РІРµС‚" : feedbackTone === "success" ? "Р’РµСЂРЅРѕ" : "РќРµРІРµСЂРЅРѕ";
+  const feedbackLabel = feedbackTone === "idle" ? "Ждём ответ" : feedbackTone === "success" ? "Верно" : "Неверно";
   const stepAnswerPreview = useMemo(() => {
     if (answerModeLabel === "keywords") {
-      return step.keywords?.join(" + ") ?? "РЅР°Р±РѕСЂ РєР»СЋС‡РµРІС‹С… СЃР»РѕРІ";
+      return step.keywords?.join(" + ") ?? "набор ключевых слов";
     }
 
     return Array.isArray(step.answer) ? step.answer.join(" / ") : step.answer;
@@ -55,7 +55,7 @@ export default function StepView({
 
   function showError(message: string) {
     setFeedbackTone("error");
-    onToast("error", "РќРµРІРµСЂРЅС‹Р№ РѕС‚РІРµС‚", message);
+    onToast("error", "Неверный ответ", message);
   }
 
   function submitValue(nextValue: string) {
@@ -66,19 +66,19 @@ export default function StepView({
     setValue(nextValue);
 
     if (!trimmed) {
-      showError("Р’РІРµРґРёС‚Рµ РѕС‚РІРµС‚ РёР»Рё РІС‹Р±РµСЂРёС‚Рµ РѕРґРёРЅ РёР· РІР°СЂРёР°РЅС‚РѕРІ.");
+      showError("Введите ответ или выберите один из вариантов.");
       return;
     }
 
     const ok = isCorrect(nextValue, step);
     if (!ok) {
-      showError("РџРѕРїСЂРѕР±СѓР№ РґСЂСѓРіРѕР№ РІР°СЂРёР°РЅС‚.");
+      showError("Попробуй другой вариант.");
       return;
     }
 
     setIsSubmitting(true);
     setFeedbackTone("success");
-    onToast("success", "Р’РµСЂРЅРѕ", "РџРµСЂРµС…РѕРґРёРј Рє СЃР»РµРґСѓСЋС‰РµРјСѓ С€Р°РіСѓ.");
+    onToast("success", "Верно", "Переходим к следующему шагу.");
 
     window.requestAnimationFrame(() => {
       onSubmit(nextValue);
@@ -90,7 +90,7 @@ export default function StepView({
       <div className="questMain glowPanel">
         <div className="questionHeader">
           <div>
-            <div className="sectionBadge">РЁР°Рі {stepNumber}</div>
+            <div className="sectionBadge">Шаг {stepNumber}</div>
             <h1 className="questionTitle">{step.title}</h1>
           </div>
           <div className="questionMeta">
@@ -103,7 +103,7 @@ export default function StepView({
           <div className="progressTrack">
             <div className="progressValue" style={{ width: `${progressPercent}%` }} />
           </div>
-          <span className="progressLabel">{progressPercent}% СЃРёРЅС…СЂРѕРЅРёР·РёСЂРѕРІР°РЅРѕ</span>
+          <span className="progressLabel">{progressPercent}% синхронизировано</span>
         </div>
 
         <div className="questionIntro glowInset">
@@ -147,7 +147,7 @@ export default function StepView({
         )}
 
         <div className="inputPanel glowInset">
-          <div className="fieldLabel">Р СѓС‡РЅРѕР№ РІРІРѕРґ</div>
+          <div className="fieldLabel">Ручной ввод</div>
           <div className="field">
             <input
               className="input"
@@ -162,28 +162,28 @@ export default function StepView({
                   submitValue(value);
                 }
               }}
-              placeholder="Р’РІРµРґРёС‚Рµ РѕС‚РІРµС‚ РІСЂСѓС‡РЅСѓСЋ"
+              placeholder="Введите ответ вручную"
               autoFocus
             />
             <button className="btn btn-primary" type="button" disabled={isSubmitting} onClick={() => submitValue(value)}>
-              РџСЂРѕРІРµСЂРёС‚СЊ
+              Проверить
             </button>
             <button className="btn btn-secondary" type="button" onClick={() => setShowHint((current) => !current)}>
-              {showHint ? "РЎРєСЂС‹С‚СЊ РїРѕРґСЃРєР°Р·РєСѓ" : "РџРѕРєР°Р·Р°С‚СЊ РїРѕРґСЃРєР°Р·РєСѓ"}
+              {showHint ? "Скрыть подсказку" : "Показать подсказку"}
             </button>
           </div>
         </div>
 
         {showHint && step.hint && (
           <div className="hintCard glowInset">
-            <div className="sectionBadge">РџРѕРґСЃРєР°Р·РєР°</div>
+            <div className="sectionBadge">Подсказка</div>
             <p>{step.hint}</p>
           </div>
         )}
       </div>
 
       <aside className="questSidebar glowPanel">
-        <div className="sectionBadge">РЁРёС„СЂ / РїСЂРѕРіСЂРµСЃСЃ</div>
+        <div className="sectionBadge">Шифр / прогресс</div>
         <div className="sidebarValue">
           {String(stepNumber).padStart(2, "0")}
           <span>/ {String(total).padStart(2, "0")}</span>
@@ -193,16 +193,16 @@ export default function StepView({
         </div>
         <div className="sidebarMeta glowInset">
           <div className="systemRow">
-            <span>РџСЂРѕРІРµСЂРєР°</span>
+            <span>Проверка</span>
             <strong>{answerModeLabel}</strong>
           </div>
           <div className="systemRow">
-            <span>Р­С‚Р°Р»РѕРЅ</span>
+            <span>Эталон</span>
             <strong>{stepAnswerPreview}</strong>
           </div>
           <div className="systemRow">
-            <span>РџРѕРґСЃРєР°Р·РєР°</span>
-            <strong>{step.hint ? "Р”РѕСЃС‚СѓРїРЅР°" : "РЎРєСЂС‹С‚Р°"}</strong>
+            <span>Подсказка</span>
+            <strong>{step.hint ? "Доступна" : "Скрыта"}</strong>
           </div>
         </div>
         <div className="cipherPanel glowInset">
@@ -211,7 +211,7 @@ export default function StepView({
           <div className="cipherLine" />
         </div>
         <button className="btn btn-secondary sidebarReset" type="button" onClick={onReset}>
-          РЎР±СЂРѕСЃРёС‚СЊ РєРІРµСЃС‚
+          Сбросить квест
         </button>
       </aside>
     </section>
@@ -478,8 +478,8 @@ function VideoMedia({
         />
         {cinematic && isPausedAtDecision && (
           <div className="decisionOverlay">
-            <span className="overlayChip">РўРѕС‡РєР° РІС‹Р±РѕСЂР°</span>
-            <span className="overlayText">Р’РёРґРµРѕ РѕСЃС‚Р°РЅРѕРІР»РµРЅРѕ РЅР° РєР»СЋС‡РµРІРѕРј РјРѕРјРµРЅС‚Рµ. Р’С‹Р±РµСЂРё, С‡С‚Рѕ Р±СѓРґРµС‚ РґР°Р»СЊС€Рµ.</span>
+            <span className="overlayChip">Точка выбора</span>
+            <span className="overlayText">Видео остановлено на ключевом моменте. Выбери, что будет дальше.</span>
           </div>
         )}
       </div>

@@ -73,10 +73,8 @@ export default function HeroScreen({
         </div>
 
         <button className="heroLaunchButton" type="button" onClick={onStart} disabled={isTransitioning}>
-          <span>Начать Квест</span>
-          <span className="heroLaunchArrow" aria-hidden="true">
-            →
-          </span>
+          <span>Начать квест</span>
+          <span className="heroLaunchArrow" aria-hidden="true">{"->"}</span>
         </button>
       </div>
 
