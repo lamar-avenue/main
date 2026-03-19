@@ -234,6 +234,7 @@ export default function App() {
     setIsIntroTransitioning(false);
     setScreen("intro");
     setToast(null);
+    setActiveSceneAudioSourceId(null);
     notify("neutral", "Прогресс сброшен", "Можно начать квест заново.");
   }
 
@@ -346,38 +347,26 @@ export default function App() {
             </div>
           )}
 
-          {screen === "honorable" && (
-            <HonorableMentionScene isExiting={isHonorableExiting} onSkip={handleFinishHonorable} />
-          )}
+          {screen === "honorable" && <HonorableMentionScene isExiting={isHonorableExiting} onSkip={handleFinishHonorable} />}
 
           {screen === "credits" && <CreditsScreen onComplete={() => setScreen("done")} />}
 
           {screen === "done" && (
             <section className="doneLayout glowPanel screenEnter">
-              <div className="sectionBadge">Финал</div>
-              <h1 className="heroTitle">Квест завершён. Финальный подарок разблокирован.</h1>
-              <p className="heroSubtitle">
-                Сцена honorable mention уже показана. Этот экран остаётся чистым final complete state, куда можно вернуться
-                после паузы, улыбки и достойного уважения к легендарному кадру.
-              </p>
+              <div className="doneInner">
+                <div className="sectionBadge">Финал</div>
+                <h1 className="doneTitle">Квест завершён.</h1>
+                <p className="doneSubtitle">
+                  Honorable mention показан, титры прошли, и история дошла до своей спокойной красивой финальной точки.
+                </p>
+                <div className="doneAccentLine" aria-hidden="true" />
+                <p className="doneNote">Если захочется пройти всё заново, можно мягко вернуться в самое начало.</p>
 
-              <div className="doneCardGrid">
-                <a className="rewardCard glowInset" href="https://example.com" target="_blank" rel="noreferrer">
-                  <span className="sectionBadge">Подарок</span>
-                  <strong>Открыть финальный сюрприз</strong>
-                  <p>Переход к основному подарку в новой вкладке.</p>
-                </a>
-                <div className="rewardCard glowInset">
-                  <span className="sectionBadge">Прогресс</span>
-                  <strong>100% синхронизировано</strong>
-                  <p>Все вопросы пройдены. Финальная сцена завершена.</p>
+                <div className="heroActions doneActions">
+                  <button className="btn btn-primary finalPrimaryAction" type="button" onClick={handleReset}>
+                    Вернуться в начало
+                  </button>
                 </div>
-              </div>
-
-              <div className="heroActions">
-                <button className="btn btn-primary" type="button" onClick={handleReset}>
-                  Начать заново
-                </button>
               </div>
             </section>
           )}
