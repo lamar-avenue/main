@@ -243,7 +243,10 @@ export default function App() {
 
     setIsIntroTransitioning(true);
     window.setTimeout(() => {
-      setScreen(state.done ? "done" : "quest");
+      previousDoneRef.current = false;
+      reset();
+      setToast(null);
+      setScreen("quest");
       setIsIntroTransitioning(false);
     }, 360);
   }
