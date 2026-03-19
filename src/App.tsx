@@ -38,8 +38,9 @@ export default function App() {
   const glowFrameRef = useRef<number | null>(null);
 
   const { step, submit, reset, state, total } = useQuest();
+  const previousDoneRef = useRef(state.done);
   const isVideoStep = screen === "quest" && !!step?.blocks?.some((block) => block.type === "video");
-  const isBackgroundSuppressed = screen === "honorable" || screen === "credits" || isVideoStep || activeSceneAudioSourceId !== null;
+  const isBackgroundSuppressed = screen === "honorable" || isVideoStep || activeSceneAudioSourceId !== null;
   const heroImage = useMemo(() => resolveMediaSrc("/media/hero-start.jpg"), []);
   const backgroundAudioSrc = backgroundAudioBlock ? resolveMediaSrc(backgroundAudioBlock.src) : null;
 
@@ -90,7 +91,11 @@ export default function App() {
   }, [isBackgroundSuppressed, isPlaying, volume]);
 
   useEffect(() => {
-    if (!state.done) return;
+    const wasDone = previousDoneRef.current;
+    previousDoneRef.current = state.done;
+
+    if (!state.done || wasDone) return;
+
     setToast(null);
     setIsHonorableExiting(false);
     setActiveSceneAudioSourceId(null);
@@ -237,7 +242,7 @@ export default function App() {
 
     setIsIntroTransitioning(true);
     window.setTimeout(() => {
-      setScreen("quest");
+      setScreen(state.done ? "done" : "quest");
       setIsIntroTransitioning(false);
     }, 360);
   }
