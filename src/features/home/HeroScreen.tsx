@@ -24,9 +24,13 @@ export default function HeroScreen({
   return (
     <section className={`heroScreen screenEnter ${isTransitioning ? "is-exiting" : ""}`}>
       <div className="heroSceneGlow" aria-hidden="true">
+        <div className="heroSceneHalo" />
         <div className="heroSceneBeam heroSceneBeam-primary" />
         <div className="heroSceneBeam heroSceneBeam-secondary" />
         <div className="heroSceneBeam heroSceneBeam-orbit" />
+        <div className="heroSceneRibbon heroSceneRibbon-left" />
+        <div className="heroSceneRibbon heroSceneRibbon-right" />
+        <div className="heroScenePetalMist" />
       </div>
 
       <header className="heroHeader">
@@ -64,24 +68,28 @@ export default function HeroScreen({
         </div>
 
         <div className="heroTextBlock">
+          <div className="heroEyebrow">Soft drama. No rush. Gift ahead.</div>
           <h1 className="heroMainTitle">С Днем Рождения, Марк!</h1>
           <p className="heroDescription">
-            Небольшой cinematic-квест, собранный специально для тебя.
+            Это квест без суеты, но с характером.
             <br />
-            Включай музыку, иди по знакам и дойди до подарка, спрятанного в финале.
+            Немного свечения, немного иронии, немного сакуры, и подарок, который спокойно ждет в финале.
           </p>
         </div>
 
-        <button className="heroLaunchButton" type="button" onClick={onStart} disabled={isTransitioning}>
-          <span>Начать квест</span>
-          <span className="heroLaunchArrow" aria-hidden="true">{"->"}</span>
-        </button>
+        <div className="heroLaunchGroup">
+          <button className="heroLaunchButton" type="button" onClick={onStart} disabled={isTransitioning}>
+            <span className="heroLaunchLabel">Начать квест</span>
+            <span className="heroLaunchArrow" aria-hidden="true">{"->"}</span>
+          </button>
+          <p className="heroLaunchHint">Без таймера. Просто красиво войди в историю.</p>
+        </div>
       </div>
 
       <div className="heroFooterMeta">
-        <span>petals in motion</span>
-        <span>private birthday signal</span>
-        <span>gift sequence armed</span>
+        <span>petals take their time</span>
+        <span>velvet signal online</span>
+        <span>gift with a poker face</span>
       </div>
     </section>
   );

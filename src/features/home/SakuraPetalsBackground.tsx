@@ -7,26 +7,34 @@ const PETAL_SHAPES = [
 ];
 
 const PETALS = [
-  { left: "5%", size: 30, duration: 18, delay: -4, drift: 52, blur: 0.6, opacity: 0.74, depth: "front", tone: 0, sway: 6 },
-  { left: "12%", size: 22, duration: 22, delay: -10, drift: 64, blur: 0, opacity: 0.68, depth: "mid", tone: 1, sway: -5 },
-  { left: "19%", size: 26, duration: 20, delay: -7, drift: 38, blur: 0.3, opacity: 0.64, depth: "mid", tone: 2, sway: 7 },
-  { left: "28%", size: 18, duration: 24, delay: -15, drift: 46, blur: 1.2, opacity: 0.46, depth: "back", tone: 1, sway: -4 },
-  { left: "31%", size: 36, duration: 27, delay: -17, drift: 58, blur: 0.1, opacity: 0.56, depth: "near", tone: 0, sway: 9 },
-  { left: "36%", size: 32, duration: 21, delay: -2, drift: 60, blur: 0.2, opacity: 0.72, depth: "front", tone: 0, sway: 8 },
-  { left: "44%", size: 24, duration: 19, delay: -12, drift: 48, blur: 0.1, opacity: 0.76, depth: "mid", tone: 2, sway: -6 },
-  { left: "52%", size: 20, duration: 23, delay: -5, drift: 54, blur: 1.4, opacity: 0.5, depth: "back", tone: 1, sway: 5 },
-  { left: "58%", size: 28, duration: 26, delay: -3, drift: 34, blur: 0.5, opacity: 0.62, depth: "mid", tone: 0, sway: -7 },
-  { left: "65%", size: 30, duration: 18, delay: -9, drift: 42, blur: 0.2, opacity: 0.72, depth: "front", tone: 2, sway: 6 },
-  { left: "72%", size: 34, duration: 25, delay: -1, drift: 62, blur: 0.15, opacity: 0.54, depth: "near", tone: 2, sway: -8 },
-  { left: "73%", size: 21, duration: 25, delay: -14, drift: 68, blur: 1.1, opacity: 0.48, depth: "back", tone: 1, sway: -5 },
-  { left: "80%", size: 31, duration: 20, delay: -6, drift: 56, blur: 0, opacity: 0.74, depth: "front", tone: 0, sway: 7 },
-  { left: "88%", size: 25, duration: 22, delay: -11, drift: 44, blur: 0.4, opacity: 0.64, depth: "mid", tone: 2, sway: -6 },
-  { left: "93%", size: 18, duration: 24, delay: -8, drift: 28, blur: 0.9, opacity: 0.44, depth: "back", tone: 1, sway: 4 },
+  { left: "4%", size: 30, duration: 24, delay: -4, drift: 52, blur: 0.6, opacity: 0.74, depth: "front", tone: 0, sway: 6 },
+  { left: "9%", size: 17, duration: 28, delay: -15, drift: 34, blur: 1.2, opacity: 0.38, depth: "back", tone: 1, sway: -3 },
+  { left: "12%", size: 22, duration: 29, delay: -10, drift: 64, blur: 0, opacity: 0.68, depth: "mid", tone: 1, sway: -5 },
+  { left: "18%", size: 26, duration: 25, delay: -7, drift: 38, blur: 0.3, opacity: 0.64, depth: "mid", tone: 2, sway: 7 },
+  { left: "25%", size: 18, duration: 31, delay: -13, drift: 46, blur: 1.2, opacity: 0.46, depth: "back", tone: 1, sway: -4 },
+  { left: "31%", size: 38, duration: 33, delay: -17, drift: 58, blur: 0.1, opacity: 0.56, depth: "near", tone: 0, sway: 9 },
+  { left: "36%", size: 32, duration: 27, delay: -2, drift: 60, blur: 0.2, opacity: 0.72, depth: "front", tone: 0, sway: 8 },
+  { left: "43%", size: 20, duration: 26, delay: -19, drift: 29, blur: 0.7, opacity: 0.5, depth: "back", tone: 2, sway: 4 },
+  { left: "46%", size: 24, duration: 23, delay: -12, drift: 48, blur: 0.1, opacity: 0.76, depth: "mid", tone: 2, sway: -6 },
+  { left: "52%", size: 20, duration: 30, delay: -5, drift: 54, blur: 1.4, opacity: 0.5, depth: "back", tone: 1, sway: 5 },
+  { left: "57%", size: 29, duration: 32, delay: -8, drift: 36, blur: 0.3, opacity: 0.58, depth: "mid", tone: 0, sway: -6 },
+  { left: "63%", size: 30, duration: 24, delay: -9, drift: 42, blur: 0.2, opacity: 0.72, depth: "front", tone: 2, sway: 6 },
+  { left: "69%", size: 19, duration: 29, delay: -21, drift: 50, blur: 1, opacity: 0.42, depth: "back", tone: 1, sway: -5 },
+  { left: "72%", size: 35, duration: 34, delay: -1, drift: 62, blur: 0.15, opacity: 0.54, depth: "near", tone: 2, sway: -8 },
+  { left: "78%", size: 24, duration: 28, delay: -14, drift: 68, blur: 1.1, opacity: 0.48, depth: "back", tone: 1, sway: -5 },
+  { left: "82%", size: 31, duration: 25, delay: -6, drift: 56, blur: 0, opacity: 0.74, depth: "front", tone: 0, sway: 7 },
+  { left: "88%", size: 25, duration: 27, delay: -11, drift: 44, blur: 0.4, opacity: 0.64, depth: "mid", tone: 2, sway: -6 },
+  { left: "93%", size: 18, duration: 30, delay: -8, drift: 28, blur: 0.9, opacity: 0.44, depth: "back", tone: 1, sway: 4 },
+  { left: "96%", size: 22, duration: 26, delay: -18, drift: 24, blur: 0.2, opacity: 0.52, depth: "mid", tone: 0, sway: 5 },
 ];
 
-export default function SakuraPetalsBackground() {
+type SakuraPetalsBackgroundProps = {
+  variant?: "ambient" | "hero";
+};
+
+export default function SakuraPetalsBackground({ variant = "ambient" }: SakuraPetalsBackgroundProps) {
   return (
-    <div className="sakuraLayer" aria-hidden="true">
+    <div className={`sakuraLayer sakuraLayer-${variant}`} aria-hidden="true">
       {PETALS.map((petal, index) => (
         <span
           key={index}

@@ -1,6 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import type { CSSProperties } from "react";
 import { quest } from "./data/quest";
+import type { QuestStep } from "./data/quest";
 import CreditsScreen from "./features/final/CreditsScreen";
+import { useUiSoundDesign } from "./features/audio/soundDesign";
 import HonorableMentionScene from "./features/final/HonorableMentionScene";
 import HeroScreen from "./features/home/HeroScreen";
 import SakuraPetalsBackground from "./features/home/SakuraPetalsBackground";
@@ -18,9 +21,60 @@ type ToastState = {
   message: string;
 } | null;
 
+type CinematicPause = {
+  key: string;
+  kicker: string;
+  title: string;
+  durationMs: number;
+};
+
 const backgroundAudioBlock = quest
   .flatMap((step) => step.blocks ?? [])
   .find((block) => block.type === "audio");
+
+function getCinematicPause(screen: Screen, step?: QuestStep): CinematicPause | null {
+  if (screen === "quest" && step) {
+    const hasVideoBlock = step.blocks?.some((block) => block.type === "video");
+
+    if (step.id === "1") {
+      return {
+        key: `quest-${step.id}`,
+        kicker: "Синхронизация",
+        title: "Маршрут открыт",
+        durationMs: 820,
+      };
+    }
+
+    if (hasVideoBlock) {
+      return {
+        key: `quest-${step.id}`,
+        kicker: "Ключевой кадр",
+        title: "Смотри внимательно",
+        durationMs: 920,
+      };
+    }
+  }
+
+  if (screen === "honorable") {
+    return {
+      key: "honorable",
+      kicker: "Пауза",
+      title: "Особый кадр",
+      durationMs: 980,
+    };
+  }
+
+  if (screen === "credits") {
+    return {
+      key: "credits",
+      kicker: "Финал",
+      title: "Последний свет перед титрами",
+      durationMs: 920,
+    };
+  }
+
+  return null;
+}
 
 export default function App() {
   const [screen, setScreen] = useState<Screen>("intro");
@@ -36,6 +90,11 @@ export default function App() {
   const resumeBackgroundAfterSuppressionRef = useRef(false);
   const mouseGlowRef = useRef<HTMLDivElement | null>(null);
   const glowFrameRef = useRef<number | null>(null);
+  const cinematicPauseTimeoutRef = useRef<number | null>(null);
+  const previousQuestStepKeyRef = useRef<string | null>(null);
+  const previousScreenRef = useRef<Screen>("intro");
+  const [cinematicPause, setCinematicPause] = useState<CinematicPause | null>(null);
+  const { playUiSound } = useUiSoundDesign();
 
   const { step, submit, reset, state, total } = useQuest();
   const previousDoneRef = useRef(state.done);
@@ -43,6 +102,36 @@ export default function App() {
   const isBackgroundSuppressed = screen === "honorable" || isVideoStep || activeSceneAudioSourceId !== null;
   const heroImage = useMemo(() => resolveMediaSrc("/media/hero-start.jpg"), []);
   const backgroundAudioSrc = backgroundAudioBlock ? resolveMediaSrc(backgroundAudioBlock.src) : null;
+
+  useEffect(() => {
+    return () => {
+      if (cinematicPauseTimeoutRef.current !== null) {
+        window.clearTimeout(cinematicPauseTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (screen !== "quest" || !step) {
+      previousQuestStepKeyRef.current = null;
+      return;
+    }
+
+    const nextStepKey = `${screen}-${step.id}`;
+    if (previousQuestStepKeyRef.current === nextStepKey) return;
+
+    previousQuestStepKeyRef.current = nextStepKey;
+    playUiSound("step-open");
+  }, [playUiSound, screen, step]);
+
+  useEffect(() => {
+    const previousScreen = previousScreenRef.current;
+    previousScreenRef.current = screen;
+
+    if (screen === "credits" && previousScreen !== "credits") {
+      playUiSound("credits-open");
+    }
+  }, [playUiSound, screen]);
 
   useEffect(() => {
     if (!toast) return;
@@ -53,6 +142,26 @@ export default function App() {
 
     return () => window.clearTimeout(timeoutId);
   }, [toast]);
+
+  useEffect(() => {
+    const nextPause = getCinematicPause(screen, step);
+
+    if (cinematicPauseTimeoutRef.current !== null) {
+      window.clearTimeout(cinematicPauseTimeoutRef.current);
+      cinematicPauseTimeoutRef.current = null;
+    }
+
+    if (!nextPause) {
+      setCinematicPause(null);
+      return;
+    }
+
+    setCinematicPause(nextPause);
+    cinematicPauseTimeoutRef.current = window.setTimeout(() => {
+      setCinematicPause((current) => (current?.key === nextPause.key ? null : current));
+      cinematicPauseTimeoutRef.current = null;
+    }, nextPause.durationMs);
+  }, [screen, step]);
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -181,6 +290,14 @@ export default function App() {
   }, []);
 
   function notify(tone: ToastTone, title: string, message: string) {
+    if (tone === "success") {
+      playUiSound("success");
+    }
+
+    if (tone === "error") {
+      playUiSound("error");
+    }
+
     setToast({ id: Date.now(), tone, title, message });
   }
 
@@ -243,10 +360,7 @@ export default function App() {
 
     setIsIntroTransitioning(true);
     window.setTimeout(() => {
-      previousDoneRef.current = false;
-      reset();
-      setToast(null);
-      setScreen("quest");
+      setScreen(state.done ? "done" : "quest");
       setIsIntroTransitioning(false);
     }, 360);
   }
@@ -254,6 +368,7 @@ export default function App() {
   function handleFinishHonorable() {
     if (isHonorableExiting) return;
 
+    playUiSound("skip");
     setIsHonorableExiting(true);
     window.setTimeout(() => {
       setScreen("credits");
@@ -268,7 +383,7 @@ export default function App() {
         <div className="aurora auroraPrimary" />
         <div className="aurora auroraSecondary" />
         <div className="aurora auroraAccent" />
-        <SakuraPetalsBackground />
+        <SakuraPetalsBackground variant={screen === "intro" ? "hero" : "ambient"} />
         <div ref={mouseGlowRef} className="mouseGlow" />
         <div className="grid" />
         <div className="vignette" />
@@ -321,6 +436,20 @@ export default function App() {
           </div>
         )}
 
+        {cinematicPause && (
+          <div
+            className="cinematicPauseOverlay"
+            style={{ "--cinematic-pause-duration": `${cinematicPause.durationMs}ms` } as CSSProperties}
+            aria-hidden="true"
+          >
+            <div className="cinematicPauseVeil" />
+            <div className="cinematicPauseCopy">
+              <div className="cinematicPauseKicker">{cinematicPause.kicker}</div>
+              <div className="cinematicPauseTitle">{cinematicPause.title}</div>
+            </div>
+          </div>
+        )}
+
         <div className={`container ${screen === "intro" ? "container-intro" : ""} ${screen === "honorable" || screen === "credits" ? "container-finale" : ""}`}>
           {screen === "intro" && (
             <HeroScreen
@@ -357,13 +486,22 @@ export default function App() {
           {screen === "done" && (
             <section className="doneLayout glowPanel screenEnter">
               <div className="doneInner">
-                <div className="sectionBadge">Финал</div>
-                <h1 className="doneTitle">Квест завершён.</h1>
-                <p className="doneSubtitle">
-                  Honorable mention показан, титры прошли, и история дошла до своей спокойной красивой финальной точки.
-                </p>
+                <div className="sectionBadge">Личное послание</div>
+                <h1 className="doneTitle">Для Марка, после титров.</h1>
+                <p className="doneSubtitle">Финальная записка, которая остаётся уже после honorable mention, музыки и всего остального шума.</p>
                 <div className="doneAccentLine" aria-hidden="true" />
-                <p className="doneNote">Если захочется пройти всё заново, можно мягко вернуться в самое начало.</p>
+
+                <div className="doneLetter">
+                  <p className="doneParagraph">
+                    Марк, это тестовый русский текст-заглушка для финального письма. Здесь потом может появиться настоящее личное послание, но уже сейчас экран должен ощущаться как тёплая пауза после всего квеста: без спешки, без служебного интерфейса, с красивой последней точкой.
+                  </p>
+                  <p className="doneParagraph">
+                    Можно оставить здесь немного иронии, немного нежности и немного того спокойного финального света, который остаётся после хорошей сцены. Пусть это будет не технический экран завершения, а короткая записка, которую хочется дочитать до конца.
+                  </p>
+                </div>
+
+                <p className="doneNote">С уважением к хорошему финалу и к человеку, ради которого всё это собиралось.</p>
+                <div className="doneSignature">Тестовая подпись, которую потом можно заменить.</div>
 
                 <div className="heroActions doneActions">
                   <button className="btn btn-primary finalPrimaryAction" type="button" onClick={handleReset}>

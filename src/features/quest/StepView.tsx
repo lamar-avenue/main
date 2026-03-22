@@ -4,11 +4,19 @@ import type { MediaBlock, QuestStep } from "../../data/quest";
 import { announceSceneAudioStart, subscribeToSceneAudioStart } from "../audio/sceneAudioBus";
 import { isCorrect } from "./answer";
 import { resolveMediaSrc } from "./media";
+import { useIdleStepAudio } from "./useIdleStepAudio";
 
 type FeedbackTone = "idle" | "success" | "error";
 type ToastTone = "neutral" | "success" | "error";
 
 type SceneAudioStateSetter = Dispatch<SetStateAction<string | null>>;
+const ERROR_FEEDBACK_VARIANTS = ["Не-а", "Почти", "Слишком просто", "Попробуй ещё раз", "Подумай как Марк"] as const;
+const EMPTY_ANSWER_MESSAGE = "Введите ответ или выберите один из вариантов.";
+const WRONG_ANSWER_MESSAGE = "Ответ не совпал. Попробуй другой вариант.";
+const IDLE_STATUS_LABEL = "Ждём ответ";
+const SUCCESS_STATUS_LABEL = "Верно";
+const ERROR_STATUS_LABEL = "Ответ не принят";
+const IDLE_HINT_AUDIO_SRC = "/media/question-idle-hint.mp3";
 
 export default function StepView({
   step,
@@ -32,6 +40,10 @@ export default function StepView({
   const [feedbackTone, setFeedbackTone] = useState<FeedbackTone>("idle");
   const [showHint, setShowHint] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [feedbackAccent, setFeedbackAccent] = useState<string | null>(null);
+  const [feedbackMessage, setFeedbackMessage] = useState("");
+  const errorFeedbackIndexRef = useRef(0);
+  const inlineFeedbackId = useId();
 
   useEffect(() => {
     setValue("");
@@ -39,12 +51,16 @@ export default function StepView({
     setFeedbackTone("idle");
     setShowHint(false);
     setIsSubmitting(false);
+    setFeedbackAccent(null);
+    setFeedbackMessage("");
     onSceneAudioStateChange(null);
   }, [onSceneAudioStateChange, step.id]);
 
   const answerModeLabel = step.answerMode ?? "exact";
   const progressPercent = Math.round((stepNumber / total) * 100);
-  const feedbackLabel = feedbackTone === "idle" ? "Ждём ответ" : feedbackTone === "success" ? "Верно" : "Неверно";
+  const feedbackLabel =
+    feedbackTone === "idle" ? IDLE_STATUS_LABEL : feedbackTone === "success" ? SUCCESS_STATUS_LABEL : ERROR_STATUS_LABEL;
+  const isOrdinaryTextQuestion = !step.blocks?.some((block) => block.type !== "text");
   const stepAnswerPreview = useMemo(() => {
     if (answerModeLabel === "keywords") {
       return step.keywords?.join(" + ") ?? "набор ключевых слов";
@@ -52,10 +68,23 @@ export default function StepView({
 
     return Array.isArray(step.answer) ? step.answer.join(" / ") : step.answer;
   }, [answerModeLabel, step.answer, step.keywords]);
+  const { audioRef: idleAudioRef, registerActivity: registerIdleActivity } = useIdleStepAudio({
+    enabled: isOrdinaryTextQuestion,
+    stepId: step.id,
+    onSceneAudioStateChange,
+  });
 
-  function showError(message: string) {
+  function getNextErrorAccent() {
+    const accent = ERROR_FEEDBACK_VARIANTS[errorFeedbackIndexRef.current % ERROR_FEEDBACK_VARIANTS.length];
+    errorFeedbackIndexRef.current += 1;
+    return accent;
+  }
+
+  function showError(message: string, accent: string = getNextErrorAccent()) {
     setFeedbackTone("error");
-    onToast("error", "Неверный ответ", message);
+    setFeedbackAccent(accent);
+    setFeedbackMessage(message);
+    onToast("error", accent, message);
   }
 
   function submitValue(nextValue: string) {
@@ -66,18 +95,20 @@ export default function StepView({
     setValue(nextValue);
 
     if (!trimmed) {
-      showError("Введите ответ или выберите один из вариантов.");
+      showError(EMPTY_ANSWER_MESSAGE, "Нужен ответ");
       return;
     }
 
     const ok = isCorrect(nextValue, step);
     if (!ok) {
-      showError("Попробуй другой вариант.");
+      showError(WRONG_ANSWER_MESSAGE);
       return;
     }
 
     setIsSubmitting(true);
     setFeedbackTone("success");
+    setFeedbackAccent("Ответ принят");
+    setFeedbackMessage("Верный ответ. Переходим к следующему шагу.");
     onToast("success", "Верно", "Переходим к следующему шагу.");
 
     window.requestAnimationFrame(() => {
@@ -86,7 +117,13 @@ export default function StepView({
   }
 
   return (
-    <section className="questLayout">
+    <section
+      className="questLayout"
+      onPointerDownCapture={registerIdleActivity}
+      onKeyDownCapture={registerIdleActivity}
+      onInputCapture={registerIdleActivity}
+      onFocusCapture={registerIdleActivity}
+    >
       <div className="questMain glowPanel">
         <div className="questionHeader">
           <div>
@@ -156,6 +193,8 @@ export default function StepView({
                 setValue(event.target.value);
                 setSelectedChoice(null);
                 setFeedbackTone("idle");
+                setFeedbackAccent(null);
+                setFeedbackMessage("");
               }}
               onKeyDown={(event) => {
                 if (event.key === "Enter") {
@@ -164,6 +203,8 @@ export default function StepView({
               }}
               placeholder="Введите ответ вручную"
               autoFocus
+              aria-invalid={feedbackTone === "error"}
+              aria-describedby={feedbackMessage ? inlineFeedbackId : undefined}
             />
             <button className="btn btn-primary" type="button" disabled={isSubmitting} onClick={() => submitValue(value)}>
               Проверить
@@ -172,6 +213,17 @@ export default function StepView({
               {showHint ? "Скрыть подсказку" : "Показать подсказку"}
             </button>
           </div>
+          {feedbackMessage && (
+            <div
+              id={inlineFeedbackId}
+              className={`inlineFeedback is-${feedbackTone}`}
+              role={feedbackTone === "error" ? "alert" : "status"}
+              aria-live="polite"
+            >
+              <span className="inlineFeedbackBadge">{feedbackAccent ?? feedbackLabel}</span>
+              <span className="inlineFeedbackText">{feedbackMessage}</span>
+            </div>
+          )}
         </div>
 
         {showHint && step.hint && (
@@ -179,6 +231,10 @@ export default function StepView({
             <div className="sectionBadge">Подсказка</div>
             <p>{step.hint}</p>
           </div>
+        )}
+
+        {isOrdinaryTextQuestion && (
+          <audio ref={idleAudioRef} className="mediaAudio mediaAudioElement" preload="metadata" src={resolveMediaSrc(IDLE_HINT_AUDIO_SRC)} />
         )}
       </div>
 
