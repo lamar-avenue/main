@@ -82,11 +82,11 @@ export default function App() {
   const [isHonorableExiting, setIsHonorableExiting] = useState(false);
   const [toast, setToast] = useState<ToastState>(null);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [volume, setVolume] = useState(0.3);
+  const [volume, setVolume] = useState(0.18);
   const [activeSceneAudioSourceId, setActiveSceneAudioSourceId] = useState<string | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const autoplayRetryBound = useRef(false);
-  const previousVolumeRef = useRef(0.3);
+  const previousVolumeRef = useRef(0.18);
   const resumeBackgroundAfterSuppressionRef = useRef(false);
   const mouseGlowRef = useRef<HTMLDivElement | null>(null);
   const glowFrameRef = useRef<number | null>(null);
@@ -336,7 +336,7 @@ export default function App() {
 
   function toggleMute() {
     if (volume === 0) {
-      const restoredVolume = previousVolumeRef.current > 0 ? previousVolumeRef.current : 0.3;
+      const restoredVolume = previousVolumeRef.current > 0 ? previousVolumeRef.current : 0.18;
       setVolume(restoredVolume);
       return;
     }
