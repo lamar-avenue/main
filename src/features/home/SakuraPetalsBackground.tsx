@@ -1,3 +1,4 @@
+import { memo } from "react";
 import type { CSSProperties } from "react";
 
 const PETAL_SHAPES = [
@@ -32,7 +33,7 @@ type SakuraPetalsBackgroundProps = {
   variant?: "ambient" | "hero";
 };
 
-export default function SakuraPetalsBackground({ variant = "ambient" }: SakuraPetalsBackgroundProps) {
+function SakuraPetalsBackground({ variant = "ambient" }: SakuraPetalsBackgroundProps) {
   return (
     <div className={`sakuraLayer sakuraLayer-${variant}`} aria-hidden="true">
       {PETALS.map((petal, index) => (
@@ -75,3 +76,5 @@ export default function SakuraPetalsBackground({ variant = "ambient" }: SakuraPe
     </div>
   );
 }
+
+export default memo(SakuraPetalsBackground);

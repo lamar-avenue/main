@@ -28,6 +28,10 @@ type CinematicPause = {
   durationMs: number;
 };
 
+type NavigatorWithDeviceMemory = Navigator & {
+  deviceMemory?: number;
+};
+
 const backgroundAudioBlock = quest
   .flatMap((step) => step.blocks ?? [])
   .find((block) => block.type === "audio");
@@ -98,6 +102,19 @@ export default function App() {
 
   const { step, submit, reset, state, total } = useQuest();
   const previousDoneRef = useRef(state.done);
+  const effectsMode = useMemo<"default" | "lite">(() => {
+    if (typeof window === "undefined") return "default";
+
+    const navigatorWithDeviceMemory = navigator as NavigatorWithDeviceMemory;
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const coarsePointer = window.matchMedia("(pointer: coarse)").matches;
+    const narrowViewport = window.matchMedia("(max-width: 900px)").matches;
+    const lowCpu = navigator.hardwareConcurrency > 0 && navigator.hardwareConcurrency <= 6;
+    const lowMemory =
+      typeof navigatorWithDeviceMemory.deviceMemory === "number" && navigatorWithDeviceMemory.deviceMemory <= 4;
+
+    return reducedMotion || coarsePointer || narrowViewport || lowCpu || lowMemory ? "lite" : "default";
+  }, []);
   const isVideoStep = screen === "quest" && !!step?.blocks?.some((block) => block.type === "video");
   const isBackgroundSuppressed = screen === "honorable" || isVideoStep || activeSceneAudioSourceId !== null;
   const heroImage = useMemo(() => resolveMediaSrc("/media/hero-start.jpg"), []);
@@ -220,16 +237,33 @@ export default function App() {
     const glow = mouseGlowRef.current;
     if (!glow) return;
 
-    const handleMove = (event: PointerEvent) => {
-      const { clientX, clientY } = event;
-      glow.classList.add("is-active");
+    if (
+      effectsMode === "lite" ||
+      typeof window === "undefined" ||
+      !window.matchMedia("(pointer: fine)").matches ||
+      !window.matchMedia("(hover: hover)").matches
+    ) {
+      glow.classList.remove("is-active");
+      glow.style.transform = "translate3d(-999px, -999px, 0)";
+      return;
+    }
 
-      if (glowFrameRef.current !== null) {
-        window.cancelAnimationFrame(glowFrameRef.current);
+    let nextX = -999;
+    let nextY = -999;
+
+    const handleMove = (event: PointerEvent) => {
+      nextX = event.clientX;
+      nextY = event.clientY;
+
+      if (!glow.classList.contains("is-active")) {
+        glow.classList.add("is-active");
       }
 
+      if (glowFrameRef.current !== null) return;
+
       glowFrameRef.current = window.requestAnimationFrame(() => {
-        glow.style.transform = `translate3d(${clientX}px, ${clientY}px, 0) translate3d(-50%, -50%, 0)`;
+        glow.style.transform = `translate3d(${nextX}px, ${nextY}px, 0) translate3d(-50%, -50%, 0)`;
+        glowFrameRef.current = null;
       });
     };
 
@@ -247,7 +281,7 @@ export default function App() {
       window.removeEventListener("pointermove", handleMove);
       window.removeEventListener("mouseleave", handleLeave);
     };
-  }, []);
+  }, [effectsMode]);
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -377,7 +411,7 @@ export default function App() {
   }
 
   return (
-    <div className="appShell">
+    <div className={`appShell effects-${effectsMode}`}>
       <div className="bg">
         <div className="bgNoise" />
         <div className="aurora auroraPrimary" />

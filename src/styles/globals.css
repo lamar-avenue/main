@@ -96,7 +96,7 @@ a {
   transform: translateX(-50%);
   background:
     linear-gradient(180deg, rgba(122, 111, 255, 0.24), rgba(122, 111, 255, 0.08) 32%, transparent 78%);
-  filter: blur(34px);
+  filter: blur(24px);
   opacity: 0.92;
 }
 
@@ -109,7 +109,7 @@ a {
   background:
     radial-gradient(ellipse at center, rgba(104, 163, 255, 0.14), rgba(104, 163, 255, 0.04) 42%, transparent 74%),
     radial-gradient(ellipse at center, rgba(192, 119, 255, 0.12), transparent 68%);
-  filter: blur(48px);
+  filter: blur(32px);
   opacity: 0.9;
 }
 
@@ -138,13 +138,13 @@ a {
   z-index: 1;
   left: 0;
   top: 0;
-  width: 32rem;
-  height: 32rem;
+  width: 24rem;
+  height: 24rem;
   border-radius: 999px;
   background:
     radial-gradient(circle, rgba(155, 124, 255, 0.22), rgba(155, 124, 255, 0.1) 28%, transparent 62%),
     radial-gradient(circle at 62% 38%, rgba(125, 226, 255, 0.14), transparent 44%);
-  filter: blur(42px);
+  filter: blur(28px);
   transform: translate3d(-999px, -999px, 0);
   mix-blend-mode: screen;
   opacity: 0;
@@ -234,8 +234,8 @@ a {
 
 .sakuraPetalFill {
   filter:
-    drop-shadow(0 0 14px rgba(242, 170, 228, 0.22))
-    drop-shadow(0 8px 12px rgba(115, 64, 165, 0.14));
+    drop-shadow(0 0 8px rgba(242, 170, 228, 0.16))
+    drop-shadow(0 4px 8px rgba(115, 64, 165, 0.1));
 }
 
 .sakuraPetal-front {
@@ -262,7 +262,7 @@ a {
   position: absolute;
   z-index: 0;
   border-radius: 999px;
-  filter: blur(56px);
+  filter: blur(38px);
   opacity: 0.88;
   animation: drift 16s ease-in-out infinite alternate;
   pointer-events: none;
@@ -369,7 +369,7 @@ a {
   background:
     radial-gradient(circle at 50% 50%, rgba(255, 214, 232, 0.1), rgba(255, 214, 232, 0.04) 32%, transparent 72%),
     radial-gradient(circle at 56% 42%, rgba(171, 125, 255, 0.14), transparent 62%);
-  filter: blur(42px);
+  filter: blur(30px);
   opacity: 0.95;
 }
 
@@ -380,7 +380,7 @@ a {
   height: min(20vw, 240px);
   border-radius: 999px;
   background: radial-gradient(circle, rgba(255, 194, 220, 0.1), transparent 74%);
-  filter: blur(24px);
+  filter: blur(18px);
   opacity: 0.72;
 }
 
@@ -395,7 +395,7 @@ a {
 .heroSceneBeam {
   position: absolute;
   border-radius: 999px;
-  filter: blur(56px);
+  filter: blur(38px);
   opacity: 0.9;
   will-change: transform, opacity;
   animation: heroBeamDrift 16s ease-in-out infinite alternate;
@@ -410,7 +410,7 @@ a {
   background:
     radial-gradient(circle at 50% 38%, rgba(255, 217, 232, 0.18), rgba(255, 217, 232, 0.08) 28%, transparent 64%),
     radial-gradient(circle at 48% 60%, rgba(151, 108, 255, 0.18), transparent 60%);
-  filter: blur(48px);
+  filter: blur(34px);
   opacity: 0.96;
   animation: heroMoonPulse 18s ease-in-out infinite alternate;
 }
@@ -458,7 +458,7 @@ a {
   background:
     linear-gradient(90deg, transparent, rgba(255, 211, 229, 0.14), transparent),
     linear-gradient(90deg, transparent, rgba(160, 117, 255, 0.14), transparent);
-  filter: blur(20px);
+  filter: blur(14px);
   opacity: 0.82;
   animation: heroRibbonDrift 20s ease-in-out infinite alternate;
 }
@@ -481,7 +481,7 @@ a {
     radial-gradient(circle at 14% 26%, rgba(255, 206, 227, 0.12), transparent 24%),
     radial-gradient(circle at 84% 30%, rgba(213, 141, 255, 0.1), transparent 22%),
     radial-gradient(circle at 50% 84%, rgba(147, 195, 255, 0.08), transparent 26%);
-  filter: blur(26px);
+  filter: blur(18px);
   opacity: 0.88;
 }
 
@@ -917,7 +917,7 @@ a {
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.018)),
     var(--panel);
-  backdrop-filter: blur(20px);
+  backdrop-filter: blur(12px);
   box-shadow: var(--shadow-xl);
 }
 
@@ -1167,7 +1167,7 @@ a {
   border-radius: 18px;
   border: 1px solid rgba(180, 150, 255, 0.18);
   background: linear-gradient(180deg, rgba(30, 14, 55, 0.18), rgba(10, 10, 28, 0.76));
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(6px);
 }
 
 .heroOverlay strong,
@@ -1213,7 +1213,7 @@ a {
   box-shadow:
     0 0 24px rgba(126, 133, 255, 0.28),
     0 0 40px rgba(121, 229, 255, 0.12);
-  animation: shimmer 3.4s linear infinite;
+  animation: none;
 }
 
 .systemRows,
@@ -1380,7 +1380,7 @@ a {
   background:
     linear-gradient(180deg, rgba(24, 19, 48, 0.92), rgba(9, 11, 28, 0.94)),
     rgba(255, 255, 255, 0.02);
-  backdrop-filter: blur(14px);
+  backdrop-filter: blur(8px);
   box-shadow:
     0 16px 34px rgba(5, 8, 22, 0.3),
     0 0 0 1px rgba(255, 255, 255, 0.03);
@@ -1445,7 +1445,7 @@ a {
   background:
     radial-gradient(circle at 50% 34%, rgba(138, 110, 255, 0.12), transparent 28%),
     linear-gradient(180deg, rgba(3, 6, 16, 0.18), rgba(3, 6, 16, 0.72));
-  backdrop-filter: blur(5px);
+  backdrop-filter: blur(2px);
 }
 
 .cinematicPauseCopy {
@@ -2032,7 +2032,7 @@ a {
     radial-gradient(circle at 50% 26%, rgba(150, 118, 255, 0.28), transparent 48%),
     radial-gradient(circle at 54% 62%, rgba(121, 229, 255, 0.12), transparent 50%),
     radial-gradient(circle at 30% 46%, rgba(245, 164, 212, 0.14), transparent 42%);
-  filter: blur(58px);
+  filter: blur(36px);
   opacity: 0.96;
   pointer-events: none;
 }
@@ -2068,7 +2068,7 @@ a {
   background:
     radial-gradient(circle at 42% 26%, rgba(158, 120, 255, 0.34), transparent 42%),
     radial-gradient(circle at 58% 72%, rgba(121, 229, 255, 0.14), transparent 44%);
-  filter: blur(42px);
+  filter: blur(26px);
   opacity: 0.92;
   pointer-events: none;
 }
@@ -2233,7 +2233,7 @@ a {
   background:
     radial-gradient(circle at 50% 24%, rgba(150, 118, 255, 0.18), transparent 44%),
     radial-gradient(circle at 50% 70%, rgba(121, 229, 255, 0.07), transparent 48%);
-  filter: blur(66px);
+  filter: blur(40px);
   opacity: 0.84;
   pointer-events: none;
 }
@@ -2319,6 +2319,93 @@ a {
   will-change: transform;
   backface-visibility: hidden;
   contain: layout paint;
+}
+
+.effects-lite .mouseGlow {
+  display: none;
+}
+
+.effects-lite .auroraSecondary,
+.effects-lite .heroSceneBeam-orbit,
+.effects-lite .heroSceneRibbon,
+.effects-lite .heroScenePetalMist,
+.effects-lite .heroFrameGlow,
+.effects-lite .honorableGlow,
+.effects-lite .creditsGlow {
+  display: none;
+}
+
+.effects-lite .glowPanel,
+.effects-lite .heroMediaCard,
+.effects-lite .doneLayout,
+.effects-lite .questMain,
+.effects-lite .questSidebar,
+.effects-lite .floatingPlayer,
+.effects-lite .toast,
+.effects-lite .heroOverlay,
+.effects-lite .honorableAudioControl {
+  backdrop-filter: none;
+}
+
+.effects-lite .sakuraPetal:nth-child(2n) {
+  display: none;
+}
+
+.effects-lite .sakuraPetal {
+  animation-duration: calc(var(--petal-duration) * 1.18);
+}
+
+.effects-lite .sakuraPetalSvg,
+.effects-lite .aurora,
+.effects-lite .heroSceneBeam,
+.effects-lite .heroFrameWrap,
+.effects-lite .heroFrameImage,
+.effects-lite .heroFrameShine,
+.effects-lite .honorableSkipButton {
+  animation-duration: calc(var(--petal-duration, 12s) * 1.4);
+}
+
+.effects-lite .sakuraPetalFill {
+  filter: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mouseGlow,
+  .auroraSecondary,
+  .heroSceneBeam-orbit,
+  .heroSceneRibbon,
+  .heroScenePetalMist,
+  .heroFrameGlow,
+  .creditsGlow,
+  .honorableGlow {
+    display: none;
+  }
+
+  .sakuraPetal,
+  .sakuraPetalSvg,
+  .aurora,
+  .heroSceneBeam,
+  .heroFrameWrap,
+  .heroFrameImage,
+  .heroFrameShine,
+  .honorableSkipButton,
+  .progressFill,
+  .progressValue {
+    animation: none !important;
+  }
+
+  .glowPanel,
+  .heroMediaCard,
+  .doneLayout,
+  .questMain,
+  .questSidebar,
+  .floatingPlayer,
+  .toast,
+  .heroOverlay,
+  .honorableAudioControl,
+  .cinematicPauseVeil {
+    backdrop-filter: none;
+  }
 }
 
 .creditsRoll.is-running {
