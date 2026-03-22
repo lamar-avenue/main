@@ -2,7 +2,8 @@ import { useEffect, useId, useRef } from "react";
 import type { Dispatch, SetStateAction } from "react";
 import { announceSceneAudioStart, subscribeToSceneAudioStart } from "../audio/sceneAudioBus";
 
-const IDLE_AUDIO_DELAY_MS = 10_000;
+const IDLE_AUDIO_DELAY_MS = 18_000;
+const IDLE_AUDIO_VOLUME = 0.18;
 
 type SceneAudioStateSetter = Dispatch<SetStateAction<string | null>>;
 
@@ -60,6 +61,7 @@ export function useIdleStepAudio({
     if (audio) {
       audio.pause();
       audio.currentTime = 0;
+      audio.volume = IDLE_AUDIO_VOLUME;
     }
 
     onSceneAudioStateChange((current) => (current === sourceId ? null : current));
