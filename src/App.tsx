@@ -54,7 +54,7 @@ function getCinematicPause(screen: Screen, step?: QuestStep): CinematicPause | n
       return {
         key: `quest-${step.id}`,
         kicker: "Ключевой кадр",
-        title: "Смотри внимательно",
+        title: "Смотри внимательнее",
         durationMs: 920,
       };
     }
@@ -88,6 +88,7 @@ export default function App() {
   const [toast, setToast] = useState<ToastState>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(0.1);
+  const [isMuted, setIsMuted] = useState(false);
   const [activeSceneAudioSourceId, setActiveSceneAudioSourceId] = useState<string | null>(null);
   const [playlistState, setPlaylistState] = useState<PlaylistState>(() => ({
     order: createShuffledTrackOrder(BACKGROUND_TRACKS.length),
@@ -124,6 +125,7 @@ export default function App() {
   }, []);
   const isVideoStep = screen === "quest" && !!step?.blocks?.some((block) => block.type === "video");
   const isBackgroundSuppressed = screen === "honorable" || isVideoStep || activeSceneAudioSourceId !== null;
+  const isEffectivelyMuted = isMuted || volume === 0;
   const currentBackgroundTrack = BACKGROUND_TRACKS[playlistState.order[playlistState.position] ?? 0];
   const heroImage = useMemo(() => resolveMediaSrc("/media/images/hero-start.jpg"), []);
   const backgroundAudioSrc = currentBackgroundTrack ? resolveMediaSrc(currentBackgroundTrack.src) : null;
@@ -193,8 +195,8 @@ export default function App() {
     if (!audio) return;
 
     audio.volume = volume;
-    audio.muted = volume === 0;
-  }, [volume]);
+    audio.muted = isEffectivelyMuted;
+  }, [isEffectivelyMuted, volume]);
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -209,7 +211,7 @@ export default function App() {
       return;
     }
 
-    if (!resumeBackgroundAfterSuppressionRef.current || volume <= 0) {
+    if (!resumeBackgroundAfterSuppressionRef.current || (volume <= 0 && !isMuted)) {
       return;
     }
 
@@ -222,7 +224,7 @@ export default function App() {
       .catch(() => {
         return;
       });
-  }, [isBackgroundSuppressed, isPlaying, volume]);
+  }, [isBackgroundSuppressed, isMuted, isPlaying, volume]);
 
   useEffect(() => {
     const wasDone = previousDoneRef.current;
@@ -337,9 +339,9 @@ export default function App() {
 
     audio.load();
     audio.volume = volume;
-    audio.muted = volume === 0;
+    audio.muted = isEffectivelyMuted;
 
-    if (!pendingTrackAutoplayRef.current || isBackgroundSuppressed || volume <= 0) {
+    if (!pendingTrackAutoplayRef.current || isBackgroundSuppressed || (volume <= 0 && !isMuted)) {
       pendingTrackAutoplayRef.current = false;
       setIsPlaying(false);
       return;
@@ -354,7 +356,7 @@ export default function App() {
       .catch(() => {
         return;
       });
-  }, [backgroundAudioSrc, isBackgroundSuppressed, volume]);
+  }, [backgroundAudioSrc, isBackgroundSuppressed, isEffectivelyMuted, isMuted, volume]);
 
   function moveToAdjacentTrack(direction: -1 | 1, shouldAutoplay: boolean) {
     pendingTrackAutoplayRef.current = shouldAutoplay;
@@ -444,27 +446,49 @@ export default function App() {
   }
 
   function handleVolumeChange(nextVolume: number) {
+    const audio = audioRef.current;
+
     setVolume(nextVolume);
     if (nextVolume > 0) {
       previousVolumeRef.current = nextVolume;
+      setIsMuted(false);
     } else {
-      resumeBackgroundAfterSuppressionRef.current = false;
+      setIsMuted(true);
+    }
+
+    if (audio) {
+      audio.volume = nextVolume;
+      audio.muted = nextVolume === 0;
     }
   }
 
   function toggleMute() {
-    if (volume === 0) {
-      const restoredVolume = previousVolumeRef.current > 0 ? previousVolumeRef.current : 0.1;
-      setVolume(restoredVolume);
+    const audio = audioRef.current;
+
+    if (isEffectivelyMuted) {
+      const restoredVolume = volume > 0 ? volume : previousVolumeRef.current > 0 ? previousVolumeRef.current : 0.1;
+      if (volume === 0) {
+        setVolume(restoredVolume);
+      }
+      setIsMuted(false);
+
+      if (audio) {
+        audio.volume = volume === 0 ? restoredVolume : volume;
+        audio.muted = false;
+      }
       return;
     }
 
     previousVolumeRef.current = volume;
-    resumeBackgroundAfterSuppressionRef.current = false;
-    setVolume(0);
+    setIsMuted(true);
+
+    if (audio) {
+      audio.muted = true;
+    }
   }
 
   function handleReset() {
+    previousDoneRef.current = false;
     reset();
     setIsIntroTransitioning(false);
     setScreen("intro");
@@ -478,7 +502,11 @@ export default function App() {
 
     setIsIntroTransitioning(true);
     window.setTimeout(() => {
-      setScreen(state.done ? "done" : "quest");
+      previousDoneRef.current = false;
+      reset();
+      setToast(null);
+      setActiveSceneAudioSourceId(null);
+      setScreen("quest");
       setIsIntroTransitioning(false);
     }, 360);
   }
@@ -520,22 +548,22 @@ export default function App() {
 
         {screen !== "intro" && screen !== "honorable" && (
           <div className="floatingPlayer glowPanel">
-            <button className="audioToggle trackStepButton" type="button" onClick={handlePreviousTrack} aria-label="РџСЂРµРґС‹РґСѓС‰РёР№ С‚СЂРµРє">
+            <button className="audioToggle trackStepButton" type="button" onClick={handlePreviousTrack} aria-label="Предыдущий трек">
               <TrackStepIcon direction="previous" />
             </button>
-            <button className="audioToggle" type="button" onClick={toggleAudio} aria-label={isPlaying ? "Пауза" : "Воспроизвести"}>
+            <button className={`audioToggle audioPlayButton ${isPlaying ? "is-active" : ""}`} type="button" onClick={toggleAudio} aria-label={isPlaying ? "Пауза" : "Воспроизвести"}>
               <AudioPlayIcon playing={isPlaying} />
             </button>
-            <button className="audioToggle trackStepButton" type="button" onClick={handleNextTrack} aria-label="РЎР»РµРґСѓСЋС‰РёР№ С‚СЂРµРє">
+            <button className="audioToggle trackStepButton" type="button" onClick={handleNextTrack} aria-label="Следующий трек">
               <TrackStepIcon direction="next" />
             </button>
             <button
-              className={`audioMuteButton ${volume === 0 ? "is-muted" : ""}`}
+              className={`audioMuteButton ${isEffectivelyMuted ? "is-muted" : "is-active"}`}
               type="button"
               onClick={toggleMute}
-              aria-label={volume === 0 ? "Включить звук" : "Выключить звук"}
+              aria-label={isEffectivelyMuted ? "Включить звук" : "Выключить звук"}
             >
-              <AudioVolumeIcon muted={volume === 0} />
+              <AudioVolumeIcon muted={isEffectivelyMuted} />
             </button>
             <input
               className="slider volumeSlider"
@@ -662,16 +690,16 @@ function TrackStepIcon({ direction }: { direction: "previous" | "next" }) {
   if (direction === "previous") {
     return (
       <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M16.5 6.5C16.5 5.77 15.72 5.31 15.08 5.66L8.98 9.03C8.33 9.39 8.33 10.32 8.98 10.68L15.08 14.04C15.72 14.4 16.5 13.93 16.5 13.21V6.5Z" />
-        <path d="M16.5 13.01C16.5 12.29 15.72 11.82 15.08 12.18L8.98 15.54C8.33 15.9 8.33 16.84 8.98 17.19L15.08 20.56C15.72 20.91 16.5 20.45 16.5 19.72V13.01Z" />
+        <path d="M8 6.75V17.25" />
+        <path d="M17 7.15L10.7 11.33C10.3 11.59 10.3 12.17 10.7 12.44L17 16.6V7.15Z" />
       </svg>
     );
   }
 
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M7.5 6.5C7.5 5.77 8.28 5.31 8.92 5.66L15.02 9.03C15.67 9.39 15.67 10.32 15.02 10.68L8.92 14.04C8.28 14.4 7.5 13.93 7.5 13.21V6.5Z" />
-      <path d="M7.5 13.01C7.5 12.29 8.28 11.82 8.92 12.18L15.02 15.54C15.67 15.9 15.67 16.84 15.02 17.19L8.92 20.56C8.28 20.91 7.5 20.45 7.5 19.72V13.01Z" />
+      <path d="M16 6.75V17.25" />
+      <path d="M7 7.15L13.3 11.33C13.7 11.59 13.7 12.17 13.3 12.44L7 16.6V7.15Z" />
     </svg>
   );
 }
@@ -679,13 +707,16 @@ function TrackStepIcon({ direction }: { direction: "previous" | "next" }) {
 function AudioVolumeIcon({ muted }: { muted: boolean }) {
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M5 10.5H8.4L12.6 6.8C13.12 6.34 13.94 6.71 13.94 7.4V16.6C13.94 17.29 13.12 17.66 12.6 17.2L8.4 13.5H5C4.45 13.5 4 13.05 4 12.5V11.5C4 10.95 4.45 10.5 5 10.5Z" />
+      <path d="M4.75 10.55H7.95L12.05 7.2C12.52 6.82 13.25 7.15 13.25 7.75V16.25C13.25 16.85 12.52 17.18 12.05 16.8L7.95 13.45H4.75C4.34 13.45 4 13.11 4 12.7V11.3C4 10.89 4.34 10.55 4.75 10.55Z" />
       {muted ? (
-        <path d="M17.2 8.8L21 16.2" />
+        <>
+          <path d="M16.75 9.1L20.5 14.9" />
+          <path d="M20.5 9.1L16.75 14.9" />
+        </>
       ) : (
         <>
-          <path d="M17.2 9.2C18.12 10.03 18.67 11.22 18.67 12.5C18.67 13.78 18.12 14.97 17.2 15.8" />
-          <path d="M18.9 6.8C20.43 8.17 21.33 10.27 21.33 12.5C21.33 14.73 20.43 16.83 18.9 18.2" />
+          <path d="M16.8 9.55C17.72 10.31 18.25 11.35 18.25 12.5C18.25 13.65 17.72 14.69 16.8 15.45" />
+          <path d="M18.75 7.5C20.21 8.83 21 10.58 21 12.5C21 14.42 20.21 16.17 18.75 17.5" />
         </>
       )}
     </svg>
