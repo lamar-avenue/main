@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { CSSProperties } from "react";
-import { quest } from "./data/quest";
 import type { QuestStep } from "./data/quest";
 import CreditsScreen from "./features/final/CreditsScreen";
+import { BACKGROUND_TRACKS, createShuffledTrackOrder } from "./features/audio/backgroundTracks";
 import { useUiSoundDesign } from "./features/audio/soundDesign";
 import HonorableMentionScene from "./features/final/HonorableMentionScene";
 import HeroScreen from "./features/home/HeroScreen";
@@ -28,13 +28,14 @@ type CinematicPause = {
   durationMs: number;
 };
 
+type PlaylistState = {
+  order: number[];
+  position: number;
+};
+
 type NavigatorWithDeviceMemory = Navigator & {
   deviceMemory?: number;
 };
-
-const backgroundAudioBlock = quest
-  .flatMap((step) => step.blocks ?? [])
-  .find((block) => block.type === "audio");
 
 function getCinematicPause(screen: Screen, step?: QuestStep): CinematicPause | null {
   if (screen === "quest" && step) {
@@ -88,10 +89,16 @@ export default function App() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(0.1);
   const [activeSceneAudioSourceId, setActiveSceneAudioSourceId] = useState<string | null>(null);
+  const [playlistState, setPlaylistState] = useState<PlaylistState>(() => ({
+    order: createShuffledTrackOrder(BACKGROUND_TRACKS.length),
+    position: 0,
+  }));
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const autoplayRetryBound = useRef(false);
   const previousVolumeRef = useRef(0.1);
   const resumeBackgroundAfterSuppressionRef = useRef(false);
+  const pendingTrackAutoplayRef = useRef(false);
+  const previousCycleOrdersRef = useRef<number[][]>([]);
   const mouseGlowRef = useRef<HTMLDivElement | null>(null);
   const glowFrameRef = useRef<number | null>(null);
   const cinematicPauseTimeoutRef = useRef<number | null>(null);
@@ -117,8 +124,9 @@ export default function App() {
   }, []);
   const isVideoStep = screen === "quest" && !!step?.blocks?.some((block) => block.type === "video");
   const isBackgroundSuppressed = screen === "honorable" || isVideoStep || activeSceneAudioSourceId !== null;
-  const heroImage = useMemo(() => resolveMediaSrc("/media/hero-start.jpg"), []);
-  const backgroundAudioSrc = backgroundAudioBlock ? resolveMediaSrc(backgroundAudioBlock.src) : null;
+  const currentBackgroundTrack = BACKGROUND_TRACKS[playlistState.order[playlistState.position] ?? 0];
+  const heroImage = useMemo(() => resolveMediaSrc("/media/images/hero-start.jpg"), []);
+  const backgroundAudioSrc = currentBackgroundTrack ? resolveMediaSrc(currentBackgroundTrack.src) : null;
 
   useEffect(() => {
     return () => {
@@ -323,6 +331,82 @@ export default function App() {
     };
   }, []);
 
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio || !backgroundAudioSrc) return;
+
+    audio.load();
+    audio.volume = volume;
+    audio.muted = volume === 0;
+
+    if (!pendingTrackAutoplayRef.current || isBackgroundSuppressed || volume <= 0) {
+      pendingTrackAutoplayRef.current = false;
+      setIsPlaying(false);
+      return;
+    }
+
+    pendingTrackAutoplayRef.current = false;
+    void audio
+      .play()
+      .then(() => {
+        setIsPlaying(true);
+      })
+      .catch(() => {
+        return;
+      });
+  }, [backgroundAudioSrc, isBackgroundSuppressed, volume]);
+
+  function moveToAdjacentTrack(direction: -1 | 1, shouldAutoplay: boolean) {
+    pendingTrackAutoplayRef.current = shouldAutoplay;
+
+    setPlaylistState((current) => {
+      if (direction === 1) {
+        if (current.position < current.order.length - 1) {
+          return {
+            order: current.order,
+            position: current.position + 1,
+          };
+        }
+
+        previousCycleOrdersRef.current = [...previousCycleOrdersRef.current, current.order];
+        return {
+          order: createShuffledTrackOrder(BACKGROUND_TRACKS.length),
+          position: 0,
+        };
+      }
+
+      if (current.position > 0) {
+        return {
+          order: current.order,
+          position: current.position - 1,
+        };
+      }
+
+      const previousOrder = previousCycleOrdersRef.current[previousCycleOrdersRef.current.length - 1];
+      if (!previousOrder) {
+        return current;
+      }
+
+      previousCycleOrdersRef.current = previousCycleOrdersRef.current.slice(0, -1);
+      return {
+        order: previousOrder,
+        position: previousOrder.length - 1,
+      };
+    });
+  }
+
+  function handleNextTrack() {
+    const audio = audioRef.current;
+    const shouldAutoplay = !!audio && (!audio.paused || (isBackgroundSuppressed && resumeBackgroundAfterSuppressionRef.current));
+    moveToAdjacentTrack(1, shouldAutoplay);
+  }
+
+  function handlePreviousTrack() {
+    const audio = audioRef.current;
+    const shouldAutoplay = !!audio && (!audio.paused || (isBackgroundSuppressed && resumeBackgroundAfterSuppressionRef.current));
+    moveToAdjacentTrack(-1, shouldAutoplay);
+  }
+
   function notify(tone: ToastTone, title: string, message: string) {
     if (tone === "success") {
       playUiSound("success");
@@ -426,9 +510,9 @@ export default function App() {
           <audio
             ref={audioRef}
             src={backgroundAudioSrc}
-            loop
             preload="auto"
             autoPlay
+            onEnded={handleNextTrack}
             onPlay={() => setIsPlaying(true)}
             onPause={() => setIsPlaying(false)}
           />
@@ -436,8 +520,14 @@ export default function App() {
 
         {screen !== "intro" && screen !== "honorable" && (
           <div className="floatingPlayer glowPanel">
+            <button className="audioToggle trackStepButton" type="button" onClick={handlePreviousTrack} aria-label="РџСЂРµРґС‹РґСѓС‰РёР№ С‚СЂРµРє">
+              <TrackStepIcon direction="previous" />
+            </button>
             <button className="audioToggle" type="button" onClick={toggleAudio} aria-label={isPlaying ? "Пауза" : "Воспроизвести"}>
               <AudioPlayIcon playing={isPlaying} />
+            </button>
+            <button className="audioToggle trackStepButton" type="button" onClick={handleNextTrack} aria-label="РЎР»РµРґСѓСЋС‰РёР№ С‚СЂРµРє">
+              <TrackStepIcon direction="next" />
             </button>
             <button
               className={`audioMuteButton ${volume === 0 ? "is-muted" : ""}`}
@@ -564,6 +654,24 @@ function AudioPlayIcon({ playing }: { playing: boolean }) {
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true">
       <path d="M8 6.5C8 5.72 8.84 5.24 9.5 5.63L18 10.63C18.64 11.01 18.64 11.99 18 12.37L9.5 17.37C8.84 17.76 8 17.28 8 16.5V6.5Z" />
+    </svg>
+  );
+}
+
+function TrackStepIcon({ direction }: { direction: "previous" | "next" }) {
+  if (direction === "previous") {
+    return (
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M16.5 6.5C16.5 5.77 15.72 5.31 15.08 5.66L8.98 9.03C8.33 9.39 8.33 10.32 8.98 10.68L15.08 14.04C15.72 14.4 16.5 13.93 16.5 13.21V6.5Z" />
+        <path d="M16.5 13.01C16.5 12.29 15.72 11.82 15.08 12.18L8.98 15.54C8.33 15.9 8.33 16.84 8.98 17.19L15.08 20.56C15.72 20.91 16.5 20.45 16.5 19.72V13.01Z" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M7.5 6.5C7.5 5.77 8.28 5.31 8.92 5.66L15.02 9.03C15.67 9.39 15.67 10.32 15.02 10.68L8.92 14.04C8.28 14.4 7.5 13.93 7.5 13.21V6.5Z" />
+      <path d="M7.5 13.01C7.5 12.29 8.28 11.82 8.92 12.18L15.02 15.54C15.67 15.9 15.67 16.84 15.02 17.19L8.92 20.56C8.28 20.91 7.5 20.45 7.5 19.72V13.01Z" />
     </svg>
   );
 }

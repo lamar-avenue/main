@@ -13,11 +13,11 @@ const HONORABLE_COPY =
 
 export default function HonorableMentionScene({ isExiting, onSkip }: HonorableMentionSceneProps) {
   const sourceId = useId();
-  const [photoSrc, setPhotoSrc] = useState(() => resolveMediaSrc("/media/honorable-mention-photo.jpg"));
+  const [photoSrc, setPhotoSrc] = useState(() => resolveMediaSrc("/media/images/honorable-mention-photo.jpg"));
   const [voiceVolume, setVoiceVolume] = useState(0.88);
   const [previousVoiceVolume, setPreviousVoiceVolume] = useState(0.88);
   const showSkip = useDelayedReveal(5000);
-  const imageFallbackSrc = useMemo(() => resolveMediaSrc("/media/honorable-mention-photo.png"), []);
+  const imageFallbackSrc = useMemo(() => resolveMediaSrc("/media/images/honorable-mention-photo.png"), []);
   const isSpeechSupported = typeof window !== "undefined" && "speechSynthesis" in window;
 
   useSpeechVoiceover(HONORABLE_COPY, isSpeechSupported ? voiceVolume : 0, sourceId);
