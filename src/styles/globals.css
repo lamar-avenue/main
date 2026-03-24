@@ -586,9 +586,7 @@ a {
   width: min(548px, 78vw);
   margin-top: 24px;
   isolation: isolate;
-  animation:
-    heroLayerIn 0.92s cubic-bezier(0.2, 1, 0.2, 1) 0.14s both,
-    heroFrameFloat 11s ease-in-out 1.1s infinite alternate;
+  animation: heroLayerIn 0.92s cubic-bezier(0.2, 1, 0.2, 1) 0.14s both;
 }
 
 .heroFrameWrap::before,
@@ -658,9 +656,8 @@ a {
     0 0 0 1px rgba(255, 255, 255, 0.08),
     0 18px 40px rgba(9, 12, 28, 0.24),
     0 38px 96px rgba(7, 8, 20, 0.52);
-  transform: scale(1.026);
+  transform: none;
   filter: saturate(1.03) contrast(1.02) brightness(1.05) hue-rotate(-4deg);
-  animation: heroImageBreath 13s ease-in-out 1.2s infinite alternate;
 }
 
 .heroFrameShine {
