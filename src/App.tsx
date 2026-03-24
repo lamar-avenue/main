@@ -99,6 +99,7 @@ export default function App() {
   const previousVolumeRef = useRef(0.1);
   const resumeBackgroundAfterSuppressionRef = useRef(false);
   const pendingTrackAutoplayRef = useRef(false);
+  const previousBackgroundAudioSrcRef = useRef<string | null>(null);
   const previousCycleOrdersRef = useRef<number[][]>([]);
   const mouseGlowRef = useRef<HTMLDivElement | null>(null);
   const glowFrameRef = useRef<number | null>(null);
@@ -337,6 +338,11 @@ export default function App() {
     const audio = audioRef.current;
     if (!audio || !backgroundAudioSrc) return;
 
+    if (previousBackgroundAudioSrcRef.current === backgroundAudioSrc) {
+      return;
+    }
+
+    previousBackgroundAudioSrcRef.current = backgroundAudioSrc;
     audio.load();
     audio.volume = volume;
     audio.muted = isEffectivelyMuted;
