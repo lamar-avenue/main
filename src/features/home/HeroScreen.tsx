@@ -68,35 +68,39 @@ export default function HeroScreen({
             <span className="heroPanelLine heroPanelLine-bottom" />
           </div>
 
-          <div className="heroFrameWrap">
-            <div className="heroFrameGlow" />
-            <div className="heroFrameAura" />
-            <div className="heroFramePlate" />
-            <img className="heroFrameImage" src={heroImage} alt="Марк" />
-            <div className="heroFrameShine" />
-            <div className="heroFrameShade" />
-            <div className="heroFrameCaption glowInset">
-              <span className="heroFrameCaptionLabel">Birthday Signal</span>
-              <strong>Тихий вход в квест</strong>
+          <div className="heroContentRow">
+            <div className="heroFrameWrap">
+              <div className="heroFrameGlow" />
+              <div className="heroFrameAura" />
+              <div className="heroFramePlate" />
+              <img className="heroFrameImage" src={heroImage} alt="Марк" />
+              <div className="heroFrameShine" />
+              <div className="heroFrameShade" />
+              <div className="heroFrameCaption glowInset">
+                <span className="heroFrameCaptionLabel">Birthday Signal</span>
+                <strong>Тихий вход в квест</strong>
+              </div>
             </div>
-          </div>
 
-          <div className="heroTextBlock">
-            <div className="heroEyebrow">Soft drama. No rush. Gift ahead.</div>
-            <h1 className="heroMainTitle">С Днем Рождения, Марк!</h1>
-            <p className="heroDescription">
-              Это квест без суеты, но с характером.
-              <br />
-              Немного свечения, немного иронии, немного сакуры, и подарок, который спокойно ждёт в финале.
-            </p>
-          </div>
+            <div className="heroCopyColumn">
+              <div className="heroTextBlock">
+                <div className="heroEyebrow">Soft drama. No rush. Gift ahead.</div>
+                <h1 className="heroMainTitle">С Днем Рождения, Марк!</h1>
+                <p className="heroDescription">
+                  Это квест без суеты, но с характером.
+                  <br />
+                  Немного свечения, немного иронии, немного сакуры, и подарок, который спокойно ждёт в финале.
+                </p>
+              </div>
 
-          <div className="heroLaunchGroup">
-            <button className="heroLaunchButton" type="button" onClick={onStart} disabled={isTransitioning}>
-              <span className="heroLaunchLabel">Начать квест</span>
-              <span className="heroLaunchArrow" aria-hidden="true">{"->"}</span>
-            </button>
-            <p className="heroLaunchHint">Без таймера. Просто красиво войди в историю.</p>
+              <div className="heroLaunchGroup">
+                <button className="heroLaunchButton" type="button" onClick={onStart} disabled={isTransitioning}>
+                  <span className="heroLaunchLabel">Начать квест</span>
+                  <span className="heroLaunchArrow" aria-hidden="true">{"->"}</span>
+                </button>
+                <p className="heroLaunchHint">Без таймера. Просто красиво войди в историю.</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>

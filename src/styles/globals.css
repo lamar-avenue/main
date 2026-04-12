@@ -639,15 +639,11 @@ a {
 
 .heroCenterPanel {
   position: relative;
-  width: min(100%, 820px);
-  max-width: 820px;
+  width: min(100%, 1040px);
+  max-width: 1040px;
   max-height: calc(100% - 4px);
   min-height: 0;
-  display: grid;
-  justify-items: center;
-  align-content: start;
-  gap: clamp(12px, 1.8vh, 20px);
-  padding: 28px 28px 18px;
+  padding: 26px 30px 18px;
   border-radius: 36px;
   overflow: hidden;
   background:
@@ -665,6 +661,17 @@ a {
   border-radius: inherit;
   border: 1px solid rgba(255, 255, 255, 0.04);
   pointer-events: none;
+}
+
+.heroContentRow {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(320px, 420px) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(28px, 4vw, 56px);
+  width: 100%;
+  min-height: 0;
 }
 
 .heroPanelLines {
@@ -713,7 +720,7 @@ a {
 
 .heroFrameWrap {
   position: relative;
-  width: min(420px, 38vh, 64vw);
+  width: min(420px, 32vw, 38vh);
   max-width: 420px;
   flex: none;
   margin-top: 0;
@@ -865,8 +872,18 @@ a {
 .heroTextBlock {
   display: grid;
   gap: clamp(8px, 1.1vh, 12px);
-  justify-items: center;
-  max-width: 38rem;
+  justify-items: start;
+  text-align: left;
+  max-width: 33rem;
+}
+
+.heroCopyColumn {
+  display: grid;
+  align-content: center;
+  justify-items: start;
+  gap: clamp(14px, 2vh, 22px);
+  min-width: 0;
+  text-align: left;
 }
 
 .heroEyebrow {
@@ -912,7 +929,7 @@ a {
 
 .heroLaunchGroup {
   display: grid;
-  justify-items: center;
+  justify-items: start;
   gap: 8px;
   animation: heroLayerIn 0.9s cubic-bezier(0.2, 1, 0.2, 1) 0.46s both;
 }
@@ -1037,7 +1054,7 @@ a {
   align-items: center;
   justify-content: center;
   gap: clamp(12px, 1.6vw, 20px);
-  width: min(100%, 820px);
+  width: min(100%, 1040px);
   color: rgba(244, 220, 232, 0.46);
   font-size: 0.63rem;
   letter-spacing: 0.24em;
@@ -1100,11 +1117,11 @@ body:has(.appShell.scene-intro) {
 }
 
 .appShell.scene-intro .heroCenterPanel {
-  width: min(100%, 740px);
-  max-width: 740px;
-  max-height: min(72vh, 640px);
+  width: min(100%, 980px);
+  max-width: 980px;
+  max-height: min(70vh, 620px);
   gap: 10px;
-  padding: 20px 22px 14px;
+  padding: 18px 24px 12px;
 }
 
 .appShell.scene-intro .heroPanelLine-top {
@@ -1122,8 +1139,8 @@ body:has(.appShell.scene-intro) {
 }
 
 .appShell.scene-intro .heroFrameWrap {
-  width: min(340px, 28vh, 52vw);
-  max-width: 340px;
+  width: min(400px, 30vw, 30vh);
+  max-width: 400px;
 }
 
 .appShell.scene-intro .heroFrameWrap::before {
@@ -1139,7 +1156,7 @@ body:has(.appShell.scene-intro) {
 }
 
 .appShell.scene-intro .heroFrameImage {
-  max-height: min(28vh, 340px);
+  max-height: min(30vh, 400px);
 }
 
 .appShell.scene-intro .heroFrameCaption {
@@ -1155,7 +1172,7 @@ body:has(.appShell.scene-intro) {
 
 .appShell.scene-intro .heroTextBlock {
   gap: 8px;
-  max-width: 31rem;
+  max-width: 28rem;
 }
 
 .appShell.scene-intro .heroEyebrow {
@@ -1163,11 +1180,11 @@ body:has(.appShell.scene-intro) {
 }
 
 .appShell.scene-intro .heroMainTitle {
-  font-size: clamp(2.2rem, 4.2vw, 3.7rem);
+  font-size: clamp(2.4rem, 4vw, 3.8rem);
 }
 
 .appShell.scene-intro .heroDescription {
-  max-width: 30rem;
+  max-width: 27rem;
   font-size: 0.94rem;
   line-height: 1.56;
 }
@@ -1181,7 +1198,7 @@ body:has(.appShell.scene-intro) {
 }
 
 .appShell.scene-intro .heroFooterMeta {
-  width: min(100%, 740px);
+  width: min(100%, 980px);
   gap: 12px;
   font-size: 0.56rem;
   letter-spacing: 0.16em;
@@ -3235,10 +3252,23 @@ body:has(.appShell.scene-intro) {
 
 @media (max-width: 1100px) {
   .heroCenterPanel {
-    width: min(100%, 760px);
-    max-width: 760px;
+    width: min(100%, 860px);
+    max-width: 860px;
     gap: 14px;
     padding: 24px 22px 16px;
+  }
+
+  .heroContentRow {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    gap: 20px;
+  }
+
+  .heroCopyColumn,
+  .heroTextBlock,
+  .heroLaunchGroup {
+    justify-items: center;
+    text-align: center;
   }
 
   .heroFrameWrap {
@@ -3247,7 +3277,7 @@ body:has(.appShell.scene-intro) {
   }
 
   .heroFooterMeta {
-    width: min(100%, 760px);
+    width: min(100%, 860px);
     gap: 16px;
     flex-wrap: wrap;
   }
@@ -3310,6 +3340,10 @@ body:has(.appShell.scene-intro) {
     gap: 12px;
     padding: 18px 14px 12px;
     border-radius: 28px;
+  }
+
+  .heroContentRow {
+    gap: 16px;
   }
 
   .heroPanelLine-top,
