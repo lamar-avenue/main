@@ -529,7 +529,7 @@ export default function App() {
   }
 
   return (
-    <div className={`appShell effects-${effectsMode} ${screen === "quest" ? "is-quest-screen" : ""}`}>
+    <div className={`appShell effects-${effectsMode} scene-${screen} is-viewport-scene`}>
       <div className="bg">
         <div className="bgNoise" />
         <div className="aurora auroraPrimary" />
@@ -609,7 +609,7 @@ export default function App() {
         )}
 
         <div
-          className={`container ${screen === "intro" ? "container-intro" : ""} ${screen === "quest" ? "container-quest" : ""} ${screen === "honorable" || screen === "credits" ? "container-finale" : ""}`}
+          className={`container ${screen === "intro" ? "container-intro" : ""} ${screen === "quest" ? "container-quest" : ""} ${screen === "honorable" || screen === "credits" || screen === "done" ? "container-finale" : ""}`}
         >
           {screen === "intro" && (
             <HeroScreen
