@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { CSSProperties } from "react";
+import DebugFpsCounter from "./components/DebugFpsCounter";
 import type { QuestStep } from "./data/quest";
 import CreditsScreen from "./features/final/CreditsScreen";
 import { BACKGROUND_TRACKS, createShuffledTrackOrder } from "./features/audio/backgroundTracks";
@@ -130,6 +131,11 @@ export default function App() {
   const currentBackgroundTrack = BACKGROUND_TRACKS[playlistState.order[playlistState.position] ?? 0];
   const heroImage = useMemo(() => resolveMediaSrc("/media/images/hero-start.jpg"), []);
   const backgroundAudioSrc = currentBackgroundTrack ? resolveMediaSrc(currentBackgroundTrack.src) : null;
+  const showDebugFpsCounter = useMemo(() => {
+    if (typeof window === "undefined") return false;
+
+    return import.meta.env.DEV || new URLSearchParams(window.location.search).get("debugFps") === "1";
+  }, []);
 
   useEffect(() => {
     return () => {
@@ -607,6 +613,8 @@ export default function App() {
             </div>
           </div>
         )}
+
+        {showDebugFpsCounter && <DebugFpsCounter />}
 
         <div
           className={`container ${screen === "intro" ? "container-intro" : ""} ${screen === "quest" ? "container-quest" : ""} ${screen === "honorable" || screen === "credits" || screen === "done" ? "container-finale" : ""}`}
