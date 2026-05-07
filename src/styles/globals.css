@@ -674,7 +674,7 @@ a {
   z-index: 1;
   display: grid;
   grid-template-columns: minmax(480px, 580px) minmax(0, 1fr);
-  align-items: center;
+  align-items: stretch;
   gap: clamp(40px, 5vw, 80px);
   width: 100%;
   min-height: 0;
@@ -727,10 +727,12 @@ a {
 
 .heroFrameWrap {
   position: relative;
-  width: min(560px, 40vw, 46vh);
+  width: min(560px, 38vw, 45vh);
   max-width: 560px;
   flex: none;
   margin-top: 0;
+  aspect-ratio: 4 / 5;
+  align-self: center;
   isolation: isolate;
   animation: heroLayerIn 0.92s cubic-bezier(0.2, 1, 0.2, 1) 0.14s both;
 }
@@ -809,11 +811,14 @@ a {
   position: relative;
   display: block;
   width: 100%;
-  aspect-ratio: 1 / 1;
-  max-height: min(46vh, 560px);
-  object-fit: cover;
+  height: 100%;
+  max-height: min(55vh, 660px);
+  object-fit: contain;
   border-radius: 34px;
   border: 1px solid rgba(242, 220, 233, 0.26);
+  background:
+    radial-gradient(circle at 50% 18%, rgba(255, 210, 230, 0.12), transparent 34%),
+    linear-gradient(180deg, rgba(18, 13, 31, 0.72), rgba(7, 9, 22, 0.82));
   box-shadow:
     0 0 0 1px rgba(255, 255, 255, 0.08),
     0 18px 40px rgba(9, 12, 28, 0.24),
@@ -888,7 +893,7 @@ a {
   display: grid;
   align-content: center;
   justify-items: start;
-  gap: clamp(18px, 2.2vh, 26px);
+  gap: clamp(14px, 1.9vh, 22px);
   min-width: 0;
   text-align: left;
 }
@@ -1131,7 +1136,7 @@ body:has(.appShell.scene-intro) {
 .appShell.scene-intro .heroCenterPanel {
   width: min(100%, 1240px);
   max-width: 1240px;
-  max-height: min(79vh, 720px);
+  max-height: min(82vh, 740px);
   gap: 10px;
   padding: 28px 38px 16px;
 }
@@ -1151,7 +1156,7 @@ body:has(.appShell.scene-intro) {
 }
 
 .appShell.scene-intro .heroFrameWrap {
-  width: min(530px, 38vw, 39vh);
+  width: min(530px, 36vw, 42vh);
   max-width: 530px;
 }
 
@@ -1168,7 +1173,7 @@ body:has(.appShell.scene-intro) {
 }
 
 .appShell.scene-intro .heroFrameImage {
-  max-height: min(39vh, 530px);
+  max-height: min(58vh, 662px);
 }
 
 .appShell.scene-intro .heroFrameCaption {
@@ -1196,7 +1201,7 @@ body:has(.appShell.scene-intro) {
 }
 
 .appShell.scene-intro .heroCopyColumn {
-  gap: 20px;
+  gap: 16px;
 }
 
 .appShell.scene-intro .heroDescription {
