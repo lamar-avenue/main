@@ -155,22 +155,22 @@ a {
   z-index: 1;
   left: 0;
   top: 0;
-  width: 24rem;
-  height: 24rem;
+  width: 16rem;
+  height: 16rem;
   border-radius: 999px;
   background:
-    radial-gradient(circle, rgba(155, 124, 255, 0.22), rgba(155, 124, 255, 0.1) 28%, transparent 62%),
-    radial-gradient(circle at 62% 38%, rgba(125, 226, 255, 0.14), transparent 44%);
-  filter: blur(18px);
-  transform: translate3d(-999px, -999px, 0);
-  mix-blend-mode: screen;
+    radial-gradient(circle at 50% 50%, rgba(155, 124, 255, 0.2), rgba(155, 124, 255, 0.08) 38%, transparent 68%);
+  filter: blur(10px);
+  transform: translate3d(var(--mouse-glow-x, -999px), var(--mouse-glow-y, -999px), 0) translate3d(-50%, -50%, 0);
   opacity: 0;
-  will-change: transform, opacity;
+  will-change: transform;
+  contain: layout paint style;
+  backface-visibility: hidden;
   transition: opacity 180ms ease;
 }
 
 .mouseGlow.is-active {
-  opacity: 0.95;
+  opacity: 0.8;
 }
 
 .sakuraLayer {

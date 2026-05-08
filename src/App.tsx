@@ -261,30 +261,35 @@ export default function App() {
       !window.matchMedia("(hover: hover)").matches
     ) {
       glow.classList.remove("is-active");
-      glow.style.transform = "translate3d(-999px, -999px, 0)";
+      glow.style.setProperty("--mouse-glow-x", "-999px");
+      glow.style.setProperty("--mouse-glow-y", "-999px");
       return;
     }
 
     let nextX = -999;
     let nextY = -999;
+    let isGlowActive = false;
 
     const handleMove = (event: PointerEvent) => {
       nextX = event.clientX;
       nextY = event.clientY;
 
-      if (!glow.classList.contains("is-active")) {
+      if (!isGlowActive) {
+        isGlowActive = true;
         glow.classList.add("is-active");
       }
 
       if (glowFrameRef.current !== null) return;
 
       glowFrameRef.current = window.requestAnimationFrame(() => {
-        glow.style.transform = `translate3d(${nextX}px, ${nextY}px, 0) translate3d(-50%, -50%, 0)`;
+        glow.style.setProperty("--mouse-glow-x", `${nextX}px`);
+        glow.style.setProperty("--mouse-glow-y", `${nextY}px`);
         glowFrameRef.current = null;
       });
     };
 
     const handleLeave = () => {
+      isGlowActive = false;
       glow.classList.remove("is-active");
     };
 
@@ -295,6 +300,7 @@ export default function App() {
       if (glowFrameRef.current !== null) {
         window.cancelAnimationFrame(glowFrameRef.current);
       }
+      isGlowActive = false;
       window.removeEventListener("pointermove", handleMove);
       window.removeEventListener("mouseleave", handleLeave);
     };
