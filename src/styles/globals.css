@@ -2859,7 +2859,8 @@ body:has(.appShell.scene-intro) {
   filter: none;
 }
 
-.debug-no-sakura .sakuraLayer {
+.debug-no-sakura .sakuraLayer,
+.debug-no-sakura .heroScenePetalMist {
   display: none;
 }
 
@@ -2895,6 +2896,7 @@ body:has(.appShell.scene-intro) {
 .debug-no-blur .toast,
 .debug-no-blur .cinematicPauseVeil,
 .debug-no-blur .debugFpsCounter {
+  -webkit-backdrop-filter: none !important;
   backdrop-filter: none !important;
 }
 
@@ -2947,7 +2949,19 @@ body:has(.appShell.scene-intro) {
 .debug-low-fx .floatingPlayer,
 .debug-low-fx .toast,
 .debug-low-fx .debugFpsCounter {
+  -webkit-backdrop-filter: none;
   backdrop-filter: none;
+}
+
+.debug-low-fx .bgNoise {
+  opacity: 0.06;
+  mix-blend-mode: normal;
+  background-size: 6px 6px, 6px 6px;
+}
+
+.debug-low-fx .grid {
+  opacity: 0.14;
+  mask-image: none;
 }
 
 .debug-low-fx .glowPanel,
