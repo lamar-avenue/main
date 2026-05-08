@@ -11,6 +11,7 @@ import SakuraPetalsBackground from "./features/home/SakuraPetalsBackground";
 import StepView from "./features/quest/StepView";
 import { resolveMediaSrc } from "./features/quest/media";
 import { useQuest } from "./features/quest/useQuest";
+import { getDebugFlags } from "./utils/debugFlags";
 
 type Screen = "intro" | "quest" | "honorable" | "credits" | "done";
 type ToastTone = "neutral" | "success" | "error";
@@ -104,6 +105,7 @@ export default function App() {
   const previousCycleOrdersRef = useRef<number[][]>([]);
   const mouseGlowRef = useRef<HTMLDivElement | null>(null);
   const glowFrameRef = useRef<number | null>(null);
+  const glowPositionRef = useRef({ x: -999, y: -999 });
   const cinematicPauseTimeoutRef = useRef<number | null>(null);
   const previousQuestStepKeyRef = useRef<string | null>(null);
   const previousScreenRef = useRef<Screen>("intro");
@@ -112,7 +114,9 @@ export default function App() {
 
   const { step, submit, reset, state, total } = useQuest();
   const previousDoneRef = useRef(state.done);
+  const debugFlags = useMemo(() => getDebugFlags(), []);
   const effectsMode = useMemo<"default" | "lite">(() => {
+    if (debugFlags.lowFx) return "lite";
     if (typeof window === "undefined") return "default";
 
     const navigatorWithDeviceMemory = navigator as NavigatorWithDeviceMemory;
@@ -124,18 +128,27 @@ export default function App() {
       typeof navigatorWithDeviceMemory.deviceMemory === "number" && navigatorWithDeviceMemory.deviceMemory <= 4;
 
     return reducedMotion || coarsePointer || narrowViewport || lowCpu || lowMemory ? "lite" : "default";
-  }, []);
+  }, [debugFlags.lowFx]);
   const isVideoStep = screen === "quest" && !!step?.blocks?.some((block) => block.type === "video");
   const isBackgroundSuppressed = screen === "honorable" || isVideoStep || activeSceneAudioSourceId !== null;
   const isEffectivelyMuted = isMuted || volume === 0;
   const currentBackgroundTrack = BACKGROUND_TRACKS[playlistState.order[playlistState.position] ?? 0];
   const heroImage = useMemo(() => resolveMediaSrc("/media/images/hero-start.jpg"), []);
   const backgroundAudioSrc = currentBackgroundTrack ? resolveMediaSrc(currentBackgroundTrack.src) : null;
-  const showDebugFpsCounter = useMemo(() => {
-    if (typeof window === "undefined") return false;
-
-    return import.meta.env.DEV || new URLSearchParams(window.location.search).get("debugFps") === "1";
-  }, []);
+  const showDebugFpsCounter = import.meta.env.DEV || debugFlags.debugFps;
+  const highGlowEnabled = debugFlags.highGlow && !debugFlags.lowFx && !debugFlags.noCursorGlow;
+  const rootClassName = [
+    "appShell",
+    `effects-${effectsMode}`,
+    `cursorGlow-${highGlowEnabled ? "high" : "light"}`,
+    `scene-${screen}`,
+    "is-viewport-scene",
+    debugFlags.noBlur ? "debug-no-blur" : "",
+    debugFlags.lowFx ? "debug-low-fx" : "",
+    debugFlags.noSakura ? "debug-no-sakura" : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   useEffect(() => {
     return () => {
@@ -254,25 +267,28 @@ export default function App() {
     const glow = mouseGlowRef.current;
     if (!glow) return;
 
-    if (
-      effectsMode === "lite" ||
-      typeof window === "undefined" ||
-      !window.matchMedia("(pointer: fine)").matches ||
-      !window.matchMedia("(hover: hover)").matches
-    ) {
+    if (debugFlags.noCursorGlow) {
       glow.classList.remove("is-active");
-      glow.style.setProperty("--mouse-glow-x", "-999px");
-      glow.style.setProperty("--mouse-glow-y", "-999px");
+      glow.style.transform = "translate3d(-999px, -999px, 0) translate3d(-50%, -50%, 0)";
       return;
     }
 
-    let nextX = -999;
-    let nextY = -999;
+    if (
+      typeof window === "undefined" ||
+      !window.matchMedia("(pointer: fine)").matches ||
+      !window.matchMedia("(hover: hover)").matches ||
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
+      glow.classList.remove("is-active");
+      glow.style.transform = "translate3d(-999px, -999px, 0) translate3d(-50%, -50%, 0)";
+      return;
+    }
+
     let isGlowActive = false;
 
     const handleMove = (event: PointerEvent) => {
-      nextX = event.clientX;
-      nextY = event.clientY;
+      glowPositionRef.current.x = event.clientX;
+      glowPositionRef.current.y = event.clientY;
 
       if (!isGlowActive) {
         isGlowActive = true;
@@ -282,8 +298,8 @@ export default function App() {
       if (glowFrameRef.current !== null) return;
 
       glowFrameRef.current = window.requestAnimationFrame(() => {
-        glow.style.setProperty("--mouse-glow-x", `${nextX}px`);
-        glow.style.setProperty("--mouse-glow-y", `${nextY}px`);
+        const { x, y } = glowPositionRef.current;
+        glow.style.transform = `translate3d(${x}px, ${y}px, 0) translate3d(-50%, -50%, 0)`;
         glowFrameRef.current = null;
       });
     };
@@ -291,6 +307,9 @@ export default function App() {
     const handleLeave = () => {
       isGlowActive = false;
       glow.classList.remove("is-active");
+      glowPositionRef.current.x = -999;
+      glowPositionRef.current.y = -999;
+      glow.style.transform = "translate3d(-999px, -999px, 0) translate3d(-50%, -50%, 0)";
     };
 
     window.addEventListener("pointermove", handleMove, { passive: true });
@@ -299,12 +318,13 @@ export default function App() {
     return () => {
       if (glowFrameRef.current !== null) {
         window.cancelAnimationFrame(glowFrameRef.current);
+        glowFrameRef.current = null;
       }
       isGlowActive = false;
       window.removeEventListener("pointermove", handleMove);
       window.removeEventListener("mouseleave", handleLeave);
     };
-  }, [effectsMode]);
+  }, [debugFlags.noCursorGlow]);
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -541,14 +561,14 @@ export default function App() {
   }
 
   return (
-    <div className={`appShell effects-${effectsMode} scene-${screen} is-viewport-scene`}>
+    <div className={rootClassName}>
       <div className="bg">
         <div className="bgNoise" />
         <div className="aurora auroraPrimary" />
         <div className="aurora auroraSecondary" />
         <div className="aurora auroraAccent" />
-        <SakuraPetalsBackground variant={screen === "intro" ? "hero" : "ambient"} />
-        <div ref={mouseGlowRef} className="mouseGlow" />
+        {!debugFlags.noSakura && <SakuraPetalsBackground variant={screen === "intro" ? "hero" : "ambient"} />}
+        {!debugFlags.noCursorGlow && <div ref={mouseGlowRef} className="mouseGlow" />}
         <div className="grid" />
         <div className="vignette" />
 

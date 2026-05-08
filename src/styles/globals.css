@@ -155,21 +155,31 @@ a {
   z-index: 1;
   left: 0;
   top: 0;
-  width: 16rem;
-  height: 16rem;
+  width: clamp(11.25rem, 14vw, 16.25rem);
+  height: clamp(11.25rem, 14vw, 16.25rem);
   border-radius: 999px;
-  background:
-    radial-gradient(circle at 50% 50%, rgba(155, 124, 255, 0.2), rgba(155, 124, 255, 0.08) 38%, transparent 68%);
-  filter: blur(10px);
-  transform: translate3d(var(--mouse-glow-x, -999px), var(--mouse-glow-y, -999px), 0) translate3d(-50%, -50%, 0);
+  background: radial-gradient(circle at 50% 50%, rgba(155, 124, 255, 0.14), rgba(125, 226, 255, 0.055) 42%, transparent 68%);
+  transform: translate3d(-999px, -999px, 0) translate3d(-50%, -50%, 0);
   opacity: 0;
   will-change: transform;
-  contain: layout paint style;
+  contain: paint;
   backface-visibility: hidden;
   transition: opacity 180ms ease;
 }
 
 .mouseGlow.is-active {
+  opacity: 0.34;
+}
+
+.cursorGlow-high .mouseGlow {
+  width: 16rem;
+  height: 16rem;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(155, 124, 255, 0.2), rgba(155, 124, 255, 0.08) 38%, transparent 68%);
+  filter: blur(10px);
+}
+
+.cursorGlow-high .mouseGlow.is-active {
   opacity: 0.8;
 }
 
@@ -2786,10 +2796,6 @@ body:has(.appShell.scene-intro) {
   contain: layout paint;
 }
 
-.effects-lite .mouseGlow {
-  display: none;
-}
-
 .effects-lite .auroraSecondary,
 .effects-lite .auroraAccent,
 .effects-lite .heroSceneHalo,
@@ -2850,6 +2856,130 @@ body:has(.appShell.scene-intro) {
 }
 
 .effects-lite .sakuraPetalFill {
+  filter: none;
+}
+
+.debug-no-sakura .sakuraLayer {
+  display: none;
+}
+
+.debug-no-blur .bg::before,
+.debug-no-blur .bg::after,
+.debug-no-blur .aurora,
+.debug-no-blur .heroScreen::before,
+.debug-no-blur .heroScreen::after,
+.debug-no-blur .heroSceneHalo,
+.debug-no-blur .heroSceneBeam,
+.debug-no-blur .heroSceneRibbon,
+.debug-no-blur .heroScenePetalMist,
+.debug-no-blur .heroFrameWrap::after,
+.debug-no-blur .heroFrameGlow,
+.debug-no-blur .heroHeader::before,
+.debug-no-blur .heroLaunchButton::before,
+.debug-no-blur .questionPanel::before,
+.debug-no-blur .sakuraPetal,
+.debug-no-blur .sakuraPetalFill,
+.debug-no-blur .heroFrameImage,
+.debug-no-blur .honorableGlow,
+.debug-no-blur .honorableImageAura,
+.debug-no-blur .creditsGlow {
+  filter: none !important;
+}
+
+.debug-no-blur .glowPanel,
+.debug-no-blur .glowInset,
+.debug-no-blur .heroHeader,
+.debug-no-blur .heroFramePlate,
+.debug-no-blur .heroFrameCaption,
+.debug-no-blur .floatingPlayer,
+.debug-no-blur .toast,
+.debug-no-blur .cinematicPauseVeil,
+.debug-no-blur .debugFpsCounter {
+  backdrop-filter: none !important;
+}
+
+.debug-no-blur .glowPanel,
+.debug-no-blur .glowInset,
+.debug-no-blur .heroCenterPanel,
+.debug-no-blur .heroFrameWrap::before,
+.debug-no-blur .heroFrameAura,
+.debug-no-blur .heroFrameImage,
+.debug-no-blur .heroLaunchButton,
+.debug-no-blur .btn,
+.debug-no-blur .mediaCard,
+.debug-no-blur .choiceCard,
+.debug-no-blur .honorableSkipButton,
+.debug-no-blur .creditsFrame,
+.debug-no-blur .doneLayout {
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06) !important;
+}
+
+.debug-low-fx .mouseGlow,
+.debug-low-fx .auroraSecondary,
+.debug-low-fx .auroraAccent,
+.debug-low-fx .heroSceneHalo,
+.debug-low-fx .heroSceneBeam-secondary,
+.debug-low-fx .heroSceneBeam-orbit,
+.debug-low-fx .heroSceneRibbon,
+.debug-low-fx .heroScenePetalMist,
+.debug-low-fx .heroFrameGlow,
+.debug-low-fx .honorableGlow,
+.debug-low-fx .honorableImageAura,
+.debug-low-fx .creditsGlow {
+  display: none;
+}
+
+.debug-low-fx .bg::before,
+.debug-low-fx .bg::after,
+.debug-low-fx .auroraPrimary,
+.debug-low-fx .heroScreen::before,
+.debug-low-fx .heroScreen::after,
+.debug-low-fx .heroFrameWrap::after {
+  filter: blur(6px);
+  opacity: 0.4;
+}
+
+.debug-low-fx .glowPanel,
+.debug-low-fx .glowInset,
+.debug-low-fx .heroHeader,
+.debug-low-fx .heroFramePlate,
+.debug-low-fx .heroFrameCaption,
+.debug-low-fx .floatingPlayer,
+.debug-low-fx .toast,
+.debug-low-fx .debugFpsCounter {
+  backdrop-filter: none;
+}
+
+.debug-low-fx .glowPanel,
+.debug-low-fx .glowInset,
+.debug-low-fx .heroCenterPanel,
+.debug-low-fx .heroFrameWrap::before,
+.debug-low-fx .heroFrameAura,
+.debug-low-fx .heroFrameImage,
+.debug-low-fx .heroLaunchButton,
+.debug-low-fx .btn,
+.debug-low-fx .mediaCard,
+.debug-low-fx .choiceCard,
+.debug-low-fx .honorableSkipButton,
+.debug-low-fx .creditsFrame,
+.debug-low-fx .doneLayout {
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+.debug-low-fx .sakuraPetal:nth-child(n + 7) {
+  display: none;
+}
+
+.debug-low-fx .sakuraPetal,
+.debug-low-fx .aurora,
+.debug-low-fx .heroFrameWrap,
+.debug-low-fx .heroFrameImage,
+.debug-low-fx .honorableSkipButton {
+  animation: none !important;
+  will-change: auto;
+}
+
+.debug-low-fx .sakuraPetalFill {
   filter: none;
 }
 
