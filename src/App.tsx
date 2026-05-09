@@ -12,6 +12,7 @@ import StepView from "./features/quest/StepView";
 import { resolveMediaSrc } from "./features/quest/media";
 import { useQuest } from "./features/quest/useQuest";
 import { getDebugFlags } from "./utils/debugFlags";
+import { installPerformanceDebugProbe } from "./utils/performanceDebug";
 
 type Screen = "intro" | "quest" | "honorable" | "credits" | "done";
 type ToastTone = "neutral" | "success" | "error";
@@ -149,6 +150,10 @@ export default function App() {
   ]
     .filter(Boolean)
     .join(" ");
+
+  useEffect(() => {
+    installPerformanceDebugProbe(showDebugFpsCounter);
+  }, [showDebugFpsCounter]);
 
   useEffect(() => {
     return () => {
@@ -293,6 +298,10 @@ export default function App() {
       if (!isGlowActive) {
         isGlowActive = true;
         glow.classList.add("is-active");
+        window.__MARK_QUEST_PERF_DEBUG__?.log("cursorGlow:active", {
+          x: event.clientX,
+          y: event.clientY,
+        });
       }
 
       if (glowFrameRef.current !== null) return;
@@ -307,6 +316,7 @@ export default function App() {
     const handleLeave = () => {
       isGlowActive = false;
       glow.classList.remove("is-active");
+      window.__MARK_QUEST_PERF_DEBUG__?.log("cursorGlow:inactive");
       glowPositionRef.current.x = -999;
       glowPositionRef.current.y = -999;
       glow.style.transform = "translate3d(-999px, -999px, 0) translate3d(-50%, -50%, 0)";
