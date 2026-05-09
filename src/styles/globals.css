@@ -405,11 +405,7 @@ a {
 
 .heroScreen::before,
 .heroScreen::after {
-  content: "";
-  position: absolute;
-  inset: auto;
-  pointer-events: none;
-  z-index: 0;
+  display: none;
 }
 
 .heroScreen::before {
@@ -436,10 +432,7 @@ a {
 }
 
 .heroSceneGlow {
-  position: absolute;
-  inset: 3% 0 10%;
-  z-index: 0;
-  pointer-events: none;
+  display: none;
 }
 
 .heroSceneHalo,
@@ -665,14 +658,7 @@ a {
 }
 
 .heroCenterPanel::after {
-  content: "";
-  position: absolute;
-  inset: 12px 16px;
-  z-index: 0;
-  border-radius: 34px;
-  border: 1px solid rgba(255, 255, 255, 0.018);
-  background: linear-gradient(90deg, rgba(255, 203, 224, 0.012), transparent 24%, transparent 76%, rgba(125, 226, 255, 0.008));
-  pointer-events: none;
+  display: none;
 }
 
 .heroContentRow {
@@ -1150,6 +1136,13 @@ body:has(.appShell.scene-intro) {
   align-items: stretch;
 }
 
+.appShell.scene-intro .bg::before,
+.appShell.scene-intro .bg::after,
+.appShell.scene-intro .sakuraLayer-hero::before,
+.appShell.scene-intro .sakuraLayer-hero::after {
+  display: none;
+}
+
 .appShell.scene-intro .heroScreen {
   max-height: 100%;
   max-width: min(100%, 1180px);
@@ -1349,6 +1342,20 @@ body:has(.appShell.scene-intro) {
 .appShell.scene-intro .glowInset::before,
 .appShell.scene-intro .floatingPlayer::before {
   opacity: 0.46;
+}
+
+.appShell.scene-intro .heroCenterPanel.glowPanel {
+  border: 0;
+  background: transparent;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  box-shadow: none;
+}
+
+.appShell.scene-intro .heroCenterPanel.glowPanel::before,
+.appShell.scene-intro .heroCenterPanel::after {
+  display: none;
+  content: none;
 }
 
 .cursorGlow-high .bg::before {
