@@ -401,10 +401,10 @@ a {
   flex-direction: column;
   justify-content: flex-start;
   width: 100%;
-  max-width: min(100%, 1360px);
+  max-width: min(100%, 1180px);
   margin: 0 auto;
-  gap: clamp(12px, 1.5vh, 18px);
-  padding-top: clamp(50px, 5.3vh, 60px);
+  gap: clamp(10px, 1.3vh, 16px);
+  padding-top: clamp(46px, 5vh, 56px);
   padding-bottom: 0;
   overflow: hidden;
   isolation: isolate;
@@ -643,22 +643,22 @@ a {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: clamp(12px, 1.4vh, 18px);
+  gap: clamp(10px, 1.2vh, 16px);
   text-align: center;
   flex: 1 1 auto;
   min-height: 0;
   width: 100%;
-  padding: 0 clamp(12px, 2vw, 24px) 16px;
+  padding: 0 clamp(12px, 2vw, 20px) 12px;
 }
 
 .heroCenterPanel {
   position: relative;
   box-sizing: border-box;
-  width: min(100%, 1140px);
-  max-width: 1140px;
-  max-height: min(100%, 720px);
+  width: min(100%, 1108px);
+  max-width: 1108px;
+  max-height: min(100%, calc(100svh - 118px));
   min-height: 0;
-  padding: 30px 34px 24px;
+  padding: clamp(30px, 3vw, 38px);
   border-radius: 36px;
   overflow: hidden;
   background:
@@ -682,11 +682,13 @@ a {
   position: relative;
   z-index: 1;
   display: grid;
-  grid-template-columns: clamp(390px, 38vw, 450px) minmax(380px, 460px);
+  grid-template-columns: minmax(390px, 430px) minmax(380px, 430px);
   align-items: center;
   justify-content: center;
-  gap: clamp(42px, 4vw, 56px);
-  width: auto;
+  gap: clamp(44px, 4vw, 54px);
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto;
   min-height: 0;
 }
 
@@ -736,8 +738,8 @@ a {
 
 .heroFrameWrap {
   position: relative;
-  width: min(450px, 38vw, 52vh);
-  max-width: 450px;
+  width: clamp(390px, min(34vw, 54vh), 430px);
+  max-width: 430px;
   flex: none;
   margin-top: 0;
   aspect-ratio: 4 / 5;
@@ -822,7 +824,7 @@ a {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: 52% 34%;
+  object-position: 50% 32%;
   border-radius: 34px;
   border: 1px solid rgba(242, 220, 233, 0.26);
   box-shadow:
@@ -863,8 +865,10 @@ a {
   right: 16px;
   bottom: 16px;
   z-index: 1;
+  box-sizing: border-box;
   display: grid;
   gap: 4px;
+  max-width: calc(100% - 32px);
   padding: 10px 12px;
   border-radius: 18px;
   text-align: left;
@@ -894,16 +898,16 @@ a {
   gap: clamp(7px, 0.9vh, 10px);
   justify-items: start;
   text-align: left;
-  max-width: 29rem;
+  max-width: 27rem;
 }
 
 .heroCopyColumn {
   display: grid;
   align-content: center;
   justify-items: start;
-  gap: clamp(12px, 1.5vh, 18px);
-  width: min(100%, 460px);
-  max-width: 460px;
+  gap: clamp(12px, 1.4vh, 16px);
+  width: min(100%, 430px);
+  max-width: 430px;
   min-width: 0;
   text-align: left;
 }
@@ -929,7 +933,7 @@ a {
 
 .heroMainTitle {
   margin: 0;
-  font-size: clamp(2.7rem, 4.3vw, 4rem);
+  font-size: clamp(2.7rem, 3.8vw, 3.65rem);
   line-height: 1.02;
   letter-spacing: -0.05em;
   color: rgba(255, 245, 249, 0.98);
@@ -941,10 +945,10 @@ a {
 
 .heroDescription {
   margin: 0;
-  max-width: 28rem;
+  max-width: 26.5rem;
   color: rgba(241, 227, 236, 0.8);
   font-size: 1rem;
-  line-height: 1.62;
+  line-height: 1.58;
   text-wrap: balance;
   animation: heroLayerIn 0.9s cubic-bezier(0.2, 1, 0.2, 1) 0.36s both;
 }
@@ -1127,8 +1131,9 @@ body:has(.appShell.scene-intro) {
 
 .appShell.scene-intro .heroScreen {
   max-height: 100%;
-  gap: 10px;
-  padding-top: 46px;
+  max-width: min(100%, 1180px);
+  gap: 8px;
+  padding-top: 44px;
 }
 
 .appShell.scene-intro .heroHeader {
@@ -1138,15 +1143,15 @@ body:has(.appShell.scene-intro) {
 
 .appShell.scene-intro .heroScreenCenter {
   max-height: 100%;
-  gap: 10px;
-  padding-bottom: 14px;
+  gap: 8px;
+  padding-bottom: 10px;
 }
 
 .appShell.scene-intro .heroCenterPanel {
-  width: min(100%, 1140px);
-  max-width: 1140px;
-  max-height: min(80svh, 720px);
-  padding: 28px 34px 22px;
+  width: min(100%, 1108px);
+  max-width: 1108px;
+  max-height: min(80svh, calc(100svh - 112px));
+  padding: clamp(30px, 3vw, 38px);
 }
 
 .appShell.scene-intro .heroPanelLine-top {
@@ -1164,8 +1169,8 @@ body:has(.appShell.scene-intro) {
 }
 
 .appShell.scene-intro .heroFrameWrap {
-  width: min(440px, 37vw, 50vh);
-  max-width: 440px;
+  width: clamp(390px, min(34vw, 54vh), 430px);
+  max-width: 430px;
 }
 
 .appShell.scene-intro .heroFrameWrap::before {
@@ -1181,14 +1186,15 @@ body:has(.appShell.scene-intro) {
 }
 
 .appShell.scene-intro .heroFrameImage {
-  object-position: 52% 34%;
+  object-position: 50% 32%;
 }
 
 .appShell.scene-intro .heroFrameCaption {
-  left: 14px;
-  right: 14px;
-  bottom: 14px;
-  padding: 9px 11px;
+  left: 16px;
+  right: 16px;
+  bottom: 16px;
+  max-width: calc(100% - 32px);
+  padding: 10px 12px;
 }
 
 .appShell.scene-intro .heroFrameCaption strong {
@@ -1197,7 +1203,7 @@ body:has(.appShell.scene-intro) {
 
 .appShell.scene-intro .heroTextBlock {
   gap: 8px;
-  max-width: 29rem;
+  max-width: 27rem;
 }
 
 .appShell.scene-intro .heroEyebrow {
@@ -1205,19 +1211,19 @@ body:has(.appShell.scene-intro) {
 }
 
 .appShell.scene-intro .heroMainTitle {
-  font-size: clamp(2.8rem, 4vw, 3.9rem);
+  font-size: clamp(2.75rem, 3.7vw, 3.6rem);
 }
 
 .appShell.scene-intro .heroCopyColumn {
   gap: 14px;
-  width: min(100%, 450px);
-  max-width: 450px;
+  width: min(100%, 430px);
+  max-width: 430px;
 }
 
 .appShell.scene-intro .heroDescription {
-  max-width: 28rem;
+  max-width: 26.5rem;
   font-size: 1rem;
-  line-height: 1.6;
+  line-height: 1.58;
 }
 
 .appShell.scene-intro .heroLaunchGroup {
@@ -1229,12 +1235,22 @@ body:has(.appShell.scene-intro) {
 }
 
 .appShell.scene-intro .heroFooterMeta {
-  width: min(calc(100% - 40px), 1140px);
+  width: min(calc(100% - 40px), 1108px);
   gap: 12px;
   font-size: 0.56rem;
   letter-spacing: 0.16em;
   bottom: 6px;
   padding-bottom: 0;
+}
+
+@media (min-width: 1101px) {
+  .appShell.scene-intro .heroContentRow {
+    grid-template-columns: minmax(390px, 430px) minmax(380px, 430px);
+    gap: clamp(44px, 4vw, 54px);
+    width: fit-content;
+    max-width: 100%;
+    margin: 0 auto;
+  }
 }
 
 .glowPanel,
