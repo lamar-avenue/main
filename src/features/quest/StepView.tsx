@@ -61,6 +61,9 @@ export default function StepView({
     feedbackTone === "idle" ? IDLE_STATUS_LABEL : feedbackTone === "success" ? SUCCESS_STATUS_LABEL : ERROR_STATUS_LABEL;
   const isOrdinaryTextQuestion = !step.blocks?.some((block) => block.type !== "text");
   const hasChoices = !!step.choices?.length;
+  const selectedChoiceIndex = selectedChoice && step.choices ? step.choices.indexOf(selectedChoice) : -1;
+  const selectedChoiceLabel =
+    selectedChoiceIndex >= 0 ? `Выбран вариант ${String(selectedChoiceIndex + 1).padStart(2, "0")}` : "Выбери вариант";
   const { audioRef: idleAudioRef, registerActivity: registerIdleActivity } = useIdleStepAudio({
     enabled: isOrdinaryTextQuestion,
     stepId: step.id,
@@ -78,6 +81,16 @@ export default function StepView({
     setFeedbackAccent(accent);
     setFeedbackMessage(message);
     onToast("error", accent, message);
+  }
+
+  function selectChoice(choice: string) {
+    if (isSubmitting) return;
+
+    setSelectedChoice(choice);
+    setValue(choice);
+    setFeedbackTone("idle");
+    setFeedbackAccent(null);
+    setFeedbackMessage("");
   }
 
   function submitValue(nextValue: string) {
@@ -165,7 +178,7 @@ export default function StepView({
                   className={`choiceCard ${choiceState}`}
                   type="button"
                   disabled={isSubmitting}
-                  onClick={() => submitValue(choice)}
+                  onClick={() => selectChoice(choice)}
                 >
                   <span className="choiceIndex">{String(index + 1).padStart(2, "0")}</span>
                   <span className="choiceText">{choice}</span>
@@ -175,8 +188,20 @@ export default function StepView({
           </div>
         )}
 
-        {(!hasChoices || feedbackMessage || step.hint) && (
-          <div className={`actionPanel glowInset ${hasChoices ? "is-choice-mode" : ""}`}>
+        <div className={`actionPanel glowInset ${hasChoices ? "is-choice-mode" : ""}`}>
+            {hasChoices && (
+              <div className="choiceAction">
+                <span className="choiceActionLabel">{selectedChoiceLabel}</span>
+                <button
+                  className="btn btn-primary stepCheckButton"
+                  type="button"
+                  disabled={isSubmitting || !selectedChoice}
+                  onClick={() => submitValue(selectedChoice ?? "")}
+                >
+                  Проверить
+                </button>
+              </div>
+            )}
             {!hasChoices && (
               <>
                 <div className="fieldLabel">Ручной ввод</div>
@@ -223,8 +248,7 @@ export default function StepView({
                 {showHint ? "Скрыть подсказку" : "Показать подсказку"}
               </button>
             )}
-          </div>
-        )}
+        </div>
 
         {showHint && step.hint && (
           <div className="hintCard glowInset">
