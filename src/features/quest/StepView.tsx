@@ -67,7 +67,7 @@ export default function StepView({
   const questionText = textBlocks[0]?.value ?? step.prompt;
   const selectedChoiceIndex = selectedChoice && step.choices ? step.choices.indexOf(selectedChoice) : -1;
   const selectedChoiceLabel =
-    selectedChoiceIndex >= 0 ? `Выбран вариант ${String(selectedChoiceIndex + 1).padStart(2, "0")}` : "Выбери вариант";
+    selectedChoiceIndex >= 0 ? `Выбран вариант ${String(selectedChoiceIndex + 1).padStart(2, "0")}` : "Выбери один вариант";
   const { audioRef: idleAudioRef, registerActivity: registerIdleActivity } = useIdleStepAudio({
     enabled: isOrdinaryTextQuestion,
     stepId: step.id,
@@ -134,29 +134,32 @@ export default function StepView({
       onInputCapture={registerIdleActivity}
       onFocusCapture={registerIdleActivity}
     >
-      <div className="questMain glowPanel">
-        <div className="questionHeader">
-          <div>
-            <h1 className="questionTitle">{step.title}</h1>
+      <div className="questCard">
+        <header className="questCardHeader">
+          <div className="questHeaderTop">
+            <div className="questHeaderCopy">
+              <span className="questStepLabel">ШАГ {stepNumber}</span>
+              <h1 className="questTitle">{step.title}</h1>
+            </div>
+            <div className="questHeaderMeta" aria-label={`Шаг ${stepNumber} из ${total}`}>
+              <span className="questCounter">
+                {String(stepNumber).padStart(2, "0")} / {String(total).padStart(2, "0")}
+              </span>
+              <span className={`questStatus is-${feedbackTone}`}>{feedbackLabel}</span>
+            </div>
           </div>
-          <div className="questionMeta" aria-label={`Шаг ${stepNumber} из ${total}`}>
-            <span className="stepCounter">
-              {String(stepNumber).padStart(2, "0")} / {String(total).padStart(2, "0")}
-            </span>
-            <span className={`statusPill is-${feedbackTone}`}>{feedbackLabel}</span>
-          </div>
-        </div>
 
-        <div className="progressHeader">
-          <div className="progressTrack">
-            <div className="progressValue" style={{ width: `${progressPercent}%` }} />
+          <div className="questProgress">
+            <div className="questProgressTrack" aria-hidden="true">
+              <div className="questProgressValue" style={{ width: `${progressPercent}%` }} />
+            </div>
+            <span className="questProgressText">Прогресс {progressPercent}%</span>
           </div>
-          <span className="progressLabel">{progressPercent}% синхронизировано</span>
-        </div>
+        </header>
 
-        <div className="questionIntro glowInset">
-          <div className="questionPromptLabel">{questionLabel}</div>
-          <p className="subtitle">{questionText}</p>
+        <div className="questPrompt">
+          <div className="questPromptLabel">{questionLabel}</div>
+          <p className="questPromptText">{questionText}</p>
         </div>
 
         {mediaBlocks.length > 0 && (
@@ -173,7 +176,7 @@ export default function StepView({
         )}
 
         {hasChoices && (
-          <div className="choiceGrid">
+          <div className="questChoiceGrid">
             {step.choices?.map((choice, index) => {
               const isSelected = selectedChoice === choice;
               const choiceState =
@@ -195,9 +198,9 @@ export default function StepView({
           </div>
         )}
 
-        <div className={`actionPanel glowInset ${hasChoices ? "is-choice-mode" : ""}`}>
+        <div className="questActions">
           {hasChoices && (
-            <div className="choiceAction">
+            <div className="questChoiceActions">
               {selectedChoice ? (
                 <button
                   className="btn btn-primary stepCheckButton"
@@ -208,19 +211,19 @@ export default function StepView({
                   Проверить
                 </button>
               ) : (
-                <span className="choiceActionHint">{selectedChoiceLabel}</span>
+                <span className="questChoiceHelper">{selectedChoiceLabel}</span>
               )}
               {step.hint && (
-                <button className="btn btn-secondary hintToggleButton" type="button" onClick={() => setShowHint((current) => !current)}>
+                <button className="questHintButton" type="button" onClick={() => setShowHint((current) => !current)}>
                   {showHint ? "Скрыть подсказку" : "Показать подсказку"}
                 </button>
               )}
             </div>
           )}
           {!hasChoices && (
-            <>
-              <div className="fieldLabel">Ручной ввод</div>
-              <div className="field">
+            <div className="questManualAnswer">
+              <div className="questManualLabel">Ручной ввод</div>
+              <div className="questManualRow">
                 <input
                   className="input"
                   value={value}
@@ -245,33 +248,35 @@ export default function StepView({
                   Проверить
                 </button>
               </div>
-            </>
+            </div>
           )}
           {!hasChoices && step.hint && (
-            <button className="btn btn-secondary hintToggleButton" type="button" onClick={() => setShowHint((current) => !current)}>
+            <button className="questHintButton" type="button" onClick={() => setShowHint((current) => !current)}>
               {showHint ? "Скрыть подсказку" : "Показать подсказку"}
             </button>
           )}
-          {showHint && step.hint && (
-            <div className="hintCard glowInset">
-              <div className="sectionBadge">Подсказка</div>
-              <p>{step.hint}</p>
-            </div>
-          )}
-          {feedbackMessage && (
-            <div
-              id={inlineFeedbackId}
-              className={`inlineFeedback is-${feedbackTone}`}
-              role={feedbackTone === "error" ? "alert" : "status"}
-              aria-live="polite"
-            >
-              <span className="inlineFeedbackBadge">{feedbackAccent ?? feedbackLabel}</span>
-              <span className="inlineFeedbackText">{feedbackMessage}</span>
-            </div>
-          )}
         </div>
 
-        <div className="questFootnote">
+        {showHint && step.hint && (
+          <div className="questHintNote">
+            <div className="questHintLabel">Подсказка</div>
+            <p>{step.hint}</p>
+          </div>
+        )}
+
+        {feedbackMessage && (
+          <div
+            id={inlineFeedbackId}
+            className={`questFeedback is-${feedbackTone}`}
+            role={feedbackTone === "error" ? "alert" : "status"}
+            aria-live="polite"
+          >
+            <span className="questFeedbackBadge">{feedbackAccent ?? feedbackLabel}</span>
+            <span className="questFeedbackText">{feedbackMessage}</span>
+          </div>
+        )}
+
+        <div className="questResetRow">
           <button className="resetGhostButton" type="button" onClick={onReset}>
             Сбросить квест
           </button>

@@ -1303,8 +1303,6 @@ body:has(.appShell.scene-intro) {
 .glowPanel,
 .heroMediaCard,
 .doneLayout,
-.questMain,
-.questSidebar,
 .floatingPlayer {
   border: 1px solid var(--line);
   background:
@@ -1319,9 +1317,6 @@ body:has(.appShell.scene-intro) {
 .suppCard,
 .rewardCard,
 .mediaCard,
-.actionPanel,
-.questionIntro,
-.hintCard,
 .sidebarMeta {
   border: 1px solid rgba(160, 193, 255, 0.1);
   background:
@@ -1505,8 +1500,7 @@ body:has(.appShell.scene-intro) {
   border-radius: var(--radius-xl);
 }
 
-.heroTitle,
-.questionTitle {
+.heroTitle {
   margin: 0;
   font-weight: 700;
   letter-spacing: -0.04em;
@@ -1518,15 +1512,9 @@ body:has(.appShell.scene-intro) {
   max-width: 12ch;
 }
 
-.questionTitle {
-  font-size: clamp(1.85rem, 3.2vw, 2.6rem);
-}
-
 .heroSubtitle,
-.subtitle,
 .toastText,
-.rewardCard p,
-.hintCard p {
+.rewardCard p {
   margin: 0;
   color: var(--muted);
   line-height: 1.65;
@@ -1539,9 +1527,7 @@ body:has(.appShell.scene-intro) {
 }
 
 .sectionBadge,
-.fieldLabel,
 .statLabel,
-.progressLabel,
 .overlayChip {
   display: inline-flex;
   align-items: center;
@@ -1563,9 +1549,6 @@ body:has(.appShell.scene-intro) {
 .statCard,
 .suppCard,
 .rewardCard,
-.questionIntro,
-.actionPanel,
-.hintCard,
 .sidebarMeta {
   border-radius: 20px;
   padding: 16px;
@@ -1588,13 +1571,10 @@ body:has(.appShell.scene-intro) {
 .btn,
 .choiceCard,
 .input,
-.actionPanel,
 .rewardCard,
 .mediaCard,
 .floatingPlayer,
-.toast,
-.questMain,
-.questSidebar {
+.toast {
   transition:
     transform 240ms ease,
     border-color 240ms ease,
@@ -1743,8 +1723,7 @@ body:has(.appShell.scene-intro) {
   gap: 12px;
 }
 
-.progressMeter,
-.progressTrack {
+.progressMeter {
   position: relative;
   overflow: hidden;
   border-radius: 999px;
@@ -1756,8 +1735,7 @@ body:has(.appShell.scene-intro) {
   height: 10px;
 }
 
-.progressFill,
-.progressValue {
+.progressFill {
   position: absolute;
   inset: 0 auto 0 0;
   border-radius: inherit;
@@ -1768,8 +1746,7 @@ body:has(.appShell.scene-intro) {
   animation: none;
 }
 
-.systemRows,
-.questionMeta {
+.systemRows {
   display: grid;
   gap: 8px;
 }
@@ -2139,173 +2116,182 @@ body:has(.appShell.scene-intro) {
 }
 
 .questLayout {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   width: 100%;
   height: 100%;
   max-height: 100%;
   min-height: 0;
-  max-width: min(100%, 960px);
+  display: grid;
+  place-items: center;
+  max-width: min(100%, 980px);
   margin: 0 auto;
+  padding-inline: clamp(10px, 2vw, 22px);
 }
 
-.questMain,
-.questSidebar {
-  border-radius: var(--radius-xl);
-  min-height: 0;
-}
-
-.questMain {
+.questCard {
+  position: relative;
   display: flex;
   flex-direction: column;
-  align-self: center;
-  width: min(100%, 920px);
+  width: min(100%, 880px);
   height: fit-content;
   max-height: 100%;
-  padding: clamp(18px, 2vw, 22px);
-  overflow: hidden;
+  padding: clamp(20px, 2.8vw, 30px);
+  overflow: auto;
   overscroll-behavior: contain;
   scrollbar-gutter: stable;
-}
-
-.questMain.glowPanel {
-  border-radius: 36px;
-  border-color: rgba(255, 214, 235, 0.13);
+  border: 1px solid rgba(255, 218, 237, 0.16);
+  border-radius: 30px;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.062), rgba(255, 255, 255, 0.012)),
-    linear-gradient(135deg, rgba(255, 205, 228, 0.05), rgba(142, 111, 255, 0.032) 52%, rgba(9, 14, 30, 0)),
-    rgba(6, 11, 25, 0.8);
-  backdrop-filter: none;
+    linear-gradient(180deg, rgba(255, 247, 253, 0.07), rgba(255, 255, 255, 0.018)),
+    linear-gradient(140deg, rgba(255, 198, 229, 0.085), rgba(150, 116, 255, 0.055) 44%, rgba(8, 12, 27, 0.04)),
+    rgba(7, 10, 24, 0.88);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.055),
-    0 22px 64px rgba(0, 0, 0, 0.34),
-    0 0 0 1px rgba(255, 214, 235, 0.035);
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 24px 70px rgba(0, 0, 0, 0.34),
+    0 0 0 1px rgba(255, 218, 237, 0.035);
 }
 
-.questMain.glowPanel::before {
+.questCard::before {
+  content: "";
+  position: absolute;
   inset: 1px;
-  border: 1px solid rgba(255, 214, 235, 0.055);
-  background: linear-gradient(135deg, rgba(255, 214, 235, 0.045), transparent 34%, rgba(151, 123, 255, 0.028));
-  opacity: 1;
+  z-index: 0;
+  border-radius: inherit;
+  border: 1px solid rgba(255, 226, 241, 0.055);
+  pointer-events: none;
 }
 
-.questSidebar {
+.questCard > * {
+  position: relative;
+  z-index: 1;
+}
+
+.questCardHeader {
   display: flex;
   flex-direction: column;
-  align-self: start;
-  padding: 14px;
-  position: relative;
-  top: auto;
-  height: auto;
-  max-height: 100%;
-  overflow: hidden;
-  border-radius: 22px;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.014)),
-    rgba(8, 13, 28, 0.58);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.045),
-    0 16px 42px rgba(0, 0, 0, 0.28);
+  gap: 14px;
 }
 
-.questionHeader,
-.progressHeader {
+.questHeaderTop {
   display: flex;
-  align-items: flex-start;
   justify-content: space-between;
-  gap: 12px;
+  align-items: flex-start;
+  gap: 18px;
 }
 
-.questionHeader {
+.questHeaderCopy {
+  min-width: 0;
+}
+
+.questStepLabel,
+.questPromptLabel,
+.questHintLabel,
+.questManualLabel {
+  display: inline-flex;
   align-items: center;
+  color: rgba(255, 215, 237, 0.68);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
 }
 
-.progressHeader {
-  margin-top: 9px;
+.questTitle {
+  margin: 6px 0 0;
+  color: rgba(255, 250, 253, 0.98);
+  font-size: clamp(1.78rem, 3.2vw, 2.42rem);
+  font-weight: 740;
+  letter-spacing: 0;
+  line-height: 1.03;
+}
+
+.questHeaderMeta {
+  display: flex;
+  flex: none;
   align-items: center;
+  gap: 8px;
 }
 
-.progressTrack {
-  flex: 1;
-  height: 10px;
-}
-
-.questionIntro {
-  margin-top: 12px;
-  border-radius: 26px;
-  border-color: rgba(255, 214, 235, 0.12);
-  background:
-    linear-gradient(135deg, rgba(255, 214, 235, 0.07), rgba(155, 124, 255, 0.035) 58%, rgba(255, 255, 255, 0.012)),
-    rgba(8, 13, 29, 0.66);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.045),
-    0 12px 30px rgba(4, 7, 18, 0.18);
-}
-
-.subtitle {
-  font-size: clamp(1rem, 1.55vw, 1.14rem);
-  line-height: 1.62;
-}
-
-.questMain .questionTitle {
-  font-size: clamp(1.72rem, 2.8vw, 2.22rem);
-}
-
-.stepCounter {
+.questCounter,
+.questStatus {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 31px;
-  padding: 0 10px;
+  min-height: 30px;
   border-radius: 999px;
-  border: 1px solid rgba(255, 214, 235, 0.1);
-  background: rgba(255, 255, 255, 0.026);
-  color: rgba(232, 223, 241, 0.76);
-  font-size: 0.76rem;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-}
-
-.statusPill {
-  justify-self: end;
-  padding: 8px 10px;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 214, 235, 0.1);
-  background: rgba(255, 255, 255, 0.026);
-}
-
-.statusPill {
-  font-size: 0.78rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: rgba(220, 211, 232, 0.68);
-}
-
-.questionPromptLabel {
-  margin-bottom: 7px;
-  color: rgba(255, 214, 235, 0.64);
+  border: 1px solid rgba(255, 219, 239, 0.12);
+  background: rgba(255, 255, 255, 0.03);
+  color: rgba(236, 226, 242, 0.72);
   font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.16em;
+  font-weight: 700;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
 }
 
-.statusPill.is-success {
-  color: var(--success);
-  border-color: rgba(125, 255, 197, 0.32);
-  box-shadow: 0 0 18px rgba(125, 255, 197, 0.14);
+.questCounter {
+  padding: 0 10px;
 }
 
-.statusPill.is-error {
+.questStatus {
+  padding: 0 11px;
+  color: rgba(220, 211, 232, 0.62);
+}
+
+.questStatus.is-success {
+  color: var(--success);
+  border-color: rgba(125, 255, 197, 0.3);
+  background: rgba(125, 255, 197, 0.055);
+}
+
+.questStatus.is-error {
   color: rgba(255, 226, 232, 0.92);
-  border-color: rgba(255, 182, 198, 0.22);
+  border-color: rgba(255, 182, 198, 0.24);
+  background: rgba(255, 194, 208, 0.055);
+}
+
+.questProgress {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+}
+
+.questProgressTrack {
+  position: relative;
+  height: 3px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.questProgressValue {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: inherit;
+  background: linear-gradient(90deg, rgba(255, 204, 226, 0.96), rgba(193, 127, 224, 0.9) 48%, rgba(145, 118, 255, 0.92));
+}
+
+.questProgressText {
+  color: rgba(222, 214, 234, 0.54);
+  font-size: 0.73rem;
+  white-space: nowrap;
+}
+
+.questPrompt {
+  margin-top: 22px;
+  padding: 18px 20px;
+  border-radius: 22px;
+  border: 1px solid rgba(255, 218, 237, 0.12);
   background:
-    linear-gradient(180deg, rgba(255, 194, 208, 0.08), rgba(255, 255, 255, 0.03)),
-    rgba(255, 255, 255, 0.04);
-  box-shadow:
-    0 0 18px rgba(255, 173, 191, 0.08),
-    inset 0 1px 0 rgba(255, 236, 241, 0.08);
+    linear-gradient(135deg, rgba(255, 218, 237, 0.075), rgba(157, 126, 255, 0.035) 54%, rgba(255, 255, 255, 0.012)),
+    rgba(11, 14, 30, 0.64);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.055);
+}
+
+.questPromptText {
+  margin: 8px 0 0;
+  color: rgba(244, 247, 255, 0.9);
+  font-size: clamp(1.04rem, 1.7vw, 1.22rem);
+  line-height: 1.58;
 }
 
 .mediaGrid {
@@ -2430,14 +2416,14 @@ body:has(.appShell.scene-intro) {
   border: 0;
 }
 
-.choiceGrid {
+.questChoiceGrid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
-  margin-top: 14px;
+  margin-top: 16px;
 }
 
-.choiceGrid .choiceCard:last-child:nth-child(odd) {
+.questChoiceGrid .choiceCard:last-child:nth-child(odd) {
   grid-column: 1 / -1;
 }
 
@@ -2445,44 +2431,45 @@ body:has(.appShell.scene-intro) {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
   align-items: center;
-  gap: 12px;
-  min-height: 82px;
-  padding: 15px 16px;
-  border-radius: 22px;
-  border: 1px solid rgba(232, 200, 255, 0.13);
+  gap: 14px;
+  min-height: 86px;
+  padding: 16px 17px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 218, 237, 0.14);
   background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.058), rgba(255, 255, 255, 0.018)),
-    linear-gradient(90deg, rgba(255, 201, 226, 0.055), transparent 40%),
-    rgba(8, 13, 29, 0.78);
+    linear-gradient(135deg, rgba(255, 255, 255, 0.052), rgba(255, 255, 255, 0.016)),
+    linear-gradient(90deg, rgba(255, 201, 226, 0.075), rgba(156, 123, 255, 0.025) 48%, transparent),
+    rgba(9, 12, 28, 0.82);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.045),
-    0 10px 26px rgba(5, 8, 20, 0.18);
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 12px 28px rgba(5, 8, 20, 0.18);
   text-align: left;
   color: var(--text);
   overflow: hidden;
 }
 
 .choiceCard:hover {
-  border-color: rgba(255, 204, 226, 0.3);
+  transform: translateY(-2px);
+  border-color: rgba(255, 204, 226, 0.34);
   background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.072), rgba(255, 255, 255, 0.02)),
-    linear-gradient(90deg, rgba(255, 201, 226, 0.09), transparent 42%),
-    rgba(12, 15, 34, 0.76);
+    linear-gradient(135deg, rgba(255, 255, 255, 0.074), rgba(255, 255, 255, 0.02)),
+    linear-gradient(90deg, rgba(255, 201, 226, 0.12), rgba(156, 123, 255, 0.045) 52%, transparent),
+    rgba(13, 15, 34, 0.84);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.06),
-    0 0 0 1px rgba(255, 204, 226, 0.08),
-    0 14px 32px rgba(76, 45, 128, 0.18);
+    inset 0 1px 0 rgba(255, 255, 255, 0.07),
+    0 0 0 1px rgba(255, 204, 226, 0.09),
+    0 16px 34px rgba(76, 45, 128, 0.2);
 }
 
 .choiceCard.is-selected {
-  border-color: rgba(255, 209, 232, 0.42);
+  border-color: rgba(255, 209, 232, 0.48);
   background:
-    linear-gradient(135deg, rgba(255, 213, 234, 0.13), rgba(155, 124, 255, 0.075)),
-    rgba(12, 15, 34, 0.8);
+    linear-gradient(135deg, rgba(255, 213, 234, 0.16), rgba(155, 124, 255, 0.095)),
+    rgba(13, 15, 34, 0.86);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.08),
-    0 0 0 1px rgba(255, 204, 226, 0.12),
-    0 18px 38px rgba(101, 65, 169, 0.22);
+    0 0 0 1px rgba(255, 204, 226, 0.14),
+    0 18px 38px rgba(101, 65, 169, 0.24);
 }
 
 .choiceCard.is-success {
@@ -2505,14 +2492,14 @@ body:has(.appShell.scene-intro) {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 42px;
-  height: 42px;
-  border-radius: 14px;
-  border: 1px solid rgba(255, 214, 235, 0.12);
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 214, 235, 0.15);
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.016)),
     rgba(255, 255, 255, 0.025);
-  color: rgba(236, 224, 242, 0.66);
+  color: rgba(255, 226, 241, 0.72);
   font-size: 0.72rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -2524,59 +2511,33 @@ body:has(.appShell.scene-intro) {
   color: rgba(243, 247, 255, 0.92);
 }
 
-.actionPanel,
-.hintCard {
-  margin-top: 12px;
+.questActions {
+  margin-top: 16px;
 }
 
-.questionIntro,
-.actionPanel,
-.hintCard,
-.sidebarMeta {
-  padding: 12px;
-}
-
-.actionPanel.glowInset {
-  padding: 8px 2px 0;
-  border-color: transparent;
-  background: transparent;
-  box-shadow: none;
-}
-
-.actionPanel.glowInset::before {
-  display: none;
-}
-
-.actionPanel.is-choice-mode {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 9px 12px;
-}
-
-.choiceAction {
+.questChoiceActions {
   display: flex;
   align-items: center;
-  gap: 10px;
+  justify-content: space-between;
+  gap: 12px;
   min-width: 0;
 }
 
-.choiceActionHint {
-  color: rgba(226, 216, 238, 0.58);
+.questChoiceHelper {
+  color: rgba(226, 216, 238, 0.6);
   font-size: 0.82rem;
-  letter-spacing: 0.02em;
-  text-transform: none;
+  line-height: 1.4;
 }
 
-.inlineFeedback {
+.questFeedback {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-top: 10px;
+  margin-top: 12px;
   min-height: 40px;
   padding: 9px 11px;
   border-radius: 16px;
-  border: 1px solid rgba(165, 194, 255, 0.12);
+  border: 1px solid rgba(255, 218, 237, 0.12);
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.012)),
     rgba(10, 16, 32, 0.76);
@@ -2585,16 +2546,7 @@ body:has(.appShell.scene-intro) {
     0 12px 30px rgba(7, 11, 24, 0.18);
 }
 
-.actionPanel.is-choice-mode .inlineFeedback {
-  grid-column: 1 / -1;
-  margin-top: 0;
-}
-
-.actionPanel.is-choice-mode .hintCard {
-  grid-column: 1 / -1;
-}
-
-.inlineFeedbackBadge {
+.questFeedbackBadge {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -2611,14 +2563,14 @@ body:has(.appShell.scene-intro) {
   text-transform: uppercase;
 }
 
-.inlineFeedbackText {
+.questFeedbackText {
   min-width: 0;
   color: rgba(217, 226, 243, 0.78);
   font-size: 0.84rem;
   line-height: 1.42;
 }
 
-.inlineFeedback.is-error {
+.questFeedback.is-error {
   border-color: rgba(255, 191, 205, 0.18);
   background:
     linear-gradient(180deg, rgba(255, 197, 210, 0.08), rgba(255, 255, 255, 0.012)),
@@ -2628,7 +2580,7 @@ body:has(.appShell.scene-intro) {
     0 14px 32px rgba(30, 14, 27, 0.2);
 }
 
-.inlineFeedback.is-error .inlineFeedbackBadge {
+.questFeedback.is-error .questFeedbackBadge {
   border-color: rgba(255, 194, 208, 0.22);
   background:
     linear-gradient(180deg, rgba(255, 194, 208, 0.14), rgba(255, 255, 255, 0.04)),
@@ -2637,24 +2589,28 @@ body:has(.appShell.scene-intro) {
   box-shadow: 0 0 20px rgba(255, 176, 194, 0.08);
 }
 
-.inlineFeedback.is-success {
+.questFeedback.is-success {
   border-color: rgba(141, 247, 216, 0.18);
   background:
     linear-gradient(180deg, rgba(121, 229, 255, 0.08), rgba(255, 255, 255, 0.012)),
     rgba(9, 16, 32, 0.82);
 }
 
-.inlineFeedback.is-success .inlineFeedbackBadge {
+.questFeedback.is-success .questFeedbackBadge {
   border-color: rgba(125, 255, 197, 0.22);
   color: rgba(221, 255, 238, 0.96);
   box-shadow: 0 0 22px rgba(125, 255, 197, 0.08);
 }
 
-.field {
+.questManualAnswer {
+  display: grid;
+  gap: 8px;
+}
+
+.questManualRow {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-top: 8px;
 }
 
 .input {
@@ -2696,35 +2652,51 @@ body:has(.appShell.scene-intro) {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035);
 }
 
-.hintToggleButton {
+.questHintButton {
   flex: 0 0 auto;
   min-height: 38px;
   padding-inline: 13px;
-  margin-left: auto;
+  border: 1px solid rgba(255, 218, 237, 0.12);
+  border-radius: 999px;
   color: rgba(228, 236, 252, 0.82);
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.018)),
     rgba(11, 17, 34, 0.68);
+  cursor: pointer;
+  transition:
+    border-color 220ms ease,
+    color 220ms ease,
+    background 220ms ease,
+    transform 220ms ease;
 }
 
-.hintCard {
-  margin-top: 0;
+.questHintButton:hover {
+  transform: translateY(-1px);
+  border-color: rgba(255, 204, 226, 0.28);
+  color: rgba(255, 247, 252, 0.92);
+}
+
+.questHintNote {
+  margin-top: 12px;
+  padding: 13px 15px;
   border-radius: 18px;
-  border-color: rgba(255, 214, 235, 0.13);
+  border: 1px solid rgba(255, 214, 235, 0.13);
   background:
     linear-gradient(135deg, rgba(255, 214, 235, 0.07), rgba(155, 124, 255, 0.035)),
     rgba(9, 14, 30, 0.72);
 }
 
-.hintCard p {
+.questHintNote p {
+  margin: 7px 0 0;
+  color: rgba(221, 228, 244, 0.72);
   font-size: 0.88rem;
   line-height: 1.52;
 }
 
-.questFootnote {
+.questResetRow {
   display: flex;
   justify-content: flex-end;
-  margin-top: 8px;
+  margin-top: 12px;
 }
 
 .resetGhostButton {
@@ -3227,8 +3199,6 @@ body:has(.appShell.scene-intro) {
 .effects-lite .glowPanel,
 .effects-lite .heroMediaCard,
 .effects-lite .doneLayout,
-.effects-lite .questMain,
-.effects-lite .questSidebar,
 .effects-lite .floatingPlayer,
 .effects-lite .toast,
 .effects-lite .heroOverlay,
@@ -3440,16 +3410,13 @@ body:has(.appShell.scene-intro) {
   .heroFrameImage,
   .heroFrameShine,
   .honorableSkipButton,
-  .progressFill,
-  .progressValue {
+  .progressFill {
     animation: none !important;
   }
 
   .glowPanel,
   .heroMediaCard,
   .doneLayout,
-  .questMain,
-  .questSidebar,
   .floatingPlayer,
   .toast,
   .heroOverlay,
@@ -3900,15 +3867,10 @@ body:has(.appShell.scene-intro) {
     grid-template-columns: 1fr;
   }
 
-  .questSidebar {
-    position: static;
-    width: min(100%, 360px);
-  }
-
   .heroStats,
   .doneCardGrid,
   .heroSupplemental,
-  .choiceGrid {
+  .questChoiceGrid {
     grid-template-columns: 1fr;
   }
 }
@@ -4017,10 +3979,14 @@ body:has(.appShell.scene-intro) {
 
   .heroCopy,
   .doneLayout,
-  .questMain,
-  .questSidebar,
   .honorableCopy,
   .honorableImagePanel {
+    padding: 20px;
+    border-radius: 22px;
+  }
+
+  .questCard {
+    width: min(100%, 100%);
     padding: 20px;
     border-radius: 22px;
   }
@@ -4166,44 +4132,28 @@ body:has(.appShell.scene-intro) {
     font-size: 0.68rem;
   }
 
-  .questionHeader,
-  .progressHeader,
   .heroActions {
     flex-direction: column;
     align-items: stretch;
   }
 
-  .questionMeta {
-    width: 100%;
-  }
-
-  .statusPill {
-    justify-self: stretch;
-    justify-content: center;
-  }
-
-  .field .btn,
-  .field .input {
-    width: 100%;
-  }
-
-  .actionPanel.is-choice-mode {
+  .questHeaderTop,
+  .questProgress,
+  .questChoiceActions {
     grid-template-columns: 1fr;
-  }
-
-  .choiceAction {
     flex-direction: column;
     align-items: stretch;
   }
 
-  .choiceActionHint {
-    min-width: 0;
+  .questHeaderMeta {
+    justify-content: space-between;
   }
 
-  .hintToggleButton,
-  .choiceAction .stepCheckButton {
+  .questManualRow .btn,
+  .questManualRow .input,
+  .questHintButton,
+  .questChoiceActions .stepCheckButton {
     width: 100%;
-    margin-left: 0;
   }
 
   .mediaImg,
@@ -4250,8 +4200,7 @@ body:has(.appShell.scene-intro) {
     line-height: 1.66;
   }
 
-  .questMain,
-  .questSidebar {
+  .questCard {
     padding: 16px;
   }
 
