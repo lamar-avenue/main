@@ -61,6 +61,10 @@ export default function StepView({
     feedbackTone === "idle" ? IDLE_STATUS_LABEL : feedbackTone === "success" ? SUCCESS_STATUS_LABEL : ERROR_STATUS_LABEL;
   const isOrdinaryTextQuestion = !step.blocks?.some((block) => block.type !== "text");
   const hasChoices = !!step.choices?.length;
+  const textBlocks = step.blocks?.filter((block): block is Extract<MediaBlock, { type: "text" }> => block.type === "text") ?? [];
+  const mediaBlocks = step.blocks?.filter((block) => block.type !== "text") ?? [];
+  const questionLabel = step.prompt.toLowerCase().includes("кодовое слово") ? "Кодовое слово" : "Задание";
+  const questionText = textBlocks[0]?.value ?? step.prompt;
   const selectedChoiceIndex = selectedChoice && step.choices ? step.choices.indexOf(selectedChoice) : -1;
   const selectedChoiceLabel =
     selectedChoiceIndex >= 0 ? `Выбран вариант ${String(selectedChoiceIndex + 1).padStart(2, "0")}` : "Выбери вариант";
@@ -151,12 +155,13 @@ export default function StepView({
         </div>
 
         <div className="questionIntro glowInset">
-          <p className="subtitle">{step.prompt}</p>
+          <div className="questionPromptLabel">{questionLabel}</div>
+          <p className="subtitle">{questionText}</p>
         </div>
 
-        {step.blocks && step.blocks.length > 0 && (
+        {mediaBlocks.length > 0 && (
           <div className="mediaGrid">
-            {step.blocks.map((block, index) => (
+            {mediaBlocks.map((block, index) => (
               <Media
                 key={index}
                 block={block}
@@ -264,7 +269,10 @@ export default function StepView({
               <span className="inlineFeedbackText">{feedbackMessage}</span>
             </div>
           )}
-          <button className="btn btn-secondary resetGhostButton" type="button" onClick={onReset}>
+        </div>
+
+        <div className="questFootnote">
+          <button className="resetGhostButton" type="button" onClick={onReset}>
             Сбросить квест
           </button>
         </div>

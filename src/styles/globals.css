@@ -2146,7 +2146,7 @@ body:has(.appShell.scene-intro) {
   height: 100%;
   max-height: 100%;
   min-height: 0;
-  max-width: min(100%, 900px);
+  max-width: min(100%, 960px);
   margin: 0 auto;
 }
 
@@ -2160,7 +2160,7 @@ body:has(.appShell.scene-intro) {
   display: flex;
   flex-direction: column;
   align-self: center;
-  width: min(100%, 860px);
+  width: min(100%, 920px);
   height: fit-content;
   max-height: 100%;
   padding: clamp(18px, 2vw, 22px);
@@ -2170,12 +2170,12 @@ body:has(.appShell.scene-intro) {
 }
 
 .questMain.glowPanel {
-  border-radius: 34px;
+  border-radius: 36px;
   border-color: rgba(255, 214, 235, 0.13);
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.058), rgba(255, 255, 255, 0.014)),
-    linear-gradient(135deg, rgba(255, 205, 228, 0.045), rgba(142, 111, 255, 0.035) 54%, rgba(9, 14, 30, 0)),
-    rgba(7, 12, 27, 0.76);
+    linear-gradient(180deg, rgba(255, 255, 255, 0.062), rgba(255, 255, 255, 0.012)),
+    linear-gradient(135deg, rgba(255, 205, 228, 0.05), rgba(142, 111, 255, 0.032) 52%, rgba(9, 14, 30, 0)),
+    rgba(6, 11, 25, 0.8);
   backdrop-filter: none;
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.055),
@@ -2232,12 +2232,20 @@ body:has(.appShell.scene-intro) {
 }
 
 .questionIntro {
-  margin-top: 9px;
+  margin-top: 12px;
+  border-radius: 26px;
+  border-color: rgba(255, 214, 235, 0.12);
+  background:
+    linear-gradient(135deg, rgba(255, 214, 235, 0.07), rgba(155, 124, 255, 0.035) 58%, rgba(255, 255, 255, 0.012)),
+    rgba(8, 13, 29, 0.66);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.045),
+    0 12px 30px rgba(4, 7, 18, 0.18);
 }
 
 .subtitle {
-  font-size: 0.92rem;
-  line-height: 1.56;
+  font-size: clamp(1rem, 1.55vw, 1.14rem);
+  line-height: 1.62;
 }
 
 .questMain .questionTitle {
@@ -2251,8 +2259,8 @@ body:has(.appShell.scene-intro) {
   min-height: 31px;
   padding: 0 10px;
   border-radius: 999px;
-  border: 1px solid rgba(255, 214, 235, 0.13);
-  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 214, 235, 0.1);
+  background: rgba(255, 255, 255, 0.026);
   color: rgba(232, 223, 241, 0.76);
   font-size: 0.76rem;
   font-weight: 600;
@@ -2263,15 +2271,24 @@ body:has(.appShell.scene-intro) {
   justify-self: end;
   padding: 8px 10px;
   border-radius: 999px;
-  border: 1px solid rgba(160, 193, 255, 0.14);
-  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 214, 235, 0.1);
+  background: rgba(255, 255, 255, 0.026);
 }
 
 .statusPill {
   font-size: 0.78rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--muted);
+  color: rgba(220, 211, 232, 0.68);
+}
+
+.questionPromptLabel {
+  margin-bottom: 7px;
+  color: rgba(255, 214, 235, 0.64);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
 }
 
 .statusPill.is-success {
@@ -2417,7 +2434,11 @@ body:has(.appShell.scene-intro) {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
-  margin-top: 12px;
+  margin-top: 14px;
+}
+
+.choiceGrid .choiceCard:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
 }
 
 .choiceCard {
@@ -2425,9 +2446,9 @@ body:has(.appShell.scene-intro) {
   grid-template-columns: auto minmax(0, 1fr);
   align-items: center;
   gap: 12px;
-  min-height: 78px;
-  padding: 14px 15px;
-  border-radius: 20px;
+  min-height: 82px;
+  padding: 15px 16px;
+  border-radius: 22px;
   border: 1px solid rgba(232, 200, 255, 0.13);
   background:
     linear-gradient(135deg, rgba(255, 255, 255, 0.058), rgba(255, 255, 255, 0.018)),
@@ -2450,7 +2471,7 @@ body:has(.appShell.scene-intro) {
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.06),
     0 0 0 1px rgba(255, 204, 226, 0.08),
-    0 15px 34px rgba(76, 45, 128, 0.2);
+    0 14px 32px rgba(76, 45, 128, 0.18);
 }
 
 .choiceCard.is-selected {
@@ -2505,7 +2526,7 @@ body:has(.appShell.scene-intro) {
 
 .actionPanel,
 .hintCard {
-  margin-top: 10px;
+  margin-top: 12px;
 }
 
 .questionIntro,
@@ -2515,11 +2536,22 @@ body:has(.appShell.scene-intro) {
   padding: 12px;
 }
 
+.actionPanel.glowInset {
+  padding: 8px 2px 0;
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
+}
+
+.actionPanel.glowInset::before {
+  display: none;
+}
+
 .actionPanel.is-choice-mode {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
-  gap: 10px 12px;
+  gap: 9px 12px;
 }
 
 .choiceAction {
@@ -2530,7 +2562,7 @@ body:has(.appShell.scene-intro) {
 }
 
 .choiceActionHint {
-  color: rgba(226, 216, 238, 0.66);
+  color: rgba(226, 216, 238, 0.58);
   font-size: 0.82rem;
   letter-spacing: 0.02em;
   text-transform: none;
@@ -2689,20 +2721,27 @@ body:has(.appShell.scene-intro) {
   line-height: 1.52;
 }
 
+.questFootnote {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+
 .resetGhostButton {
-  justify-self: end;
-  min-height: 30px;
-  padding: 0 4px;
-  border-color: rgba(220, 203, 232, 0.09);
-  color: rgba(214, 223, 244, 0.48);
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  color: rgba(214, 223, 244, 0.38);
   background: transparent;
   box-shadow: none;
+  cursor: pointer;
+  font-size: 0.76rem;
+  letter-spacing: 0.04em;
 }
 
 .resetGhostButton:hover {
-  color: rgba(232, 236, 250, 0.72);
-  border-color: rgba(255, 214, 235, 0.16);
-  box-shadow: 0 8px 20px rgba(18, 12, 28, 0.16);
+  color: rgba(232, 236, 250, 0.64);
+  box-shadow: none;
 }
 
 .input::placeholder {
