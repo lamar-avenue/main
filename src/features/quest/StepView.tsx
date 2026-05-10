@@ -133,10 +133,12 @@ export default function StepView({
       <div className="questMain glowPanel">
         <div className="questionHeader">
           <div>
-            <div className="sectionBadge">Шаг {stepNumber}</div>
             <h1 className="questionTitle">{step.title}</h1>
           </div>
-          <div className="questionMeta">
+          <div className="questionMeta" aria-label={`Шаг ${stepNumber} из ${total}`}>
+            <span className="stepCounter">
+              {String(stepNumber).padStart(2, "0")} / {String(total).padStart(2, "0")}
+            </span>
             <span className={`statusPill is-${feedbackTone}`}>{feedbackLabel}</span>
           </div>
         </div>
@@ -189,106 +191,91 @@ export default function StepView({
         )}
 
         <div className={`actionPanel glowInset ${hasChoices ? "is-choice-mode" : ""}`}>
-            {hasChoices && (
-              <div className="choiceAction">
-                <span className="choiceActionLabel">{selectedChoiceLabel}</span>
+          {hasChoices && (
+            <div className="choiceAction">
+              {selectedChoice ? (
                 <button
                   className="btn btn-primary stepCheckButton"
                   type="button"
-                  disabled={isSubmitting || !selectedChoice}
+                  disabled={isSubmitting}
                   onClick={() => submitValue(selectedChoice ?? "")}
                 >
                   Проверить
                 </button>
+              ) : (
+                <span className="choiceActionHint">{selectedChoiceLabel}</span>
+              )}
+              {step.hint && (
+                <button className="btn btn-secondary hintToggleButton" type="button" onClick={() => setShowHint((current) => !current)}>
+                  {showHint ? "Скрыть подсказку" : "Показать подсказку"}
+                </button>
+              )}
+            </div>
+          )}
+          {!hasChoices && (
+            <>
+              <div className="fieldLabel">Ручной ввод</div>
+              <div className="field">
+                <input
+                  className="input"
+                  value={value}
+                  onChange={(event) => {
+                    setValue(event.target.value);
+                    setSelectedChoice(null);
+                    setFeedbackTone("idle");
+                    setFeedbackAccent(null);
+                    setFeedbackMessage("");
+                  }}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter") {
+                      submitValue(value);
+                    }
+                  }}
+                  placeholder="Введите ответ"
+                  autoFocus
+                  aria-invalid={feedbackTone === "error"}
+                  aria-describedby={feedbackMessage ? inlineFeedbackId : undefined}
+                />
+                <button className="btn btn-primary stepCheckButton" type="button" disabled={isSubmitting} onClick={() => submitValue(value)}>
+                  Проверить
+                </button>
               </div>
-            )}
-            {!hasChoices && (
-              <>
-                <div className="fieldLabel">Ручной ввод</div>
-                <div className="field">
-                  <input
-                    className="input"
-                    value={value}
-                    onChange={(event) => {
-                      setValue(event.target.value);
-                      setSelectedChoice(null);
-                      setFeedbackTone("idle");
-                      setFeedbackAccent(null);
-                      setFeedbackMessage("");
-                    }}
-                    onKeyDown={(event) => {
-                      if (event.key === "Enter") {
-                        submitValue(value);
-                      }
-                    }}
-                    placeholder="Введите ответ"
-                    autoFocus
-                    aria-invalid={feedbackTone === "error"}
-                    aria-describedby={feedbackMessage ? inlineFeedbackId : undefined}
-                  />
-                  <button className="btn btn-primary stepCheckButton" type="button" disabled={isSubmitting} onClick={() => submitValue(value)}>
-                    Проверить
-                  </button>
-                </div>
-              </>
-            )}
-            {feedbackMessage && (
-              <div
-                id={inlineFeedbackId}
-                className={`inlineFeedback is-${feedbackTone}`}
-                role={feedbackTone === "error" ? "alert" : "status"}
-                aria-live="polite"
-              >
-                <span className="inlineFeedbackBadge">{feedbackAccent ?? feedbackLabel}</span>
-                <span className="inlineFeedbackText">{feedbackMessage}</span>
-              </div>
-            )}
-            {step.hint && (
-              <button className="btn btn-secondary hintToggleButton" type="button" onClick={() => setShowHint((current) => !current)}>
-                {showHint ? "Скрыть подсказку" : "Показать подсказку"}
-              </button>
-            )}
+            </>
+          )}
+          {!hasChoices && step.hint && (
+            <button className="btn btn-secondary hintToggleButton" type="button" onClick={() => setShowHint((current) => !current)}>
+              {showHint ? "Скрыть подсказку" : "Показать подсказку"}
+            </button>
+          )}
+          {showHint && step.hint && (
+            <div className="hintCard glowInset">
+              <div className="sectionBadge">Подсказка</div>
+              <p>{step.hint}</p>
+            </div>
+          )}
+          {feedbackMessage && (
+            <div
+              id={inlineFeedbackId}
+              className={`inlineFeedback is-${feedbackTone}`}
+              role={feedbackTone === "error" ? "alert" : "status"}
+              aria-live="polite"
+            >
+              <span className="inlineFeedbackBadge">{feedbackAccent ?? feedbackLabel}</span>
+              <span className="inlineFeedbackText">{feedbackMessage}</span>
+            </div>
+          )}
+          <button className="btn btn-secondary resetGhostButton" type="button" onClick={onReset}>
+            Сбросить квест
+          </button>
         </div>
-
-        {showHint && step.hint && (
-          <div className="hintCard glowInset">
-            <div className="sectionBadge">Подсказка</div>
-            <p>{step.hint}</p>
-          </div>
-        )}
 
         {isOrdinaryTextQuestion && (
           <audio ref={idleAudioRef} className="mediaAudio mediaAudioElement" preload="metadata" src={resolveMediaSrc(IDLE_HINT_AUDIO_SRC)} />
         )}
       </div>
-
-      <aside className="questSidebar glowPanel">
-        <div className="sectionBadge">Прогресс</div>
-        <div className="sidebarValue">
-          {String(stepNumber).padStart(2, "0")}
-          <span>/ {String(total).padStart(2, "0")}</span>
-        </div>
-        <div className="sidebarProgress">
-          <div className="sidebarProgressValue" style={{ width: `${progressPercent}%` }} />
-        </div>
-        <div className="sidebarMeta glowInset">
-          <div className="systemRow">
-            <span>Статус</span>
-            <strong>{feedbackLabel}</strong>
-          </div>
-          <div className="systemRow">
-            <span>Подсказка</span>
-            <strong>{step.hint ? "Доступна" : "Нет"}</strong>
-          </div>
-        </div>
-        <button className="btn btn-secondary sidebarReset" type="button" onClick={onReset}>
-          Сбросить квест
-        </button>
-      </aside>
     </section>
   );
 }
-
 function Media({
   block,
   cinematic,
