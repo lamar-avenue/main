@@ -1316,11 +1316,10 @@ body:has(.appShell.scene-intro) {
 .suppCard,
 .rewardCard,
 .mediaCard,
-.inputPanel,
+.actionPanel,
 .questionIntro,
 .hintCard,
-.sidebarMeta,
-.cipherPanel {
+.sidebarMeta {
   border: 1px solid rgba(160, 193, 255, 0.1);
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.012)),
@@ -1540,7 +1539,6 @@ body:has(.appShell.scene-intro) {
 .fieldLabel,
 .statLabel,
 .progressLabel,
-.modePill,
 .overlayChip {
   display: inline-flex;
   align-items: center;
@@ -1563,10 +1561,9 @@ body:has(.appShell.scene-intro) {
 .suppCard,
 .rewardCard,
 .questionIntro,
-.inputPanel,
+.actionPanel,
 .hintCard,
-.sidebarMeta,
-.cipherPanel {
+.sidebarMeta {
   border-radius: 20px;
   padding: 16px;
 }
@@ -1588,6 +1585,7 @@ body:has(.appShell.scene-intro) {
 .btn,
 .choiceCard,
 .input,
+.actionPanel,
 .rewardCard,
 .mediaCard,
 .floatingPlayer,
@@ -2139,12 +2137,14 @@ body:has(.appShell.scene-intro) {
 
 .questLayout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(252px, 286px);
-  gap: 16px;
-  align-items: stretch;
+  grid-template-columns: minmax(0, 1fr) minmax(218px, 252px);
+  gap: 12px;
+  align-items: start;
   width: 100%;
   height: 100%;
   min-height: 0;
+  max-width: 1160px;
+  margin: 0 auto;
 }
 
 .questMain,
@@ -2156,8 +2156,8 @@ body:has(.appShell.scene-intro) {
 .questMain {
   display: flex;
   flex-direction: column;
-  padding: 20px;
-  overflow: auto;
+  padding: 18px;
+  overflow: hidden;
   overscroll-behavior: contain;
   scrollbar-gutter: stable;
 }
@@ -2165,10 +2165,11 @@ body:has(.appShell.scene-intro) {
 .questSidebar {
   display: flex;
   flex-direction: column;
-  padding: 18px;
+  padding: 16px;
   position: relative;
   top: auto;
-  height: 100%;
+  height: auto;
+  max-height: 100%;
   overflow: hidden;
 }
 
@@ -2181,17 +2182,17 @@ body:has(.appShell.scene-intro) {
 }
 
 .progressHeader {
-  margin-top: 12px;
+  margin-top: 10px;
   align-items: center;
 }
 
 .progressTrack {
   flex: 1;
-  height: 12px;
+  height: 10px;
 }
 
 .questionIntro {
-  margin-top: 12px;
+  margin-top: 10px;
 }
 
 .subtitle {
@@ -2203,10 +2204,9 @@ body:has(.appShell.scene-intro) {
   font-size: clamp(1.6rem, 2.7vw, 2.2rem);
 }
 
-.statusPill,
-.modePill {
+.statusPill {
   justify-self: end;
-  padding: 8px 11px;
+  padding: 7px 10px;
   border-radius: 999px;
   border: 1px solid rgba(160, 193, 255, 0.14);
   background: rgba(255, 255, 255, 0.04);
@@ -2238,14 +2238,14 @@ body:has(.appShell.scene-intro) {
 
 .mediaGrid {
   display: grid;
-  gap: 10px;
-  margin-top: 12px;
+  gap: 8px;
+  margin-top: 10px;
 }
 
 .mediaCard {
   overflow: hidden;
   border-radius: 20px;
-  padding: 12px;
+  padding: 10px;
 }
 
 .mediaCard audio {
@@ -2314,8 +2314,8 @@ body:has(.appShell.scene-intro) {
   border-radius: 16px;
   border: 1px solid rgba(160, 193, 255, 0.14);
   min-height: 0;
-  height: clamp(160px, 24vh, 250px);
-  max-height: 26vh;
+  height: clamp(150px, 22vh, 230px);
+  max-height: 24vh;
   background: rgba(4, 8, 18, 0.75);
 }
 
@@ -2361,16 +2361,16 @@ body:has(.appShell.scene-intro) {
 .choiceGrid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
-  margin-top: 12px;
+  gap: 8px;
+  margin-top: 10px;
 }
 
 .choiceCard {
   display: grid;
-  gap: 8px;
-  min-height: 76px;
-  padding: 14px;
-  border-radius: 18px;
+  gap: 6px;
+  min-height: 68px;
+  padding: 12px;
+  border-radius: 16px;
   border: 1px solid rgba(158, 194, 255, 0.14);
   text-align: left;
   color: var(--text);
@@ -2403,24 +2403,30 @@ body:has(.appShell.scene-intro) {
   line-height: 1.34;
 }
 
-.inputPanel,
+.actionPanel,
 .hintCard {
-  margin-top: 12px;
+  margin-top: 10px;
 }
 
 .questionIntro,
-.inputPanel,
+.actionPanel,
 .hintCard,
-.sidebarMeta,
-.cipherPanel {
-  padding: 14px;
+.sidebarMeta {
+  padding: 12px;
+}
+
+.actionPanel.is-choice-mode {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
 }
 
 .inlineFeedback {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-top: 12px;
+  margin-top: 10px;
   min-height: 40px;
   padding: 9px 11px;
   border-radius: 16px;
@@ -2431,6 +2437,11 @@ body:has(.appShell.scene-intro) {
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.04),
     0 12px 30px rgba(7, 11, 24, 0.18);
+}
+
+.actionPanel.is-choice-mode .inlineFeedback {
+  flex: 1 1 auto;
+  margin-top: 0;
 }
 
 .inlineFeedbackBadge {
@@ -2505,6 +2516,36 @@ body:has(.appShell.scene-intro) {
   color: var(--text);
 }
 
+.stepCheckButton {
+  border-color: rgba(255, 214, 235, 0.26);
+  color: rgba(255, 250, 253, 0.98);
+  background:
+    linear-gradient(135deg, rgba(255, 214, 235, 0.94), rgba(155, 124, 255, 0.88) 48%, rgba(121, 229, 255, 0.86)),
+    rgba(255, 255, 255, 0.08);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.38),
+    0 12px 34px rgba(118, 89, 210, 0.22),
+    0 0 28px rgba(255, 198, 225, 0.09);
+}
+
+.stepCheckButton:hover {
+  border-color: rgba(255, 226, 241, 0.4);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.44),
+    0 16px 38px rgba(118, 89, 210, 0.26),
+    0 0 34px rgba(255, 198, 225, 0.12);
+}
+
+.hintToggleButton {
+  flex: 0 0 auto;
+  min-height: 42px;
+  margin-left: auto;
+  color: rgba(228, 236, 252, 0.82);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.018)),
+    rgba(11, 17, 34, 0.68);
+}
+
 .input::placeholder {
   color: rgba(184, 199, 226, 0.4);
 }
@@ -2513,8 +2554,8 @@ body:has(.appShell.scene-intro) {
   display: flex;
   align-items: baseline;
   gap: 6px;
-  margin-top: 10px;
-  font-size: clamp(1.75rem, 5vw, 2.8rem);
+  margin-top: 8px;
+  font-size: clamp(1.7rem, 4vw, 2.35rem);
   letter-spacing: -0.06em;
   font-weight: 700;
 }
@@ -2526,9 +2567,9 @@ body:has(.appShell.scene-intro) {
 
 .sidebarProgress {
   position: relative;
-  width: 14px;
-  height: clamp(120px, 20vh, 168px);
-  margin: 14px 0;
+  width: 100%;
+  height: 9px;
+  margin: 10px 0 12px;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(158, 194, 255, 0.12);
@@ -2537,35 +2578,19 @@ body:has(.appShell.scene-intro) {
 
 .sidebarProgressValue {
   position: absolute;
-  inset: auto 0 0;
+  inset: 0 auto 0 0;
   border-radius: inherit;
-  background: linear-gradient(180deg, var(--accent-end), var(--accent-mid) 48%, var(--accent-start));
+  background: linear-gradient(90deg, var(--accent-start), var(--accent-mid) 48%, var(--accent-end));
   box-shadow:
     0 0 24px rgba(121, 229, 255, 0.16),
     0 0 26px rgba(126, 133, 255, 0.34);
 }
 
-.cipherPanel {
-  margin-top: 12px;
-}
-
-.cipherLine {
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(125, 226, 255, 0.4), transparent);
-}
-
-.cipherGlyphs {
-  padding: 10px 0;
-  color: rgba(198, 215, 244, 0.68);
-  font-size: 0.68rem;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  line-height: 1.64;
-}
-
 .sidebarReset {
   width: 100%;
-  margin-top: auto;
+  min-height: 40px;
+  margin-top: 12px;
+  color: rgba(218, 229, 250, 0.72);
 }
 
 .doneLayout {
@@ -3953,8 +3978,7 @@ body:has(.appShell.scene-intro) {
     width: 100%;
   }
 
-  .statusPill,
-  .modePill {
+  .statusPill {
     justify-self: stretch;
     justify-content: center;
   }

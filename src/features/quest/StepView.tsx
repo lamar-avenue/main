@@ -1,4 +1,4 @@
-import { useEffect, useId, useMemo, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import type { Dispatch, SetStateAction } from "react";
 import type { MediaBlock, QuestStep } from "../../data/quest";
 import { announceSceneAudioStart, subscribeToSceneAudioStart } from "../audio/sceneAudioBus";
@@ -56,18 +56,11 @@ export default function StepView({
     onSceneAudioStateChange(null);
   }, [onSceneAudioStateChange, step.id]);
 
-  const answerModeLabel = step.answerMode ?? "exact";
   const progressPercent = Math.round((stepNumber / total) * 100);
   const feedbackLabel =
     feedbackTone === "idle" ? IDLE_STATUS_LABEL : feedbackTone === "success" ? SUCCESS_STATUS_LABEL : ERROR_STATUS_LABEL;
   const isOrdinaryTextQuestion = !step.blocks?.some((block) => block.type !== "text");
-  const stepAnswerPreview = useMemo(() => {
-    if (answerModeLabel === "keywords") {
-      return step.keywords?.join(" + ") ?? "набор ключевых слов";
-    }
-
-    return Array.isArray(step.answer) ? step.answer.join(" / ") : step.answer;
-  }, [answerModeLabel, step.answer, step.keywords]);
+  const hasChoices = !!step.choices?.length;
   const { audioRef: idleAudioRef, registerActivity: registerIdleActivity } = useIdleStepAudio({
     enabled: isOrdinaryTextQuestion,
     stepId: step.id,
@@ -132,7 +125,6 @@ export default function StepView({
           </div>
           <div className="questionMeta">
             <span className={`statusPill is-${feedbackTone}`}>{feedbackLabel}</span>
-            <span className="modePill">{answerModeLabel}</span>
           </div>
         </div>
 
@@ -160,9 +152,9 @@ export default function StepView({
           </div>
         )}
 
-        {step.choices && step.choices.length > 0 && (
+        {hasChoices && (
           <div className="choiceGrid">
-            {step.choices.map((choice, index) => {
+            {step.choices?.map((choice, index) => {
               const isSelected = selectedChoice === choice;
               const choiceState =
                 isSelected && feedbackTone !== "idle" ? `is-${feedbackTone}` : isSelected ? "is-selected" : "";
@@ -183,48 +175,56 @@ export default function StepView({
           </div>
         )}
 
-        <div className="inputPanel glowInset">
-          <div className="fieldLabel">Ручной ввод</div>
-          <div className="field">
-            <input
-              className="input"
-              value={value}
-              onChange={(event) => {
-                setValue(event.target.value);
-                setSelectedChoice(null);
-                setFeedbackTone("idle");
-                setFeedbackAccent(null);
-                setFeedbackMessage("");
-              }}
-              onKeyDown={(event) => {
-                if (event.key === "Enter") {
-                  submitValue(value);
-                }
-              }}
-              placeholder="Введите ответ вручную"
-              autoFocus
-              aria-invalid={feedbackTone === "error"}
-              aria-describedby={feedbackMessage ? inlineFeedbackId : undefined}
-            />
-            <button className="btn btn-primary" type="button" disabled={isSubmitting} onClick={() => submitValue(value)}>
-              Проверить
-            </button>
-            <button className="btn btn-secondary" type="button" onClick={() => setShowHint((current) => !current)}>
-              {showHint ? "Скрыть подсказку" : "Показать подсказку"}
-            </button>
+        {(!hasChoices || feedbackMessage || step.hint) && (
+          <div className={`actionPanel glowInset ${hasChoices ? "is-choice-mode" : ""}`}>
+            {!hasChoices && (
+              <>
+                <div className="fieldLabel">Ручной ввод</div>
+                <div className="field">
+                  <input
+                    className="input"
+                    value={value}
+                    onChange={(event) => {
+                      setValue(event.target.value);
+                      setSelectedChoice(null);
+                      setFeedbackTone("idle");
+                      setFeedbackAccent(null);
+                      setFeedbackMessage("");
+                    }}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter") {
+                        submitValue(value);
+                      }
+                    }}
+                    placeholder="Введите ответ"
+                    autoFocus
+                    aria-invalid={feedbackTone === "error"}
+                    aria-describedby={feedbackMessage ? inlineFeedbackId : undefined}
+                  />
+                  <button className="btn btn-primary stepCheckButton" type="button" disabled={isSubmitting} onClick={() => submitValue(value)}>
+                    Проверить
+                  </button>
+                </div>
+              </>
+            )}
+            {feedbackMessage && (
+              <div
+                id={inlineFeedbackId}
+                className={`inlineFeedback is-${feedbackTone}`}
+                role={feedbackTone === "error" ? "alert" : "status"}
+                aria-live="polite"
+              >
+                <span className="inlineFeedbackBadge">{feedbackAccent ?? feedbackLabel}</span>
+                <span className="inlineFeedbackText">{feedbackMessage}</span>
+              </div>
+            )}
+            {step.hint && (
+              <button className="btn btn-secondary hintToggleButton" type="button" onClick={() => setShowHint((current) => !current)}>
+                {showHint ? "Скрыть подсказку" : "Показать подсказку"}
+              </button>
+            )}
           </div>
-          {feedbackMessage && (
-            <div
-              id={inlineFeedbackId}
-              className={`inlineFeedback is-${feedbackTone}`}
-              role={feedbackTone === "error" ? "alert" : "status"}
-              aria-live="polite"
-            >
-              <span className="inlineFeedbackBadge">{feedbackAccent ?? feedbackLabel}</span>
-              <span className="inlineFeedbackText">{feedbackMessage}</span>
-            </div>
-          )}
-        </div>
+        )}
 
         {showHint && step.hint && (
           <div className="hintCard glowInset">
@@ -239,32 +239,23 @@ export default function StepView({
       </div>
 
       <aside className="questSidebar glowPanel">
-        <div className="sectionBadge">Шифр / прогресс</div>
+        <div className="sectionBadge">Прогресс</div>
         <div className="sidebarValue">
           {String(stepNumber).padStart(2, "0")}
           <span>/ {String(total).padStart(2, "0")}</span>
         </div>
         <div className="sidebarProgress">
-          <div className="sidebarProgressValue" style={{ height: `${progressPercent}%` }} />
+          <div className="sidebarProgressValue" style={{ width: `${progressPercent}%` }} />
         </div>
         <div className="sidebarMeta glowInset">
           <div className="systemRow">
-            <span>Проверка</span>
-            <strong>{answerModeLabel}</strong>
-          </div>
-          <div className="systemRow">
-            <span>Эталон</span>
-            <strong>{stepAnswerPreview}</strong>
+            <span>Статус</span>
+            <strong>{feedbackLabel}</strong>
           </div>
           <div className="systemRow">
             <span>Подсказка</span>
-            <strong>{step.hint ? "Доступна" : "Скрыта"}</strong>
+            <strong>{step.hint ? "Доступна" : "Нет"}</strong>
           </div>
-        </div>
-        <div className="cipherPanel glowInset">
-          <div className="cipherLine" />
-          <div className="cipherGlyphs">AX-17 // ORBIT // VEIL // SIGNAL</div>
-          <div className="cipherLine" />
         </div>
         <button className="btn btn-secondary sidebarReset" type="button" onClick={onReset}>
           Сбросить квест
@@ -415,14 +406,14 @@ function SceneAudioMedia({
     <div className="mediaCard glowInset">
       {block.title && <div className="mediaTitle">{block.title}</div>}
       <div className="sceneAudioControl">
-        <button className="audioToggle" type="button" onClick={togglePlayback} aria-label={isPlaying ? "Pause scene audio" : "Play scene audio"}>
+        <button className="audioToggle" type="button" onClick={togglePlayback} aria-label={isPlaying ? "Поставить аудио на паузу" : "Включить аудио"}>
           <AudioPlayIcon playing={isPlaying} />
         </button>
         <button
           className={`audioMuteButton ${volume === 0 ? "is-muted" : ""}`}
           type="button"
           onClick={toggleMute}
-          aria-label={volume === 0 ? "Unmute scene audio" : "Mute scene audio"}
+          aria-label={volume === 0 ? "Включить звук" : "Выключить звук"}
         >
           <AudioVolumeIcon muted={volume === 0} />
         </button>
@@ -434,12 +425,12 @@ function SceneAudioMedia({
           step="0.01"
           value={volume}
           onChange={(event) => handleVolumeChange(Number(event.target.value))}
-          aria-label="Scene audio volume"
+          aria-label="Громкость аудио сцены"
         />
       </div>
       <div className="sceneAudioMeta">
-        <span className="sceneAudioLabel">Scene audio</span>
-        <span className="sceneAudioStatus">{isPlaying ? "Playing" : "Paused"}</span>
+        <span className="sceneAudioLabel">Аудио сцены</span>
+        <span className="sceneAudioStatus">{isPlaying ? "Играет" : "Пауза"}</span>
       </div>
       <audio ref={audioRef} className="mediaAudio mediaAudioElement" preload="metadata" src={resolveMediaSrc(block.src)} />
     </div>
