@@ -2132,17 +2132,17 @@ body:has(.appShell.scene-intro) {
   isolation: isolate;
   display: flex;
   flex-direction: column;
-  width: min(100%, 880px);
+  width: min(100%, 860px);
   height: fit-content;
   max-height: 100%;
-  padding: clamp(20px, 2.8vw, 30px);
+  padding: clamp(20px, 2.6vw, 28px);
   overflow: hidden;
   overscroll-behavior: contain;
-  border: 1px solid rgba(255, 221, 240, 0.18);
+  border: 1px solid rgba(255, 221, 240, 0.17);
   border-radius: 32px;
   background:
-    linear-gradient(180deg, rgba(255, 250, 254, 0.086), rgba(255, 255, 255, 0.018) 44%, rgba(255, 255, 255, 0.01)),
-    linear-gradient(145deg, rgba(255, 198, 229, 0.095), rgba(151, 118, 255, 0.06) 42%, rgba(8, 12, 27, 0.035)),
+    linear-gradient(180deg, rgba(255, 250, 254, 0.078), rgba(255, 255, 255, 0.017) 44%, rgba(255, 255, 255, 0.01)),
+    linear-gradient(145deg, rgba(255, 198, 229, 0.074), rgba(151, 118, 255, 0.052) 42%, rgba(8, 12, 27, 0.035)),
     rgba(7, 10, 24, 0.9);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.1),
@@ -2276,8 +2276,8 @@ body:has(.appShell.scene-intro) {
 }
 
 .questProgressText {
-  color: rgba(222, 214, 234, 0.54);
-  font-size: 0.73rem;
+  color: rgba(222, 214, 234, 0.46);
+  font-size: 0.71rem;
   white-space: nowrap;
 }
 
@@ -2440,10 +2440,10 @@ body:has(.appShell.scene-intro) {
   min-height: 88px;
   padding: 17px 18px;
   border-radius: 22px;
-  border: 1px solid rgba(255, 218, 237, 0.16);
+  border: 1px solid rgba(255, 218, 237, 0.13);
   background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.062), rgba(255, 255, 255, 0.014)),
-    linear-gradient(90deg, rgba(255, 201, 226, 0.1), rgba(156, 123, 255, 0.035) 48%, transparent),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.056), rgba(255, 255, 255, 0.014)),
+    linear-gradient(90deg, rgba(255, 201, 226, 0.045), rgba(156, 123, 255, 0.022) 48%, transparent),
     rgba(9, 12, 28, 0.82);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.06),
@@ -2457,8 +2457,8 @@ body:has(.appShell.scene-intro) {
 
 .choiceCard::before {
   background:
-    linear-gradient(90deg, rgba(255, 202, 229, 0.16), rgba(151, 121, 255, 0.055) 42%, transparent 72%);
-  opacity: 0.58;
+    linear-gradient(90deg, rgba(255, 202, 229, 0.08), rgba(151, 121, 255, 0.035) 42%, transparent 72%);
+  opacity: 0.34;
 }
 
 .choiceCard::after {
@@ -2466,10 +2466,10 @@ body:has(.appShell.scene-intro) {
   position: absolute;
   inset: 13px auto 13px 0;
   z-index: 0;
-  width: 3px;
+  width: 2px;
   border-radius: 999px;
   background: linear-gradient(180deg, rgba(255, 204, 226, 0.78), rgba(151, 121, 255, 0.58));
-  opacity: 0.28;
+  opacity: 0.14;
   transition: opacity 220ms ease, width 220ms ease;
 }
 
@@ -2478,7 +2478,7 @@ body:has(.appShell.scene-intro) {
   border-color: rgba(255, 207, 231, 0.42);
   background:
     linear-gradient(135deg, rgba(255, 255, 255, 0.086), rgba(255, 255, 255, 0.022)),
-    linear-gradient(90deg, rgba(255, 201, 226, 0.145), rgba(156, 123, 255, 0.06) 52%, transparent),
+    linear-gradient(90deg, rgba(255, 201, 226, 0.12), rgba(156, 123, 255, 0.052) 52%, transparent),
     rgba(13, 15, 34, 0.84);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.08),
@@ -2537,7 +2537,7 @@ body:has(.appShell.scene-intro) {
   background:
     linear-gradient(180deg, rgba(255, 218, 237, 0.12), rgba(151, 121, 255, 0.045)),
     rgba(255, 255, 255, 0.024);
-  color: rgba(255, 230, 243, 0.76);
+  color: rgba(255, 230, 243, 0.68);
   font-size: 0.68rem;
   font-weight: 700;
   letter-spacing: 0.1em;
@@ -2746,19 +2746,19 @@ body:has(.appShell.scene-intro) {
   min-height: 0;
   padding: 0;
   border: 0;
-  opacity: 0.36;
-  color: rgba(214, 223, 244, 0.42);
+  opacity: 0.26;
+  color: rgba(214, 223, 244, 0.38);
   background: transparent;
   box-shadow: none;
   cursor: pointer;
-  font-size: 0.68rem;
+  font-size: 0.64rem;
   letter-spacing: 0.04em;
   transition: opacity 180ms ease, color 180ms ease;
 }
 
 .resetGhostButton:hover {
-  opacity: 0.58;
-  color: rgba(232, 236, 250, 0.6);
+  opacity: 0.5;
+  color: rgba(232, 236, 250, 0.56);
   box-shadow: none;
 }
 
