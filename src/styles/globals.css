@@ -2307,14 +2307,22 @@ body:has(.appShell.scene-intro) {
 
 .mediaGrid {
   display: grid;
-  gap: 7px;
-  margin-top: 9px;
+  gap: 10px;
+  margin-top: 14px;
 }
 
-.mediaCard {
+.questCard .mediaCard {
   overflow: hidden;
-  border-radius: 18px;
-  padding: 9px;
+  border: 0;
+  border-radius: 20px;
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.questCard .mediaCard::before {
+  display: none;
+  content: none;
 }
 
 .mediaCard audio {
@@ -2345,8 +2353,10 @@ body:has(.appShell.scene-intro) {
   gap: 10px;
   padding: 10px 12px;
   border-radius: 18px;
-  border: 1px solid rgba(160, 193, 255, 0.14);
-  background: rgba(7, 11, 24, 0.64);
+  border: 1px solid rgba(255, 218, 237, 0.105);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.046), rgba(255, 255, 255, 0.012)),
+    rgba(8, 12, 28, 0.66);
 }
 
 .sceneVolumeSlider {
@@ -2380,12 +2390,22 @@ body:has(.appShell.scene-intro) {
 .mediaImg,
 .mediaVideo,
 .ytWrap {
-  border-radius: 15px;
-  border: 1px solid rgba(160, 193, 255, 0.14);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 222, 240, 0.13);
   min-height: 0;
   height: clamp(142px, 20vh, 220px);
   max-height: 22vh;
-  background: rgba(4, 8, 18, 0.75);
+  background:
+    linear-gradient(135deg, rgba(255, 218, 237, 0.036), rgba(151, 118, 255, 0.022)),
+    rgba(4, 8, 18, 0.72);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.045),
+    0 10px 26px rgba(5, 8, 20, 0.16);
+}
+
+.mediaImg,
+.mediaVideo {
+  object-fit: cover;
 }
 
 .videoStage {
@@ -2407,9 +2427,8 @@ body:has(.appShell.scene-intro) {
   gap: 12px;
   padding: 10px 12px;
   border-radius: 16px;
-  border: 1px solid rgba(180, 150, 255, 0.18);
-  background: linear-gradient(180deg, rgba(32, 16, 52, 0.18), rgba(8, 10, 26, 0.8));
-  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 218, 237, 0.14);
+  background: linear-gradient(180deg, rgba(32, 16, 52, 0.16), rgba(8, 10, 26, 0.84));
 }
 
 .ytWrap {
