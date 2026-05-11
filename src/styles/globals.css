@@ -2129,34 +2129,36 @@ body:has(.appShell.scene-intro) {
 
 .questCard {
   position: relative;
+  isolation: isolate;
   display: flex;
   flex-direction: column;
   width: min(100%, 880px);
   height: fit-content;
   max-height: 100%;
   padding: clamp(20px, 2.8vw, 30px);
-  overflow: auto;
+  overflow: hidden;
   overscroll-behavior: contain;
-  scrollbar-gutter: stable;
-  border: 1px solid rgba(255, 218, 237, 0.16);
-  border-radius: 30px;
+  border: 1px solid rgba(255, 221, 240, 0.18);
+  border-radius: 32px;
   background:
-    linear-gradient(180deg, rgba(255, 247, 253, 0.07), rgba(255, 255, 255, 0.018)),
-    linear-gradient(140deg, rgba(255, 198, 229, 0.085), rgba(150, 116, 255, 0.055) 44%, rgba(8, 12, 27, 0.04)),
-    rgba(7, 10, 24, 0.88);
+    linear-gradient(180deg, rgba(255, 250, 254, 0.086), rgba(255, 255, 255, 0.018) 44%, rgba(255, 255, 255, 0.01)),
+    linear-gradient(145deg, rgba(255, 198, 229, 0.095), rgba(151, 118, 255, 0.06) 42%, rgba(8, 12, 27, 0.035)),
+    rgba(7, 10, 24, 0.9);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.08),
-    0 24px 70px rgba(0, 0, 0, 0.34),
-    0 0 0 1px rgba(255, 218, 237, 0.035);
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    inset 0 -1px 0 rgba(151, 118, 255, 0.045),
+    0 24px 70px rgba(0, 0, 0, 0.32),
+    0 0 0 1px rgba(255, 218, 237, 0.04);
 }
 
 .questCard::before {
   content: "";
   position: absolute;
-  inset: 1px;
+  inset: 0 22px auto;
   z-index: 0;
-  border-radius: inherit;
-  border: 1px solid rgba(255, 226, 241, 0.055);
+  height: 1px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent, rgba(255, 214, 236, 0.42), rgba(153, 121, 255, 0.26), transparent);
   pointer-events: none;
 }
 
@@ -2257,10 +2259,12 @@ body:has(.appShell.scene-intro) {
 
 .questProgressTrack {
   position: relative;
-  height: 3px;
+  height: 4px;
   overflow: hidden;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.08);
+  background:
+    linear-gradient(90deg, rgba(255, 214, 236, 0.05), rgba(153, 121, 255, 0.07)),
+    rgba(255, 255, 255, 0.07);
 }
 
 .questProgressValue {
@@ -2268,6 +2272,7 @@ body:has(.appShell.scene-intro) {
   inset: 0 auto 0 0;
   border-radius: inherit;
   background: linear-gradient(90deg, rgba(255, 204, 226, 0.96), rgba(193, 127, 224, 0.9) 48%, rgba(145, 118, 255, 0.92));
+  box-shadow: 0 0 18px rgba(255, 196, 226, 0.12);
 }
 
 .questProgressText {
@@ -2432,44 +2437,75 @@ body:has(.appShell.scene-intro) {
   grid-template-columns: auto minmax(0, 1fr);
   align-items: center;
   gap: 14px;
-  min-height: 86px;
-  padding: 16px 17px;
-  border-radius: 20px;
-  border: 1px solid rgba(255, 218, 237, 0.14);
+  min-height: 88px;
+  padding: 17px 18px;
+  border-radius: 22px;
+  border: 1px solid rgba(255, 218, 237, 0.16);
   background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.052), rgba(255, 255, 255, 0.016)),
-    linear-gradient(90deg, rgba(255, 201, 226, 0.075), rgba(156, 123, 255, 0.025) 48%, transparent),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.062), rgba(255, 255, 255, 0.014)),
+    linear-gradient(90deg, rgba(255, 201, 226, 0.1), rgba(156, 123, 255, 0.035) 48%, transparent),
     rgba(9, 12, 28, 0.82);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.05),
-    0 12px 28px rgba(5, 8, 20, 0.18);
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 10px 24px rgba(5, 8, 20, 0.16);
   text-align: left;
   color: var(--text);
+  cursor: pointer;
+  isolation: isolate;
   overflow: hidden;
 }
 
-.choiceCard:hover {
-  transform: translateY(-2px);
-  border-color: rgba(255, 204, 226, 0.34);
+.choiceCard::before {
   background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.074), rgba(255, 255, 255, 0.02)),
-    linear-gradient(90deg, rgba(255, 201, 226, 0.12), rgba(156, 123, 255, 0.045) 52%, transparent),
+    linear-gradient(90deg, rgba(255, 202, 229, 0.16), rgba(151, 121, 255, 0.055) 42%, transparent 72%);
+  opacity: 0.58;
+}
+
+.choiceCard::after {
+  content: "";
+  position: absolute;
+  inset: 13px auto 13px 0;
+  z-index: 0;
+  width: 3px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(255, 204, 226, 0.78), rgba(151, 121, 255, 0.58));
+  opacity: 0.28;
+  transition: opacity 220ms ease, width 220ms ease;
+}
+
+.choiceCard:hover {
+  transform: translateY(-3px);
+  border-color: rgba(255, 207, 231, 0.42);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.086), rgba(255, 255, 255, 0.022)),
+    linear-gradient(90deg, rgba(255, 201, 226, 0.145), rgba(156, 123, 255, 0.06) 52%, transparent),
     rgba(13, 15, 34, 0.84);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.07),
-    0 0 0 1px rgba(255, 204, 226, 0.09),
-    0 16px 34px rgba(76, 45, 128, 0.2);
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 0 0 1px rgba(255, 204, 226, 0.12),
+    0 18px 38px rgba(76, 45, 128, 0.23);
+}
+
+.choiceCard:hover::after,
+.choiceCard:focus-visible::after {
+  width: 4px;
+  opacity: 0.72;
 }
 
 .choiceCard.is-selected {
-  border-color: rgba(255, 209, 232, 0.48);
+  border-color: rgba(255, 212, 234, 0.58);
   background:
-    linear-gradient(135deg, rgba(255, 213, 234, 0.16), rgba(155, 124, 255, 0.095)),
+    linear-gradient(135deg, rgba(255, 213, 234, 0.2), rgba(155, 124, 255, 0.12)),
     rgba(13, 15, 34, 0.86);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.08),
-    0 0 0 1px rgba(255, 204, 226, 0.14),
-    0 18px 38px rgba(101, 65, 169, 0.24);
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 0 0 1px rgba(255, 204, 226, 0.18),
+    0 18px 40px rgba(101, 65, 169, 0.26);
+}
+
+.choiceCard.is-selected::after {
+  width: 4px;
+  opacity: 0.9;
 }
 
 .choiceCard.is-success {
@@ -2492,21 +2528,27 @@ body:has(.appShell.scene-intro) {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  position: relative;
+  z-index: 1;
+  width: 36px;
+  height: 36px;
   border-radius: 999px;
-  border: 1px solid rgba(255, 214, 235, 0.15);
+  border: 1px solid rgba(255, 218, 237, 0.19);
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.016)),
-    rgba(255, 255, 255, 0.025);
-  color: rgba(255, 226, 241, 0.72);
-  font-size: 0.72rem;
+    linear-gradient(180deg, rgba(255, 218, 237, 0.12), rgba(151, 121, 255, 0.045)),
+    rgba(255, 255, 255, 0.024);
+  color: rgba(255, 230, 243, 0.76);
+  font-size: 0.68rem;
+  font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
 
 .choiceText {
-  font-size: 1rem;
+  position: relative;
+  z-index: 1;
+  font-size: 1.02rem;
+  font-weight: 600;
   line-height: 1.38;
   color: rgba(243, 247, 255, 0.92);
 }
@@ -2524,8 +2566,8 @@ body:has(.appShell.scene-intro) {
 }
 
 .questChoiceHelper {
-  color: rgba(226, 216, 238, 0.6);
-  font-size: 0.82rem;
+  color: rgba(226, 216, 238, 0.48);
+  font-size: 0.78rem;
   line-height: 1.4;
 }
 
@@ -2654,15 +2696,16 @@ body:has(.appShell.scene-intro) {
 
 .questHintButton {
   flex: 0 0 auto;
-  min-height: 38px;
-  padding-inline: 13px;
+  min-height: 36px;
+  padding-inline: 12px;
   border: 1px solid rgba(255, 218, 237, 0.12);
   border-radius: 999px;
-  color: rgba(228, 236, 252, 0.82);
+  color: rgba(228, 236, 252, 0.68);
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.018)),
-    rgba(11, 17, 34, 0.68);
+    linear-gradient(180deg, rgba(255, 255, 255, 0.038), rgba(255, 255, 255, 0.012)),
+    rgba(11, 17, 34, 0.48);
   cursor: pointer;
+  font-size: 0.82rem;
   transition:
     border-color 220ms ease,
     color 220ms ease,
@@ -2703,16 +2746,19 @@ body:has(.appShell.scene-intro) {
   min-height: 0;
   padding: 0;
   border: 0;
-  color: rgba(214, 223, 244, 0.38);
+  opacity: 0.36;
+  color: rgba(214, 223, 244, 0.42);
   background: transparent;
   box-shadow: none;
   cursor: pointer;
-  font-size: 0.76rem;
+  font-size: 0.68rem;
   letter-spacing: 0.04em;
+  transition: opacity 180ms ease, color 180ms ease;
 }
 
 .resetGhostButton:hover {
-  color: rgba(232, 236, 250, 0.64);
+  opacity: 0.58;
+  color: rgba(232, 236, 250, 0.6);
   box-shadow: none;
 }
 
