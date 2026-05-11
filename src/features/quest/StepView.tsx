@@ -11,6 +11,8 @@ type ToastTone = "neutral" | "success" | "error";
 
 type SceneAudioStateSetter = Dispatch<SetStateAction<string | null>>;
 const ERROR_FEEDBACK_VARIANTS = ["Не-а", "Почти", "Слишком просто", "Попробуй ещё раз", "Подумай как Марк"] as const;
+const CHOICE_WRONG_MESSAGES = ["Мимо. Красиво, но не оно.", "Не тот след. Попробуй ещё раз.", "Почти, но Марк бы не засчитал."] as const;
+const CHOICE_SUCCESS_MESSAGES = ["Верно. Двигаемся дальше.", "Сигнал принят.", "Есть контакт."] as const;
 const EMPTY_ANSWER_MESSAGE = "Введите ответ или выберите один из вариантов.";
 const WRONG_ANSWER_MESSAGE = "Ответ не совпал. Попробуй другой вариант.";
 const IDLE_STATUS_LABEL = "Ждём ответ";
@@ -43,9 +45,17 @@ export default function StepView({
   const [feedbackAccent, setFeedbackAccent] = useState<string | null>(null);
   const [feedbackMessage, setFeedbackMessage] = useState("");
   const errorFeedbackIndexRef = useRef(0);
+  const choiceWrongIndexRef = useRef(0);
+  const successFeedbackIndexRef = useRef(0);
+  const advanceTimerRef = useRef<number | null>(null);
   const inlineFeedbackId = useId();
 
   useEffect(() => {
+    if (advanceTimerRef.current !== null) {
+      window.clearTimeout(advanceTimerRef.current);
+      advanceTimerRef.current = null;
+    }
+
     setValue("");
     setSelectedChoice(null);
     setFeedbackTone("idle");
@@ -54,6 +64,13 @@ export default function StepView({
     setFeedbackAccent(null);
     setFeedbackMessage("");
     onSceneAudioStateChange(null);
+
+    return () => {
+      if (advanceTimerRef.current !== null) {
+        window.clearTimeout(advanceTimerRef.current);
+        advanceTimerRef.current = null;
+      }
+    };
   }, [onSceneAudioStateChange, step.id]);
 
   const progressPercent = Math.round((stepNumber / total) * 100);
@@ -80,6 +97,18 @@ export default function StepView({
     return accent;
   }
 
+  function getNextChoiceWrongMessage() {
+    const message = CHOICE_WRONG_MESSAGES[choiceWrongIndexRef.current % CHOICE_WRONG_MESSAGES.length];
+    choiceWrongIndexRef.current += 1;
+    return message;
+  }
+
+  function getNextChoiceSuccessMessage() {
+    const message = CHOICE_SUCCESS_MESSAGES[successFeedbackIndexRef.current % CHOICE_SUCCESS_MESSAGES.length];
+    successFeedbackIndexRef.current += 1;
+    return message;
+  }
+
   function showError(message: string, accent: string = getNextErrorAccent()) {
     setFeedbackTone("error");
     setFeedbackAccent(accent);
@@ -90,18 +119,14 @@ export default function StepView({
   function selectChoice(choice: string) {
     if (isSubmitting) return;
 
-    setSelectedChoice(choice);
-    setValue(choice);
-    setFeedbackTone("idle");
-    setFeedbackAccent(null);
-    setFeedbackMessage("");
+    validateAnswer(choice, { fromChoice: true });
   }
 
-  function submitValue(nextValue: string) {
+  function validateAnswer(nextValue: string, options: { fromChoice?: boolean } = {}) {
     if (isSubmitting) return;
 
     const trimmed = nextValue.trim();
-    setSelectedChoice(nextValue);
+    setSelectedChoice(options.fromChoice ? nextValue : null);
     setValue(nextValue);
 
     if (!trimmed) {
@@ -111,19 +136,31 @@ export default function StepView({
 
     const ok = isCorrect(nextValue, step);
     if (!ok) {
-      showError(WRONG_ANSWER_MESSAGE);
+      showError(options.fromChoice ? getNextChoiceWrongMessage() : WRONG_ANSWER_MESSAGE);
       return;
     }
+
+    const successMessage = options.fromChoice ? getNextChoiceSuccessMessage() : "Верный ответ. Переходим к следующему шагу.";
 
     setIsSubmitting(true);
     setFeedbackTone("success");
     setFeedbackAccent("Ответ принят");
-    setFeedbackMessage("Верный ответ. Переходим к следующему шагу.");
-    onToast("success", "Верно", "Переходим к следующему шагу.");
+    setFeedbackMessage(successMessage);
+    onToast("success", "Верно", successMessage);
 
-    window.requestAnimationFrame(() => {
-      onSubmit(nextValue);
-    });
+    if (options.fromChoice) {
+      advanceTimerRef.current = window.setTimeout(() => {
+        advanceTimerRef.current = null;
+        onSubmit(nextValue);
+      }, 700);
+      return;
+    }
+
+    window.requestAnimationFrame(() => onSubmit(nextValue));
+  }
+
+  function submitValue(nextValue: string) {
+    validateAnswer(nextValue);
   }
 
   return (
@@ -201,18 +238,7 @@ export default function StepView({
         <div className="questActions">
           {hasChoices && (
             <div className="questChoiceActions">
-              {selectedChoice ? (
-                <button
-                  className="btn btn-primary stepCheckButton"
-                  type="button"
-                  disabled={isSubmitting}
-                  onClick={() => submitValue(selectedChoice ?? "")}
-                >
-                  Проверить
-                </button>
-              ) : (
-                <span className="questChoiceHelper">{selectedChoiceLabel}</span>
-              )}
+              <span className={`questChoiceHelper is-${feedbackTone}`}>{feedbackMessage || selectedChoiceLabel}</span>
               {step.hint && (
                 <button className="questHintButton" type="button" onClick={() => setShowHint((current) => !current)}>
                   {showHint ? "Скрыть подсказку" : "Показать подсказку"}
@@ -264,7 +290,7 @@ export default function StepView({
           </div>
         )}
 
-        {feedbackMessage && (
+        {feedbackMessage && !hasChoices && (
           <div
             id={inlineFeedbackId}
             className={`questFeedback is-${feedbackTone}`}

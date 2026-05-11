@@ -2541,6 +2541,11 @@ body:has(.appShell.scene-intro) {
   box-shadow: 0 0 0 1px rgba(125, 255, 197, 0.14), 0 14px 34px rgba(66, 194, 135, 0.16);
 }
 
+.choiceCard.is-success:disabled {
+  cursor: default;
+  opacity: 1;
+}
+
 .choiceCard.is-error {
   border-color: rgba(255, 142, 161, 0.34);
   background:
@@ -2594,6 +2599,14 @@ body:has(.appShell.scene-intro) {
   color: rgba(226, 216, 238, 0.42);
   font-size: 0.78rem;
   line-height: 1.4;
+}
+
+.questChoiceHelper.is-error {
+  color: rgba(255, 204, 216, 0.78);
+}
+
+.questChoiceHelper.is-success {
+  color: rgba(198, 255, 225, 0.82);
 }
 
 .questFeedback {
