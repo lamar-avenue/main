@@ -153,7 +153,7 @@ export default function StepView({
             <div className="questProgressTrack" aria-hidden="true">
               <div className="questProgressValue" style={{ width: `${progressPercent}%` }} />
             </div>
-            <span className="questProgressText">Путь {progressPercent}%</span>
+            <span className="questProgressText">{progressPercent}% пути</span>
           </div>
         </header>
 
