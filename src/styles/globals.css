@@ -2318,11 +2318,18 @@ body:has(.appShell.scene-intro) {
   padding: 0;
   background: transparent;
   box-shadow: none;
+  transition: none;
 }
 
 .questCard .mediaCard::before {
   display: none;
   content: none;
+}
+
+.questCard .mediaCard:hover {
+  transform: none;
+  border-color: transparent;
+  box-shadow: none;
 }
 
 .mediaCard audio {

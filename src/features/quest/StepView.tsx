@@ -327,14 +327,14 @@ function Media({
   switch (block.type) {
     case "text":
       return (
-        <div className="mediaCard glowInset">
+        <div className="mediaCard">
           <div className="mediaText">{block.value}</div>
         </div>
       );
 
     case "image":
       return (
-        <div className="mediaCard glowInset">
+        <div className="mediaCard">
           <img className="mediaImg" src={resolveMediaSrc(block.src)} alt={block.alt ?? ""} />
         </div>
       );
@@ -347,7 +347,7 @@ function Media({
 
     case "youtube":
       return (
-        <div className="mediaCard glowInset">
+        <div className="mediaCard">
           {block.title && <div className="mediaTitle">{block.title}</div>}
           <div className="ytWrap">
             <iframe
@@ -453,7 +453,7 @@ function SceneAudioMedia({
   }
 
   return (
-    <div className="mediaCard glowInset">
+    <div className="mediaCard">
       {block.title && <div className="mediaTitle">{block.title}</div>}
       <div className="sceneAudioControl">
         <button className="audioToggle" type="button" onClick={togglePlayback} aria-label={isPlaying ? "Поставить аудио на паузу" : "Включить аудио"}>
@@ -562,7 +562,7 @@ function VideoMedia({
   }, [block.pauseAt, block.src]);
 
   return (
-    <div className={`mediaCard glowInset ${cinematic ? "decisionCard" : ""} ${isPausedAtDecision ? "is-decision" : ""}`}>
+    <div className={`mediaCard ${cinematic ? "decisionCard" : ""} ${isPausedAtDecision ? "is-decision" : ""}`}>
       {block.title && <div className="mediaTitle">{block.title}</div>}
       <div className="videoStage">
         <video
