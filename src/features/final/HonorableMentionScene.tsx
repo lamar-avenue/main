@@ -11,11 +11,13 @@ type HonorableMentionSceneProps = {
 const HONORABLE_COPY =
   "Это тестовая русская озвучка для honorable mention. Здесь может быть любой временный текст-заглушка. Главное, что сцена звучит отдельно, без фоновой музыки сайта, и остаётся самостоятельным финальным кадром.";
 
+const DEFAULT_HONORABLE_VOICE_VOLUME = 0.35;
+
 export default function HonorableMentionScene({ isExiting, onSkip }: HonorableMentionSceneProps) {
   const sourceId = useId();
   const [photoSrc, setPhotoSrc] = useState(() => resolveMediaSrc("/media/images/honorable-mention-photo.jpg"));
-  const [voiceVolume, setVoiceVolume] = useState(0.88);
-  const [previousVoiceVolume, setPreviousVoiceVolume] = useState(0.88);
+  const [voiceVolume, setVoiceVolume] = useState(DEFAULT_HONORABLE_VOICE_VOLUME);
+  const [previousVoiceVolume, setPreviousVoiceVolume] = useState(DEFAULT_HONORABLE_VOICE_VOLUME);
   const showSkip = useDelayedReveal(5000);
   const imageFallbackSrc = useMemo(() => resolveMediaSrc("/media/images/honorable-mention-photo.png"), []);
   const isSpeechSupported = typeof window !== "undefined" && "speechSynthesis" in window;
@@ -44,7 +46,7 @@ export default function HonorableMentionScene({ isExiting, onSkip }: HonorableMe
 
   function toggleMute() {
     if (voiceVolume === 0) {
-      setVoiceVolume(previousVoiceVolume > 0 ? previousVoiceVolume : 0.88);
+      setVoiceVolume(previousVoiceVolume > 0 ? previousVoiceVolume : DEFAULT_HONORABLE_VOICE_VOLUME);
       return;
     }
 
