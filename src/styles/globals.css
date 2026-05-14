@@ -3194,14 +3194,12 @@ body:has(.appShell.scene-intro) {
   min-height: 0;
   display: flex;
   flex-direction: column;
-  border: 1px solid rgba(202, 214, 239, 0.1);
-  border-radius: 34px;
+  border: 0;
+  border-radius: 0;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.012)),
-    linear-gradient(180deg, rgba(3, 6, 14, 0.92), rgba(4, 8, 18, 0.88));
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.04),
-    0 30px 90px rgba(0, 0, 0, 0.42);
+    radial-gradient(ellipse at 50% 46%, rgba(2, 5, 12, 0.56), rgba(2, 5, 12, 0.24) 42%, transparent 72%),
+    linear-gradient(180deg, transparent 0%, rgba(4, 7, 15, 0.22) 28%, rgba(4, 7, 15, 0.16) 70%, transparent 100%);
+  box-shadow: none;
   overflow: hidden;
   transform: translateZ(0);
 }
@@ -3214,7 +3212,7 @@ body:has(.appShell.scene-intro) {
   right: 24px;
   z-index: 2;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(219, 228, 248, 0.24), transparent);
+  background: linear-gradient(90deg, transparent, rgba(219, 228, 248, 0.13), transparent);
   pointer-events: none;
 }
 
@@ -3224,7 +3222,7 @@ body:has(.appShell.scene-intro) {
 
 .creditsFrame::after {
   bottom: 28px;
-  opacity: 0.5;
+  opacity: 0.28;
 }
 
 .creditsHeader {
@@ -3387,7 +3385,6 @@ body:has(.appShell.scene-intro) {
 .debug-no-blur .mediaCard,
 .debug-no-blur .choiceCard,
 .debug-no-blur .honorableSkipButton,
-.debug-no-blur .creditsFrame,
 .debug-no-blur .doneLayout {
   box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06) !important;
 }
@@ -3451,7 +3448,6 @@ body:has(.appShell.scene-intro) {
 .debug-low-fx .mediaCard,
 .debug-low-fx .choiceCard,
 .debug-low-fx .honorableSkipButton,
-.debug-low-fx .creditsFrame,
 .debug-low-fx .doneLayout {
   box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06);
 }
@@ -3533,6 +3529,7 @@ body:has(.appShell.scene-intro) {
   letter-spacing: 0.18em;
   text-align: center;
   text-transform: uppercase;
+  text-shadow: 0 10px 34px rgba(0, 0, 0, 0.48);
 }
 
 .creditsBlock {
@@ -3558,6 +3555,7 @@ body:has(.appShell.scene-intro) {
   font-size: clamp(1.16rem, 2.4vw, 1.56rem);
   line-height: 1.62;
   text-wrap: balance;
+  text-shadow: 0 8px 28px rgba(0, 0, 0, 0.5);
 }
 
 .creditsOutro {
@@ -3569,6 +3567,7 @@ body:has(.appShell.scene-intro) {
   font-size: clamp(1.15rem, 2.5vw, 1.7rem);
   letter-spacing: 0.14em;
   text-transform: uppercase;
+  text-shadow: 0 10px 34px rgba(0, 0, 0, 0.48);
 }
 
 .rewardCard {
@@ -4091,10 +4090,6 @@ body:has(.appShell.scene-intro) {
     min-height: 0;
     height: 100%;
     padding: 14px 0 4px;
-  }
-
-  .creditsFrame {
-    border-radius: 26px;
   }
 
   .creditsHeader {
