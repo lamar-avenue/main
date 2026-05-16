@@ -84,17 +84,6 @@ function getCinematicPause(screen: Screen, step?: QuestStep): CinematicPause | n
   return null;
 }
 
-const TELEGRAM_AUTHOR_URL = "https://t.me/lamar_avenue";
-const TELEGRAM_SHARE_BASE_URL = "https://t.me/share/url";
-const DEFAULT_REACTION_MESSAGE = "MARK QUEST пройден. Подарок принят.";
-const REACTION_MESSAGES = [
-  DEFAULT_REACTION_MESSAGE,
-  "Не ожидал, но это было красиво.",
-  "Сайт кайф. Автору зачёт.",
-  "Финал принят. Можно вручать подарок.",
-  "Это было странно, но душевно.",
-];
-
 export default function App() {
   const [screen, setScreen] = useState<Screen>("intro");
   const [isIntroTransitioning, setIsIntroTransitioning] = useState(false);
@@ -104,8 +93,6 @@ export default function App() {
   const [volume, setVolume] = useState(0.1);
   const [isMuted, setIsMuted] = useState(false);
   const [activeSceneAudioSourceId, setActiveSceneAudioSourceId] = useState<string | null>(null);
-  const [selectedReaction, setSelectedReaction] = useState(DEFAULT_REACTION_MESSAGE);
-  const [telegramStatus, setTelegramStatus] = useState<string | null>(null);
   const [playlistState, setPlaylistState] = useState<PlaylistState>(() => ({
     order: createShuffledTrackOrder(BACKGROUND_TRACKS.length),
     position: 0,
@@ -583,26 +570,6 @@ export default function App() {
     }, 420);
   }
 
-  function getFinalReactionMessage() {
-    return selectedReaction || DEFAULT_REACTION_MESSAGE;
-  }
-
-  async function handleOpenTelegramReaction() {
-    const finalMessage = getFinalReactionMessage();
-    const shareUrl = `${TELEGRAM_SHARE_BASE_URL}?text=${encodeURIComponent(finalMessage)}`;
-
-    setTelegramStatus(null);
-
-    try {
-      await navigator.clipboard.writeText(finalMessage);
-      setTelegramStatus("Отзыв подготовлен. Если Telegram не вставил текст сам — просто вставь его в чат.");
-    } catch {
-      setTelegramStatus("Telegram откроется с подготовленным текстом. Если вставка не сработает — выбери фразу на экране и скопируй её вручную.");
-    }
-
-    window.open(shareUrl, "_blank", "noopener,noreferrer");
-  }
-
   return (
     <div className={rootClassName}>
       <div className="bg">
@@ -739,45 +706,6 @@ export default function App() {
 
                 <p className="doneNote">С уважением к хорошему финалу и к человеку, ради которого всё это собиралось.</p>
                 <div className="doneSignature">Тестовая подпись, которую потом можно заменить.</div>
-
-                <div className="finalReactionPanel">
-                  <div className="finalReactionHeader">
-                    <h2 className="finalReactionTitle">Что передать автору?</h2>
-                    <p className="finalReactionSubtitle">
-                      Выбери фразу — я скопирую её и открою Telegram.
-                    </p>
-                  </div>
-
-                  <div className="finalReactionChoices" role="group" aria-label="Готовые реакции для автора">
-                    {REACTION_MESSAGES.map((message) => (
-                      <button
-                        key={message}
-                        className={`finalReactionChoice ${selectedReaction === message ? "is-selected" : ""}`}
-                        type="button"
-                        onClick={() => {
-                          setSelectedReaction(message);
-                          setTelegramStatus(null);
-                        }}
-                      >
-                        {message}
-                      </button>
-                    ))}
-                  </div>
-
-                  <p className="finalTelegramHint">Если Telegram не вставит текст сам, он уже будет в буфере обмена.</p>
-
-                  {telegramStatus && <div className="finalTelegramStatus">{telegramStatus}</div>}
-
-                  <div className="heroActions doneActions finalReactionActions">
-                    <button className="btn btn-primary finalPrimaryAction" type="button" onClick={handleOpenTelegramReaction}>
-                      Отправить отзыв
-                    </button>
-                  </div>
-
-                  <a className="finalAuthorLink" href={TELEGRAM_AUTHOR_URL} target="_blank" rel="noreferrer">
-                    Открыть чат @lamar_avenue
-                  </a>
-                </div>
 
                 <div className="heroActions doneActions">
                   <button className="btn btn-secondary finalRestartAction" type="button" onClick={handleReset}>
