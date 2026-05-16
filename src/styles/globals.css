@@ -2938,11 +2938,11 @@ body:has(.appShell.scene-intro) {
 }
 
 .finalReactionPanel {
-  width: min(100%, 36rem);
+  width: min(100%, 34rem);
   display: grid;
-  gap: 14px;
-  padding: 18px;
-  border-radius: 24px;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 22px;
   border: 1px solid rgba(221, 176, 255, 0.16);
   background:
     linear-gradient(180deg, rgba(255, 121, 218, 0.055), rgba(133, 108, 255, 0.035)),
@@ -2978,7 +2978,7 @@ body:has(.appShell.scene-intro) {
 .finalReactionChoices {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px;
+  gap: 7px;
 }
 
 .finalReactionChoice {
@@ -3010,32 +3010,6 @@ body:has(.appShell.scene-intro) {
   box-shadow: 0 12px 28px rgba(87, 47, 159, 0.18);
 }
 
-.finalReactionTextarea,
-.finalCopyText {
-  width: 100%;
-  resize: vertical;
-  min-height: 86px;
-  padding: 12px 14px;
-  border: 1px solid rgba(219, 198, 255, 0.14);
-  border-radius: 14px;
-  background: rgba(4, 5, 12, 0.42);
-  color: rgba(248, 245, 255, 0.94);
-  font: inherit;
-  font-size: 0.92rem;
-  line-height: 1.5;
-}
-
-.finalReactionTextarea::placeholder {
-  color: rgba(224, 213, 238, 0.44);
-}
-
-.finalReactionTextarea:focus,
-.finalCopyText:focus {
-  outline: none;
-  border-color: rgba(255, 117, 211, 0.42);
-  box-shadow: 0 0 0 3px rgba(255, 117, 211, 0.1);
-}
-
 .finalTelegramStatus {
   border: 1px solid rgba(128, 231, 188, 0.2);
   border-radius: 14px;
@@ -3047,17 +3021,10 @@ body:has(.appShell.scene-intro) {
   text-align: center;
 }
 
-.finalCopyBox {
-  display: grid;
-  gap: 10px;
-}
-
 .finalReactionActions {
   margin-top: 2px;
 }
 
-.finalDirectChatLink,
-.finalCopyButton,
 .finalRestartAction {
   text-decoration: none;
 }
@@ -4325,7 +4292,7 @@ body:has(.appShell.scene-intro) {
   }
 
   .finalReactionPanel {
-    padding: 14px;
+    padding: 13px;
     border-radius: 20px;
   }
 
@@ -4346,7 +4313,6 @@ body:has(.appShell.scene-intro) {
     min-width: 0;
   }
 
-  .finalDirectChatLink,
   .finalRestartAction {
     width: 100%;
   }

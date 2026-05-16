@@ -84,8 +84,7 @@ function getCinematicPause(screen: Screen, step?: QuestStep): CinematicPause | n
   return null;
 }
 
-const TELEGRAM_SHARE_BASE_URL = "https://t.me/share/url";
-const TELEGRAM_DIRECT_CHAT_URL = "https://t.me/oundeadred";
+const TELEGRAM_AUTHOR_URL = "https://t.me/lamar_avenue";
 const DEFAULT_REACTION_MESSAGE = "MARK QUEST пройден. Подарок принят.";
 const REACTION_MESSAGES = [
   DEFAULT_REACTION_MESSAGE,
@@ -105,9 +104,7 @@ export default function App() {
   const [isMuted, setIsMuted] = useState(false);
   const [activeSceneAudioSourceId, setActiveSceneAudioSourceId] = useState<string | null>(null);
   const [selectedReaction, setSelectedReaction] = useState(DEFAULT_REACTION_MESSAGE);
-  const [customReaction, setCustomReaction] = useState("");
   const [telegramStatus, setTelegramStatus] = useState<string | null>(null);
-  const [manualCopyMessage, setManualCopyMessage] = useState<string | null>(null);
   const [playlistState, setPlaylistState] = useState<PlaylistState>(() => ({
     order: createShuffledTrackOrder(BACKGROUND_TRACKS.length),
     position: 0,
@@ -586,40 +583,22 @@ export default function App() {
   }
 
   function getFinalReactionMessage() {
-    const trimmedCustomReaction = customReaction.trim();
-    if (trimmedCustomReaction) return trimmedCustomReaction;
     return selectedReaction || DEFAULT_REACTION_MESSAGE;
   }
 
   async function handleOpenTelegramReaction() {
     const finalMessage = getFinalReactionMessage();
-    const shareUrl = `${TELEGRAM_SHARE_BASE_URL}?text=${encodeURIComponent(finalMessage)}`;
 
-    setManualCopyMessage(null);
     setTelegramStatus(null);
 
     try {
       await navigator.clipboard.writeText(finalMessage);
-      setTelegramStatus("Текст подготовлен. Если Telegram не вставил его сам — он уже скопирован, просто вставь в чат.");
+      setTelegramStatus("Отзыв скопирован. Останется только вставить и отправить.");
     } catch {
-      setManualCopyMessage(finalMessage);
-      setTelegramStatus("Telegram откроется с подготовленным текстом. Если вставка не сработает — скопируй текст вручную ниже.");
+      setTelegramStatus("Telegram открыт. Если копирование не сработало, выбери фразу на экране и скопируй её вручную.");
     }
 
-    window.open(shareUrl, "_blank", "noopener,noreferrer");
-  }
-
-  async function handleCopyReactionAgain() {
-    const finalMessage = manualCopyMessage ?? getFinalReactionMessage();
-
-    try {
-      await navigator.clipboard.writeText(finalMessage);
-      setManualCopyMessage(null);
-      setTelegramStatus("Текст скопирован ещё раз. Теперь можно вставить его в чат.");
-    } catch {
-      setManualCopyMessage(finalMessage);
-      setTelegramStatus("Не получилось скопировать автоматически. Текст можно выделить и скопировать вручную.");
-    }
+    window.open(TELEGRAM_AUTHOR_URL, "_blank", "noopener,noreferrer");
   }
 
   return (
@@ -763,7 +742,7 @@ export default function App() {
                   <div className="finalReactionHeader">
                     <h2 className="finalReactionTitle">Что передать автору?</h2>
                     <p className="finalReactionSubtitle">
-                      Выбери фразу или напиши свою. Я попробую открыть Telegram с готовым текстом.
+                      Выбери фразу — я скопирую её и открою Telegram.
                     </p>
                   </div>
 
@@ -771,12 +750,10 @@ export default function App() {
                     {REACTION_MESSAGES.map((message) => (
                       <button
                         key={message}
-                        className={`finalReactionChoice ${selectedReaction === message && !customReaction.trim() ? "is-selected" : ""}`}
+                        className={`finalReactionChoice ${selectedReaction === message ? "is-selected" : ""}`}
                         type="button"
                         onClick={() => {
                           setSelectedReaction(message);
-                          setCustomReaction("");
-                          setManualCopyMessage(null);
                           setTelegramStatus(null);
                         }}
                       >
@@ -785,38 +762,14 @@ export default function App() {
                     ))}
                   </div>
 
-                  <textarea
-                    className="finalReactionTextarea"
-                    value={customReaction}
-                    onChange={(event) => {
-                      setCustomReaction(event.target.value);
-                      setManualCopyMessage(null);
-                      setTelegramStatus(null);
-                    }}
-                    placeholder="Или напиши свой вариант…"
-                    rows={3}
-                  />
-
-                  <p className="finalTelegramHint">Если Telegram попросит выбрать чат — выбери автора. Текст уже подготовлен.</p>
+                  <p className="finalTelegramHint">Telegram откроется у автора. Отзыв останется только вставить и отправить.</p>
 
                   {telegramStatus && <div className="finalTelegramStatus">{telegramStatus}</div>}
 
-                  {manualCopyMessage && (
-                    <div className="finalCopyBox">
-                      <textarea className="finalCopyText" value={manualCopyMessage} readOnly rows={3} aria-label="Текст реакции для ручного копирования" />
-                      <button className="btn btn-secondary finalCopyButton" type="button" onClick={handleCopyReactionAgain}>
-                        Скопировать ещё раз
-                      </button>
-                    </div>
-                  )}
-
                   <div className="heroActions doneActions finalReactionActions">
                     <button className="btn btn-primary finalPrimaryAction" type="button" onClick={handleOpenTelegramReaction}>
-                      Открыть Telegram
+                      Отправить отзыв
                     </button>
-                    <a className="btn btn-secondary finalDirectChatLink" href={TELEGRAM_DIRECT_CHAT_URL} target="_blank" rel="noreferrer">
-                      Открыть чат напрямую
-                    </a>
                   </div>
                 </div>
 
