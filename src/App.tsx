@@ -85,6 +85,7 @@ function getCinematicPause(screen: Screen, step?: QuestStep): CinematicPause | n
 }
 
 const TELEGRAM_AUTHOR_URL = "https://t.me/lamar_avenue";
+const TELEGRAM_SHARE_BASE_URL = "https://t.me/share/url";
 const DEFAULT_REACTION_MESSAGE = "MARK QUEST пройден. Подарок принят.";
 const REACTION_MESSAGES = [
   DEFAULT_REACTION_MESSAGE,
@@ -588,17 +589,18 @@ export default function App() {
 
   async function handleOpenTelegramReaction() {
     const finalMessage = getFinalReactionMessage();
+    const shareUrl = `${TELEGRAM_SHARE_BASE_URL}?text=${encodeURIComponent(finalMessage)}`;
 
     setTelegramStatus(null);
 
     try {
       await navigator.clipboard.writeText(finalMessage);
-      setTelegramStatus("Отзыв скопирован. Останется только вставить и отправить.");
+      setTelegramStatus("Отзыв подготовлен. Если Telegram не вставил текст сам — просто вставь его в чат.");
     } catch {
-      setTelegramStatus("Telegram открыт. Если копирование не сработало, выбери фразу на экране и скопируй её вручную.");
+      setTelegramStatus("Telegram откроется с подготовленным текстом. Если вставка не сработает — выбери фразу на экране и скопируй её вручную.");
     }
 
-    window.open(TELEGRAM_AUTHOR_URL, "_blank", "noopener,noreferrer");
+    window.open(shareUrl, "_blank", "noopener,noreferrer");
   }
 
   return (
@@ -762,7 +764,7 @@ export default function App() {
                     ))}
                   </div>
 
-                  <p className="finalTelegramHint">Telegram откроется у автора. Отзыв останется только вставить и отправить.</p>
+                  <p className="finalTelegramHint">Если Telegram не вставит текст сам, он уже будет в буфере обмена.</p>
 
                   {telegramStatus && <div className="finalTelegramStatus">{telegramStatus}</div>}
 
@@ -771,6 +773,10 @@ export default function App() {
                       Отправить отзыв
                     </button>
                   </div>
+
+                  <a className="finalAuthorLink" href={TELEGRAM_AUTHOR_URL} target="_blank" rel="noreferrer">
+                    Открыть чат @lamar_avenue
+                  </a>
                 </div>
 
                 <div className="heroActions doneActions">

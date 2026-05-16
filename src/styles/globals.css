@@ -3025,6 +3025,19 @@ body:has(.appShell.scene-intro) {
   margin-top: 2px;
 }
 
+.finalAuthorLink {
+  justify-self: center;
+  color: rgba(218, 207, 235, 0.58);
+  font-size: 0.82rem;
+  line-height: 1.4;
+  text-decoration: none;
+  transition: color 180ms ease;
+}
+
+.finalAuthorLink:hover {
+  color: rgba(255, 214, 244, 0.82);
+}
+
 .finalRestartAction {
   text-decoration: none;
 }
